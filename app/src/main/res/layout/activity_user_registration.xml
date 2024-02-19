@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/bb"
+    tools:context=".user_registration">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:text="Registo de Trabalhadores"
+            android:layout_marginLeft="10dp"
+            android:textColor="@color/design_default_color_on_primary"
+            android:textSize="30dp"/>
+
+        <EditText
+            android:id="@+id/nome"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/lavender_border"
+            android:drawableLeft="@drawable/person_add"
+            android:drawablePadding="8dp"
+            android:hint="Nome"
+            android:padding="8dp" />
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:id="@+id/docid"
+            android:background="@drawable/lavender_border"
+            android:layout_marginTop="30dp"
+            android:padding="8dp"
+            android:hint="Nr de cocumento"
+            android:drawableLeft="@drawable/card_id"
+            android:drawablePadding="8dp" />
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:id="@+id/idade"
+            android:background="@drawable/lavender_border"
+            android:layout_marginTop="30dp"
+            android:padding="8dp"
+            android:hint="Idade"
+            android:drawableLeft="@drawable/create"
+            android:drawablePadding="8dp"
+            android:inputType="number"/>
+
+        <RadioGroup
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:id="@+id/radiogp">
+
+            <RadioButton
+                android:id="@+id/male"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Homem"
+                android:onClick="RadioButtonClicked"
+                android:background="@drawable/lavender_border"
+                android:gravity="center"
+                android:textSize="25dp"/>
+            <RadioButton
+                android:id="@+id/female"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Mulher"
+                android:onClick="RadioButtonClicked"
+                android:background="@drawable/lavender_border"
+                android:gravity="center"
+                android:textSize="25dp"
+                android:layout_marginLeft="10dp"/>
+
+        </RadioGroup>
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:id="@+id/telefone"
+            android:background="@drawable/lavender_border"
+            android:layout_marginTop="20dp"
+            android:padding="8dp"
+            android:hint="Telefone"
+            android:inputType="number"
+            android:drawableLeft="@drawable/call"
+            android:drawablePadding="8dp" />
+
+        <Button
+            android:layout_width="350dp"
+            android:layout_height="70dp"
+            android:text="Registar"
+            android:id="@+id/register_button"
+            android:textSize="18sp"
+            android:layout_marginTop="30dp"
+            app:cornerRadius = "30dp"
+            android:inputType="number"/>
+        <Button
+            android:layout_width="350dp"
+            android:layout_height="70dp"
+            android:text="camera"
+            android:id="@+id/camera"
+            android:textSize="18sp"
+            android:layout_marginTop="30dp"
+            app:cornerRadius = "30dp" />
+
+    </LinearLayout>
+
+</ScrollView>
