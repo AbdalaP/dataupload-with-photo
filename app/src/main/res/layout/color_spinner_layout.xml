@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheckedTextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:textSize="18dp"
+    android:padding="10dp"
+    android:text="Abdala"
+    android:drawablePadding="8dp"
+    android:textColor="@android:color/black"
+    android:drawableLeft="@drawable/baseline_lock_24"
+    android:drawableRight="@drawable/baseline_arrow_drop_down_24"
+    android:layout_height="50dp">
+
+</CheckedTextView>

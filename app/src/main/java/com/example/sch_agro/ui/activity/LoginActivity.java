@@ -1,23 +1,29 @@
-package com.example.sch_agro;
+package com.example.sch_agro.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
-import com.example.sch_agro.databinding.ActivityLoginBinding;
-
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.sch_agro.databinding.ActivityLoginBinding;
+import com.example.sch_agro.util.DatabaseHelper;
+
 public class LoginActivity extends AppCompatActivity {
+
     ActivityLoginBinding binding;
+
     DatabaseHelper databaseHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
         databaseHelper = new DatabaseHelper(this);
+
         binding.loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -37,6 +43,7 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         });
+
         binding.signupRedirectText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

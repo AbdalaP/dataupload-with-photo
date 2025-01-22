@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardElevation="2dp"
+    app:cardPreventCornerOverlap="true"
+    app:cardUseCompatPadding="true"
+    app:cardCornerRadius="8dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ImageButton
+            android:id="@+id/flowmenu"
+            android:layout_width="48dp"
+            android:layout_height="50dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerInParent="true"
+            android:layout_centerVertical="true"
+            android:background="@null"
+            android:contentDescription="ok"
+            android:src="@drawable/more_vert" />
+
+        <ImageView
+            android:scaleType="fitXY"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:paddingLeft="5dp"
+            android:id="@+id/viewavatar"
+            android:src="@drawable/ic_launcher_background"/>
+        
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/viewavatar"
+            android:text="@string/app_name"
+            android:layout_marginTop="10dp"
+            android:id="@+id/txt_id"
+            android:layout_marginLeft="20dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/viewavatar"
+            android:layout_below="@+id/txt_id"
+            android:text="@string/app_name"
+            android:layout_marginTop="10dp"
+            android:id="@+id/txt_name"
+            android:layout_marginLeft="20dp"/>
+
+
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>

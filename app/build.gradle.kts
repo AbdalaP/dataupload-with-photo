@@ -1,15 +1,6 @@
 plugins {
     id("com.android.application")
-
 }
-repositories {
-    google()
-    mavenCentral()
-    @Suppress("DEPRECATION")
-    jcenter()
-    maven { "https://jitpack.io" }
-}
-
 
 android {
     namespace = "com.example.sch_agro"
@@ -32,11 +23,9 @@ android {
         }
     }
 
-
     buildFeatures{
         viewBinding = true
     }
-
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -46,20 +35,20 @@ android {
 
 dependencies {
 
-
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+    implementation(files("libs\\opencsv-2.4.jar"))
+    implementation("com.google.firebase:firebase-crashlytics-buildtools:2.9.9")
+    implementation("androidx.activity:activity:1.8.0")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    implementation ("com.github.CanHub:Android-Image-Cropper:2.8.+")
-   // implementation ("com.softhearted.edmodo:android-image-cropper:2.8.0")
 
-    //crop image
-    //api("com.theartofdev.edmodo:android-image-cropper:2.8.0")
-
-    //loading image in image view
-   // implementation("com.square.picasso:picasso:2.8.0")
+    implementation("com.vanniktech:android-image-cropper:4.5.0")
+    implementation ("org.apache.poi:poi:4.0.0")
+    implementation ("org.apache.poi:poi-ooxml:4.0.0")
+    implementation("androidx.cardview:cardview:1.0.0")
+    //implementation("androidx.recyclerview:recyclerview:1.3.2")
 
 }

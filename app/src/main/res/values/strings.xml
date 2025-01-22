@@ -1,5 +1,19 @@
 <resources>
-    <string name="app_name">Sch-AGRO</string>
-    <string name="open_nav">Open Sch-AGRO</string>
-    <string name="close_nav">Open Sch-AGRO</string>
+    <string name="app_name">Sch-Agro</string>
+    <string name="open_nav">Open Sch-Agro</string>
+    <string name="close_nav">Open Sch-Agro</string>
+    <string name="title">Select Item</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string-array name="tipo_trabalahador">
+        <item>[Tipo de Trabalhador…]</item>
+        <item>Sazonal</item>
+        <item>Permanente</item>
+    </string-array>
+
+    <string-array name="Empresa">
+        <item>[Escolhe Empresa…]</item>
+        <item>SAN</item>
+        <item>GEBA</item>
+    </string-array>
 </resources>

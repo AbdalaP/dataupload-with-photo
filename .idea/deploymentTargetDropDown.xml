@@ -2,22 +2,32 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
-      <entry key="MainActivity2">
+      <entry key="LoginActivity">
         <State />
       </entry>
       <entry key="Registo">
+        <State>
+          <runningDeviceTargetSelectedWithDropDown>
+            <Target>
+              <type value="RUNNING_DEVICE_TARGET" />
+              <deviceKey>
+                <Key>
+                  <type value="SERIAL_NUMBER" />
+                  <value value="NZQ4LRHUDIJVDAS8" />
+                </Key>
+              </deviceKey>
+            </Target>
+          </runningDeviceTargetSelectedWithDropDown>
+          <timeTargetWasSelectedWithDropDown value="2024-04-22T07:10:58.719523600Z" />
+        </State>
+      </entry>
+      <entry key="SignupActivity">
         <State />
       </entry>
-      <entry key="add_activity">
+      <entry key="UserRegistrationActivity">
         <State />
       </entry>
       <entry key="app">
-        <State />
-      </entry>
-      <entry key="takephoto">
-        <State />
-      </entry>
-      <entry key="user_registration">
         <State />
       </entry>
     </value>

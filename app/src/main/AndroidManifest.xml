@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.sch_agro">
+    package="com.example.sch_agro" >
 
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+
+    <uses-feature
+        android:name="android.Permission.CAMERA"
+        android:required="true" />
 
     <application
         android:allowBackup="true"
@@ -12,16 +20,10 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.SchAGRO">
+        android:theme="@style/Theme.SchAGRO" >
         <activity
-            android:name=".Registo"
-            android:exported="true" />
-       <!-- <activity
-            android:name=".TakePhoto"
-            android:exported="true" />-->
-        <activity
-            android:name=".user_registration"
-            android:exported="true">
+            android:name=".ui.activity.LoginActivity"
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -29,48 +31,53 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".add_activity"
-            android:exported="true">
+            android:name=".ui.activity.UserEditSan"
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <!--
+ <activity
+             android:name=".TakePhoto"
+             android:exported="true" />
+        -->
+        <!-- <activity -->
+        <!-- android:name="" -->
+        <!-- android:exported="true"> -->
+        <!-- &lt;!&ndash; You cannot have two launchers simultaneously in a single app &ndash;&gt; -->
+        <!-- &lt;!&ndash;            <intent-filter>&ndash;&gt; -->
+        <!-- &lt;!&ndash;                <action android:name="android.intent.action.MAIN" />&ndash;&gt; -->
+        <!-- &lt;!&ndash;                <category android:name="android.intent.category.LAUNCHER" />&ndash;&gt; -->
+        <!-- &lt;!&ndash;            </intent-filter>&ndash;&gt; -->
+        <!-- </activity> -->
         <activity
-            android:name=".LoginActivity"
-            android:exported="false" />
-        <activity
-            android:name=".SignupActivity"
-            android:exported="false">
+            android:name=".ui.activity.SignupActivity"
+            android:exported="true" >
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.activity.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            tools:ignore="Instantiatable">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-            <!-- this -->
+            tools:ignore="Instantiatable" >
         </activity>
-       <!-- <activity android:name="com.theartofdev.edmodo.cropper.CropImageActivity" />-->
 
         <activity
-              <!-- android:name="com.theartofdev.edmodo.cropper.sch_agro"  I have tried this but not working and de below line is not giving error but when  i run a project gives an error -->
-            
-            android:name="com.example.sch_agro.TakePhoto"
-            android:theme="@style/Base.Theme.AppCompat"
-            android:exported="true" /> <!-- optional (needed if default theme has no action bar) -->
-    </application>
+            android:name=".Registo"
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            tools:ignore="Instantiatable" >
+        </activity>
 
-    <uses-feature
-        android:name="android.Permission.CAMERA"
-        android:required="true" />
+        <activity
+            android:name=".ui.activity.UserEditGeba"
+            android:exported="true"
+            android:theme="@style/Base.Theme.AppCompat" />
+    </application>
 
 </manifest>

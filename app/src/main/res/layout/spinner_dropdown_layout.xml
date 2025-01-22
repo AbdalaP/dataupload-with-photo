@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:textSize="20sp"
+    android:padding="10dp"
+    android:text="Abdala"
+    android:drawablePadding="8dp"
+    android:textColor="@color/design_default_color_primary"
+    android:drawableLeft="@drawable/baseline_lock_24"
+    android:layout_height="50dp">
+</TextView>
