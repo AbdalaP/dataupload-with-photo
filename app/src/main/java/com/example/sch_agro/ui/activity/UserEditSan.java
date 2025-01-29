@@ -62,9 +62,9 @@ public class UserEditSan extends AppCompatActivity implements AdapterView.OnItem
         findid();
         editData();
         insertData();
-        spinner = findViewById(R.id.spinner1);
-        spinner.setOnItemSelectedListener(this);
-        loadSpinnerData();
+//        spinner = findViewById(R.id.spinner1);
+//        spinner.setOnItemSelectedListener(this);
+//        loadSpinnerData();
 
 
        // targets = (EditText)findViewById(R.id.target);

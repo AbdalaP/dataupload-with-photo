@@ -15,15 +15,28 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.sch_agro.Configuration.ApiClient;
+import com.example.sch_agro.DTO.AtividadeDTO;
+import com.example.sch_agro.DTO.LoginResponseDTO;
 import com.example.sch_agro.R;
+import com.example.sch_agro.Services.ApiService;
 import com.example.sch_agro.databinding.FragmentAddActBinding;
 import com.example.sch_agro.ui.activity.MainActivity;
+import com.example.sch_agro.util.ApiResponse;
 import com.example.sch_agro.util.DatabaseHelper;
+
+import java.io.IOException;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class AddActFragment extends Fragment implements AdapterView.OnItemSelectedListener {
 
     FragmentAddActBinding binding;
+
+    ApiService apiService;
 
     DatabaseHelper databaseHelper;
     SQLiteDatabase sqLiteDatabase;
@@ -36,6 +49,7 @@ public class AddActFragment extends Fragment implements AdapterView.OnItemSelect
         binding= FragmentAddActBinding.inflate(inflater, container, false);
         databaseHelper = new DatabaseHelper(super.getContext());
 
+        apiService = ApiClient.getClient().create(ApiService.class);
         binding.adicionarButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -45,6 +59,7 @@ public class AddActFragment extends Fragment implements AdapterView.OnItemSelect
                 String nome = binding.name.getText().toString();
                 String pessoa = binding.pessoaResponsavel.getText().toString();
                 String target = binding.target.getText().toString();
+                System.out.println(spinner);
                 if (nome.equals("") || pessoa.equals("")||target.equals("")) {
                     Toast.makeText(AddActFragment.super.getContext(), "All fields are mandatory", Toast.LENGTH_SHORT).show();
                 }else if(spinner1.getItemAtPosition(spinner1.getSelectedItemPosition()).toString().equals("[Escolhe Empresa…]")){
@@ -62,6 +77,26 @@ public class AddActFragment extends Fragment implements AdapterView.OnItemSelect
                             target.equals("");
                             Intent intent = new Intent(getContext(), MainActivity.class);
                             startActivity(intent);
+
+                            AtividadeDTO dto = new AtividadeDTO(
+                                    spinner1.getItemAtPosition(spinner1.getSelectedItemPosition()).toString(),
+                                    nome,
+                                    pessoa,
+                                    125);
+                            apiService.creatActivity(dto).enqueue(new Callback<Void>() {
+                                @Override
+                                public void onResponse(Call<Void> call, Response<Void> response) {
+                                    if (response.isSuccessful()) {
+                                        System.out.println(":::::: Atividade cadastrada :::::");
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<Void> call, Throwable t) {
+                                    System.out.println(t.getMessage());
+                                }
+                            });
+
 
 
                         } else {

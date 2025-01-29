@@ -27,53 +27,76 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private Object Context;
     Context context;
     public DatabaseHelper(@Nullable Context context) {
-        super(context, "SchAgro.db", null, 2);
+        super(context, "SchAgro.db", null, 3);
 
     }
 
     @Override
     public void onCreate(SQLiteDatabase MyDatabase) {
-        MyDatabase.execSQL("create Table users(email TEXT primary key, password TEXT)");
+        MyDatabase.execSQL("CREATE TABLE users (email TEXT PRIMARY KEY, password TEXT, isSynced BOOLEAN DEFAULT 0)");
 
-        MyDatabase.execSQL("CREATE TABLE activity (id INTEGER PRIMARY KEY autoincrement NOT NULL, empresa TEXT NOT NULL, activity_name TEXT NOT NULL UNIQUE,person TEXT NOT NULL,target TEXT NOT NULL, " +
-                "registration_date TEXT DEFAULT CURRENT_TIMESTAMP)");
+        MyDatabase.execSQL("CREATE TABLE activity (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
+                "empresa TEXT NOT NULL, " +
+                "activity_name TEXT NOT NULL UNIQUE, " +
+                "person TEXT NOT NULL, " +
+                "target TEXT NOT NULL, " +
+                "registration_date TEXT DEFAULT CURRENT_TIMESTAMP, " +
+                "isSynced BOOLEAN DEFAULT 0)");
 
-        MyDatabase.execSQL("CREATE TABLE trabalhadores ("+
-                "id INTEGER PRIMARY KEY autoincrement NOT NULL,"+
-                "empresa TEXT NOT NULL,"+
-                "nome TEXT NOT NULL,"+
-                "docid TEXT NOT NULL UNIQUE,"+
-                "idade TEXT NOT NULL,"+
-                "genero TEXT NOT NULL,"+
-                "telefone TEXT,"+
-                "image BLOG,"+
-                "tipo TEXT NOT NULL,"+
-                "registration_date TEXT DEFAULT CURRENT_TIMESTAMP)");
+        MyDatabase.execSQL("CREATE TABLE trabalhadores (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
+                "empresa TEXT NOT NULL, " +
+                "nome TEXT NOT NULL, " +
+                "docid TEXT NOT NULL UNIQUE, " +
+                "idade TEXT NOT NULL, " +
+                "genero TEXT NOT NULL, " +
+                "telefone TEXT, " +
+                "image BLOB, " +
+                "tipo TEXT NOT NULL, " +
+                "registration_date TEXT DEFAULT CURRENT_TIMESTAMP, " +
+                "isSynced BOOLEAN DEFAULT 0)");
 
-        MyDatabase.execSQL("create Table testimage(id INTEGER PRIMARY KEY autoincrement NOT NULL, name Text, image BLOG, email Text)");
+        MyDatabase.execSQL("CREATE TABLE testimage (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
+                "name TEXT, " +
+                "image BLOB, " +
+                "email TEXT, " +
+                "isSynced BOOLEAN DEFAULT 0)");
 
-        try {
-    MyDatabase.execSQL("create Table taskgeba(task_id INTEGER PRIMARY KEY autoincrement NOT NULL, " +
-            "name Text NOT NULL, docid Text NOT NULL,telefone Text NOT NULL," +
-            "act Text NOT NULL,block Text NOT NULL,image BLOG NOT NULL,task_date TEXT DEFAULT CURRENT_TIMESTAMP,user_id Text NOT NULL)");
+        MyDatabase.execSQL("CREATE TABLE taskgeba (" +
+                "task_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
+                "name TEXT NOT NULL, " +
+                "docid TEXT NOT NULL, " +
+                "telefone TEXT NOT NULL, " +
+                "act TEXT NOT NULL, " +
+                "block TEXT NOT NULL, " +
+                "image BLOB NOT NULL, " +
+                "task_date TEXT DEFAULT CURRENT_TIMESTAMP, " +
+                "user_id TEXT NOT NULL, " +
+                "isSynced BOOLEAN DEFAULT 0)");
 
-            MyDatabase.execSQL("create Table tasksan(task_id INTEGER PRIMARY KEY autoincrement NOT NULL, " +
-                    "name Text NOT NULL, act Text NOT NULL," +
-                    "feita Text NOT NULL,valorDia INT DEFAULT 193,image BLOG NOT NULL,task_date TEXT DEFAULT CURRENT_TIMESTAMP,user_id Text NOT NULL)");
-}catch (Exception error){
-    Log.e(TAG, "The exception caught while executing the process. (error1)");
-    error.printStackTrace();
-}
+        MyDatabase.execSQL("CREATE TABLE tasksan (" +
+                "task_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
+                "name TEXT NOT NULL, " +
+                "act TEXT NOT NULL, " +
+                "feita TEXT NOT NULL, " +
+                "valorDia INT DEFAULT 193, " +
+                "image BLOB NOT NULL, " +
+                "task_date TEXT DEFAULT CURRENT_TIMESTAMP, " +
+                "user_id TEXT NOT NULL, " +
+                "isSynced BOOLEAN DEFAULT 0)");
     }
-    @Override
-    public void onUpgrade(SQLiteDatabase MyDB, int i, int i1) {
-        MyDB.execSQL("drop Table if exists users");
-        MyDB.execSQL("drop Table if exists activity");
-        MyDB.execSQL("drop Table if exists trabalhadores");
-        MyDB.execSQL("drop Table if exists testimage");
-        MyDB.execSQL("drop Table taskgeba");
-        MyDB.execSQL("drop Table tasksan");
 
+    @Override
+    public void onUpgrade(SQLiteDatabase MyDB, int oldVersion, int newVersion) {
+        // Atualize as tabelas para incluir a coluna isSynced
+        MyDB.execSQL("ALTER TABLE users ADD COLUMN isSynced BOOLEAN DEFAULT 0");
+        MyDB.execSQL("ALTER TABLE activity ADD COLUMN isSynced BOOLEAN DEFAULT 0");
+        MyDB.execSQL("ALTER TABLE trabalhadores ADD COLUMN isSynced BOOLEAN DEFAULT 0");
+        MyDB.execSQL("ALTER TABLE testimage ADD COLUMN isSynced BOOLEAN DEFAULT 0");
+        MyDB.execSQL("ALTER TABLE taskgeba ADD COLUMN isSynced BOOLEAN DEFAULT 0");
+        MyDB.execSQL("ALTER TABLE tasksan ADD COLUMN isSynced BOOLEAN DEFAULT 0");
     }
 
 

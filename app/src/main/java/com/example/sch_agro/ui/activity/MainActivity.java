@@ -12,7 +12,17 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.sch_agro.Configuration.ApiClient;
+import com.example.sch_agro.Configuration.DatabaseInstance;
+import com.example.sch_agro.DAO.ActivityDAO;
+import com.example.sch_agro.DAO.TaskGebaDAO;
+import com.example.sch_agro.DAO.TaskSanDAO;
+import com.example.sch_agro.DAO.TrabalhadoresDAO;
+import com.example.sch_agro.DAO.UserDAO;
 import com.example.sch_agro.R;
+import com.example.sch_agro.Services.ApiService;
+import com.example.sch_agro.Services.DataSyncManager;
+import com.example.sch_agro.Services.NetworkMonitor;
 import com.example.sch_agro.ui.fragment.AddActFragment;
 import com.example.sch_agro.ui.fragment.AddUserFragment;
 import com.example.sch_agro.ui.fragment.DashboardFragment;
@@ -54,6 +64,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     .commit();
             navigationView.setCheckedItem(R.id.nav_dashboard);
         }
+
+        // Inicialização do monitor de rede
+        NetworkMonitor networkMonitor = new NetworkMonitor(this);
+
+        // Instância dos DAOs
+        UserDAO userDao = DatabaseInstance.getInstance(this).userDao();
+        ActivityDAO activityDao = DatabaseInstance.getInstance(this).activityDao();
+        TrabalhadoresDAO trabalhadorDao = DatabaseInstance.getInstance(this).trabalhadorDao();
+        TaskGebaDAO taskGebaDao = DatabaseInstance.getInstance(this).taskGebaDao();
+        TaskSanDAO taskSanDao = DatabaseInstance.getInstance(this).taskSanDao();
+
+        // Instância da ApiService
+        ApiService apiService = ApiClient.getClient().create(ApiService.class);
+
+        // Instância do DataSyncManager com os DAOs e ApiService
+        DataSyncManager syncManager = new DataSyncManager(userDao, activityDao, trabalhadorDao, taskGebaDao, taskSanDao, apiService);
+
+        // Iniciar o monitoramento da rede e executar sincronização quando conectado
+        networkMonitor.startMonitoring(syncManager::syncData);
+
     }
 
 
