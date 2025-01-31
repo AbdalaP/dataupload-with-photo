@@ -86,9 +86,9 @@
             android:layout_height="50dp"
             android:layout_marginTop="20dp"
             android:background="@drawable/lavender_border"
-            android:drawableLeft="@drawable/create"
+            android:drawableLeft="@drawable/baseline_date_range_24"
             android:drawablePadding="8dp"
-            android:hint="Idade"
+            android:hint="Seclecione data..."
             android:inputType="number"
             android:padding="8dp"
             android:textColor="@color/black"
@@ -170,7 +170,6 @@
             app:cornerRadius = "30dp"
             android:background="@color/green"
             android:visibility="gone"/>
-
 
     </LinearLayout>
 

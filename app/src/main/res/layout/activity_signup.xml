@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -31,11 +32,25 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
+
+    <ScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/imageview">
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/imageview"
+        android:rowCount="7"
+        android:columnCount="5">
     <EditText
         android:id="@+id/signup_email"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_marginBottom="16dp"
+        android:layout_width="350dp"
+        android:layout_height="50dp"
+        android:layout_row="1"
+        android:layout_column="0"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="30dp"
         android:background="@drawable/lavender_border"
         android:drawableStart="@drawable/baseline_email_24"
         android:drawablePadding="8dp"
@@ -46,11 +61,32 @@
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent" />
 
+        <EditText
+            android:id="@+id/username"
+            android:layout_width="350dp"
+            android:layout_height="50dp"
+            android:layout_row="2"
+            android:layout_column="0"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/lavender_border"
+            android:drawableStart="@drawable/add_activity"
+            android:drawablePadding="8dp"
+            android:hint="username"
+            android:padding="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/signup_email"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent" />
+
     <EditText
         android:id="@+id/signup_password"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_marginBottom="16dp"
+        android:layout_width="350dp"
+        android:layout_height="50dp"
+        android:layout_row="3"
+        android:layout_column="0"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="30dp"
         android:background="@drawable/lavender_border"
         android:drawableStart="@drawable/baseline_lock_24"
         android:drawablePadding="8dp"
@@ -64,9 +100,12 @@
 
     <EditText
         android:id="@+id/signup_confirm"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_marginBottom="28dp"
+        android:layout_width="350dp"
+        android:layout_height="50dp"
+        android:layout_row="4"
+        android:layout_column="0"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="30dp"
         android:background="@drawable/lavender_border"
         android:drawableStart="@drawable/baseline_password_24"
         android:drawablePadding="8dp"
@@ -78,22 +117,38 @@
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <Button
-        android:id="@+id/signup_button"
-        android:layout_width="300dp"
-        android:layout_height="65dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginBottom="68dp"
-        android:text="Sign Up"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:cornerRadius="50dp"
-        app:layout_constraintBottom_toTopOf="@+id/loginRedirectText"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.634"
-        app:layout_constraintStart_toStartOf="parent" />
+        <Spinner
+            android:id="@+id/spinner_role"
+            android:layout_width="249dp"
+            android:layout_height="50dp"
+            android:layout_row="5"
+            android:layout_column="0"
+            android:layout_below="@id/imageview"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/lavender_border"
+            android:dropDownSelector="@color/black" />
 
-    <TextView
+        <Button
+            android:id="@+id/signup_button"
+            android:layout_width="300dp"
+            android:layout_height="65dp"
+            android:layout_marginTop="30dp"
+            android:layout_row="6"
+            android:layout_column="0"
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="118dp"
+            android:text="Sign Up"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:cornerRadius="50dp"
+            app:layout_constraintBottom_toTopOf="@+id/loginRedirectText"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.634"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
         android:id="@+id/loginRedirectText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -105,5 +160,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+    </GridLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+</RelativeLayout>

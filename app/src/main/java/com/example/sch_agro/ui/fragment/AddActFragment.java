@@ -15,21 +15,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.example.sch_agro.Configuration.ApiClient;
-import com.example.sch_agro.DTO.AtividadeDTO;
-import com.example.sch_agro.DTO.LoginResponseDTO;
 import com.example.sch_agro.R;
 import com.example.sch_agro.Services.ApiService;
 import com.example.sch_agro.databinding.FragmentAddActBinding;
 import com.example.sch_agro.ui.activity.MainActivity;
-import com.example.sch_agro.util.ApiResponse;
 import com.example.sch_agro.util.DatabaseHelper;
-
-import java.io.IOException;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 
 public class AddActFragment extends Fragment implements AdapterView.OnItemSelectedListener {
@@ -49,7 +39,7 @@ public class AddActFragment extends Fragment implements AdapterView.OnItemSelect
         binding= FragmentAddActBinding.inflate(inflater, container, false);
         databaseHelper = new DatabaseHelper(super.getContext());
 
-        apiService = ApiClient.getClient().create(ApiService.class);
+      //  apiService = ApiClient.getClient().create(ApiService.class);
         binding.adicionarButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -77,7 +67,7 @@ public class AddActFragment extends Fragment implements AdapterView.OnItemSelect
                             target.equals("");
                             Intent intent = new Intent(getContext(), MainActivity.class);
                             startActivity(intent);
-
+/*
                             AtividadeDTO dto = new AtividadeDTO(
                                     spinner1.getItemAtPosition(spinner1.getSelectedItemPosition()).toString(),
                                     nome,
@@ -96,6 +86,8 @@ public class AddActFragment extends Fragment implements AdapterView.OnItemSelect
                                     System.out.println(t.getMessage());
                                 }
                             });
+
+ */
 
 
 
