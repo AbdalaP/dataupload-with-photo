@@ -13,7 +13,6 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.example.sch_agro.Configuration.ApiClient;
 import com.example.sch_agro.Configuration.DatabaseInstance;
 import com.example.sch_agro.DAO.ActivityDAO;
 import com.example.sch_agro.DAO.TaskGebaDAO;
@@ -21,8 +20,6 @@ import com.example.sch_agro.DAO.TaskSanDAO;
 import com.example.sch_agro.DAO.TrabalhadoresDAO;
 import com.example.sch_agro.DAO.UserDAO;
 import com.example.sch_agro.R;
-import com.example.sch_agro.Services.ApiService;
-import com.example.sch_agro.Services.DataSyncManager;
 import com.example.sch_agro.Services.NetworkMonitor;
 import com.example.sch_agro.ui.fragment.AddActFragment;
 import com.example.sch_agro.ui.fragment.AddUserFragment;
@@ -80,13 +77,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         TaskSanDAO taskSanDao = DatabaseInstance.getInstance(this).taskSanDao();
 
         // Instância da ApiService
-        ApiService apiService = ApiClient.getClient().create(ApiService.class);
+        //ApiService apiService = ApiClient.getClient().create(ApiService.class);
 
         // Instância do DataSyncManager com os DAOs e ApiService
-        DataSyncManager syncManager = new DataSyncManager(userDao, activityDao, trabalhadorDao, taskGebaDao, taskSanDao, apiService);
+      //  DataSyncManager syncManager = new DataSyncManager(userDao, activityDao, trabalhadorDao, taskGebaDao, taskSanDao, apiService);
 
         // Iniciar o monitoramento da rede e executar sincronização quando conectado
-        networkMonitor.startMonitoring(syncManager::syncData);
+     //   networkMonitor.startMonitoring(syncManager::syncData);
 
         // Agendar a sincronização a cada 15 minutos
         syncRunnable = new Runnable() {

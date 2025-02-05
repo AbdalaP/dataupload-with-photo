@@ -2,6 +2,7 @@ package com.example.sch_agro;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.DatePickerDialog;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -9,6 +10,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.icu.util.Calendar;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -17,9 +19,11 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -32,11 +36,12 @@ import com.example.sch_agro.util.DatabaseHelper;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileWriter;
+import java.text.DateFormat;
 import java.util.List;
 
 import au.com.bytecode.opencsv.CSVWriter;
 
-public class Registo extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class Registo extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
 
     DatabaseHelper databaseHelper;
     SQLiteDatabase sqLiteDatabase;
@@ -49,11 +54,27 @@ public class Registo extends AppCompatActivity implements AdapterView.OnItemSele
     String cameraPermission[];
     String storagePermission[];
 
+    TextView tvDate;
+    Button btPickDate;
+
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registo);
+
+        tvDate = findViewById(R.id.tvDate);
+        //btPickDate = findViewById(R.id.btPickDate);
+        tvDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Please note that use your package name here
+                com.example.sch_agro.util.DatePicker mDatePickerDialogFragment;
+                mDatePickerDialogFragment = new com.example.sch_agro.util.DatePicker();
+                mDatePickerDialogFragment.show(getSupportFragmentManager(), "DATE PICK");
+            }
+        });
+
 
         //below the links for data export from database table to excel
         System.setProperty("org.apache.poi.javax.xml.stream.XMLInputFactory", "com.fasterxml.aalto.stax.InputFactoryImpl");
@@ -67,8 +88,8 @@ public class Registo extends AppCompatActivity implements AdapterView.OnItemSele
         insertData();
         spinner = findViewById(R.id.spinner1);
         spinner2 = findViewById(R.id.spinner2);
-        spinner.setOnItemSelectedListener(this);
-        spinner2.setOnItemSelectedListener(this);
+      //  spinner.setOnItemSelectedListener(this);
+       // spinner2.setOnItemSelectedListener(this);
         loadSpinnerData();
         loadSpinnerData2();
 
@@ -92,8 +113,9 @@ public class Registo extends AppCompatActivity implements AdapterView.OnItemSele
         });
 
 
-
     }
+
+
 
 
     private void loadSpinnerData() {
@@ -109,7 +131,7 @@ public class Registo extends AppCompatActivity implements AdapterView.OnItemSele
 
 
         spinner.setSelection(dataAdapter.getCount()); //set the hint the default selection so it appears on launch.
-        spinner.setOnItemSelectedListener(this);
+        //spinner.setOnItemSelectedListener(this);
     }
 
     private void loadSpinnerData2() {
@@ -125,7 +147,15 @@ public class Registo extends AppCompatActivity implements AdapterView.OnItemSele
     }
 
 
-
+    @Override
+    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+        Calendar mCalendar = Calendar.getInstance();
+        mCalendar.set(Calendar.YEAR, year);
+        mCalendar.set(Calendar.MONTH, month);
+        mCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+        String selectedDate = DateFormat.getDateInstance(DateFormat.DATE_FIELD).format(mCalendar.getTime());
+        tvDate.setText(selectedDate);
+    }
 
     // THIS FUNCTION SHOWS DATA FROM THE DATABASE
 
@@ -285,12 +315,12 @@ public class Registo extends AppCompatActivity implements AdapterView.OnItemSele
     }
 
 
-    @Override
+ //   @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
     }
 
-    @Override
+  //  @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
     }

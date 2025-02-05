@@ -3,6 +3,7 @@ package com.example.sch_agro.ui.fragment;
 import static com.example.sch_agro.R.mipmap.ic_launcher;
 
 import android.Manifest;
+import android.app.DatePickerDialog;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -10,6 +11,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.icu.util.Calendar;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -19,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -50,6 +53,7 @@ public class AddUserFragment extends Fragment implements AdapterView.OnItemSelec
     DatabaseHelper databaseHelper;
     SQLiteDatabase sqLiteDatabase;
     EditText name,docid,idade,telefone,gender,id;
+    DatePickerDialog datePickerDialog;
     Spinner spinner1,spinner2;
 
     String doid;
@@ -66,6 +70,7 @@ public class AddUserFragment extends Fragment implements AdapterView.OnItemSelec
     public static final int STORAGE_REQUEST=101;
     String cameraPermission[];
     String storagePermission[];
+
 
 
 
@@ -118,6 +123,32 @@ public class AddUserFragment extends Fragment implements AdapterView.OnItemSelec
 
 
         }
+
+        // perform click event on edit text
+        idade.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // calender class's instance and get current date , month and year from calender
+                final Calendar c = Calendar.getInstance();
+                int mYear = c.get(Calendar.YEAR); // current year
+                int mMonth = c.get(Calendar.MONTH); // current month
+                int mDay = c.get(Calendar.DAY_OF_MONTH); // current day
+                // date picker dialog
+                datePickerDialog = new DatePickerDialog(AddUserFragment.super.getContext(), new DatePickerDialog.OnDateSetListener() {
+
+                    @Override
+                    public void onDateSet(DatePicker view, int year,
+                                          int monthOfYear, int dayOfMonth) {
+                        // set day of month , month and year value in the edit text
+                        idade.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
+
+                    }
+                }, mYear, mMonth, mDay);
+                datePickerDialog.show();
+            }
+        });
+
+
     }
 
     @Override
@@ -313,6 +344,33 @@ this funcion is only used in the useredit activity and not here.
                 }
             }
         });
+
+
+
+/*
+            sqLiteDatabase = databaseHelper.getWritableDatabase();
+            Cursor c = sqLiteDatabase.rawQuery("select activity_name  from activity",null);
+
+                     // create an array to specify which fields we want to display
+            String[] from = new String[]{"activity_name"};
+
+            // create an array of the display item we want to bind our data to
+            int[] to = new int[]{android.R.id.text1};
+
+            // create simple cursor adapter
+            SimpleCursorAdapter adapter =
+                    new SimpleCursorAdapter(this.getContext(), android.R.layout.simple_spinner_item, c, from, to );
+
+            adapter.setDropDownViewResource( android.R.layout.simple_spinner_dropdown_item );
+
+            // get reference to our spinner
+            spinner2.setAdapter(adapter);
+        spinner2.setOnItemSelectedListener(this);
+
+ */
+
+           // bd.close();
+
     }
 
     private void requestCameraPermission() {requestPermissions(cameraPermission,CAMERA_REQUEST);}
@@ -355,8 +413,12 @@ this funcion is only used in the useredit activity and not here.
         return bytes;
     }
 
-
     private void loadSpinnerData() {
+
+
+               //sqLiteDatabase = databaseHelper.getWritableDatabase();
+
+       // Cursor cursor = sqLiteDatabase("Select activity_name from activity", null);
 
         ArrayAdapter<CharSequence> adapter1 = ArrayAdapter.createFromResource(requireActivity(),R.array.Empresa, android.R.layout.simple_spinner_item);
         adapter1.setDropDownViewResource(android.R.layout.select_dialog_item);
@@ -364,15 +426,11 @@ this funcion is only used in the useredit activity and not here.
         spinner1.setOnItemSelectedListener(this);
 
 
+
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(requireActivity(),R.array.tipo_trabalahador, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.select_dialog_item);
         spinner2.setAdapter(adapter);
         spinner2.setOnItemSelectedListener(this);
-
-
-
-
-
 
     }
 
