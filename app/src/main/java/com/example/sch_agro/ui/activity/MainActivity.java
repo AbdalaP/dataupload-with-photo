@@ -2,6 +2,7 @@ package com.example.sch_agro.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
@@ -33,6 +34,9 @@ import com.google.android.material.navigation.NavigationView;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private DrawerLayout drawerLayout;
+    private Handler handler = new Handler();
+    private Runnable syncRunnable;
+    private static final long SYNC_INTERVAL = 15 * 60 * 1000; // 15 minutos em milissegundos
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +88,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Iniciar o monitoramento da rede e executar sincronização quando conectado
         networkMonitor.startMonitoring(syncManager::syncData);
 
+        // Agendar a sincronização a cada 15 minutos
+        syncRunnable = new Runnable() {
+            @Override
+            public void run() {
+                networkMonitor.startMonitoring(syncManager::syncData);
+                handler.postDelayed(this, SYNC_INTERVAL);
+            }
+        };
+
+        // Iniciar a primeira sincronização
+        handler.post(syncRunnable);
     }
 
 
