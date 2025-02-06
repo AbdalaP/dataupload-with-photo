@@ -5,14 +5,35 @@
     <string name="title">Select Item</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string-array name="tipo_trabalahador">
+    <string-array name="tipo_actividade">
         <item>[Escolhe Actividade…]</item>
-        <item>Levar essa info no actividade</item>
+        <item>Desensaque</item>
+        <item>Remendagem</item>
+        <item>Descarga</item>
+        <item>Servente</item>
+        <item>Fabrica</item>
+        <item>Motorista</item>
+        <item>Ajudante</item>
+        <item>Brigadista</item>
+        <item>Bascula</item>
+
+
     </string-array>
 
     <string-array name="Empresa">
         <item>[Escolhe Empresa…]</item>
         <item>SAN</item>
         <item>GEBA</item>
+    </string-array>
+    <string-array name="categoria">
+        <item>[Escolhe Categoria…]</item>
+        <item>Meta</item>
+        <item>Presença</item>
+    </string-array>
+    <string-array name="Role">
+        <item>[Escolhe a Função…]</item>
+        <item>Admin</item>
+        <item>RH</item>
+        <item>Recinto</item>
     </string-array>
 </resources>

@@ -1,9 +1,15 @@
 package com.example.sch_agro.ui.activity;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.icu.util.Calendar;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.DatePicker;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -31,7 +37,10 @@ import com.example.sch_agro.ui.fragment.RelatoriosFragment;
 import com.example.sch_agro.ui.fragment.ViewFarmerFragment;
 import com.google.android.material.navigation.NavigationView;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+import java.text.DateFormat;
+import java.util.Objects;
+
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, DatePickerDialog.OnDateSetListener{
 
     private DrawerLayout drawerLayout;
     private Handler handler = new Handler();
@@ -42,6 +51,37 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Session session = new Session(this);
+        //TextView txtsession = findViewById(R.id.txtsession);
+
+        NavigationView nav_view= (NavigationView)findViewById(R.id.nav_view);//this is navigation view from my main xml where i call another xml file
+
+        View header = nav_view.getHeaderView(0);//set View header to nav_view first element (i guess)
+
+        TextView txtsession = (TextView)header.findViewById(R.id.textViewUsername);//now assign textview imeNaloga to header.id since we made View header.
+
+       // imeNaloga.setText(Ime);// And now just set text to that textview
+
+
+        if (!session.isLoggedIn()){
+            startActivity(new Intent(MainActivity.this, LoginActivity.class));
+            finish();
+        }
+        else {
+            String thisUser = session.getKeyUserId();
+            txtsession.setText(thisUser); //Assigning session userid to the textview to nav_header.
+        }
+        /*
+        String thisUser = session.getKeyUserId();
+        if (thisUser=="admin"){
+            Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
+            startActivity(intent);
+        }else Toast.makeText(MainActivity.this, "Somente Administratores podem criar utilizadores!", Toast.LENGTH_SHORT).show();
+
+
+         */
+
 
 
         Toolbar toolbar = findViewById(R.id.toolbar); //Ignore red line errors
@@ -83,10 +123,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         ApiService apiService = ApiClient.getClient().create(ApiService.class);
 
         // Instância do DataSyncManager com os DAOs e ApiService
-        DataSyncManager syncManager = new DataSyncManager(userDao, activityDao, trabalhadorDao, taskGebaDao, taskSanDao, apiService);
+       DataSyncManager syncManager = new DataSyncManager(userDao, activityDao, trabalhadorDao, taskGebaDao, taskSanDao, apiService);
 
         // Iniciar o monitoramento da rede e executar sincronização quando conectado
-        networkMonitor.startMonitoring(syncManager::syncData);
+       networkMonitor.startMonitoring(syncManager::syncData);
 
         // Agendar a sincronização a cada 15 minutos
         syncRunnable = new Runnable() {
@@ -103,7 +143,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
+        Session session = new Session(this); //calling session class that keeps de userid after user logsin
         int itemId = item.getItemId();
 
         if (itemId == R.id.nav_dashboard){
@@ -113,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     .replace(R.id.fragment_container, new DashboardFragment())
                     .commit();
 
-        } else if (itemId == R.id.nav_verprodutores) {
+        } else if (itemId == R.id.nav_vertrabalhadores) {
 
            // startActivity(new Intent(MainActivity.this, DisplayData.class));
 
@@ -131,7 +171,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             transaction.replace(R.id.fragment_container, addFragment);
             transaction.commit();
 
-        } else if (itemId == R.id.nav_addprodutores) {
+        } else if (itemId == R.id.nav_addtrabalhadores) {
             //Intent intent = new Intent(getApplicationContext(), UserEditGeba.class);
            // startActivity(intent);
             AddUserFragment adduserFragment = new AddUserFragment();
@@ -140,14 +180,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             transaction.commit();
 
         } else if (itemId == R.id.nav_logout) {
-
+            //Session session = new Session(this);
+            session.logoutUser();
             Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
             startActivity(intent);
-            finishAffinity(); // to clear the backstack, so that user cannot go back after logout
+            finishAffinity();
+            finish();// to clear the backstack, so that user cannot go back after logout
         }else if (itemId == R.id.nav_addUser) {
 
-            Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
-            startActivity(intent);
+            String thisUser = session.getKeyUserId();
+
+            if (Objects.equals(thisUser, "admin")||Objects.equals(thisUser, "RH")) {
+                Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
+                startActivity(intent);
+            }else Toast.makeText(MainActivity.this, "Somente Admin e RH pode criar utilizadores!", Toast.LENGTH_SHORT).show();
+
+
         }else if (itemId == R.id.nav_report) {
 
 
@@ -181,4 +229,36 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             super.onBackPressed();
         }
     }
+
+
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
+        super.onPointerCaptureChanged(hasCapture);
+    }
+
+    @Override
+    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+        Calendar mCalendar = Calendar.getInstance();
+        mCalendar.set(Calendar.YEAR, year);
+        mCalendar.set(Calendar.MONTH, month);
+        mCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+        AddUserFragment my = new AddUserFragment();
+        String selectedDate = DateFormat.getDateInstance(DateFormat.DATE_FIELD).format(mCalendar.getTime());
+       // idade.setText(selectedDate);
+        //TextView idade= (TextView)AddUserFragment.ImageViewToBy(R.id.idade);
+
+    }
+/*
+    @Override
+    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+        Calendar mCalendar = Calendar.getInstance();
+        mCalendar.set(Calendar.YEAR, year);
+        mCalendar.set(Calendar.MONTH, month);
+        mCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+        String selectedDate = DateFormat.getDateInstance(DateFormat.DATE_FIELD).format(mCalendar.getTime());
+        idade.setText(selectedDate);
+    }
+
+ */
 }

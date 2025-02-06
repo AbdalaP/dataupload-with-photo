@@ -70,8 +70,8 @@ public class Registo extends AppCompatActivity implements DatePickerDialog.OnDat
             public void onClick(View v) {
                 // Please note that use your package name here
                 com.example.sch_agro.util.DatePicker mDatePickerDialogFragment;
-                mDatePickerDialogFragment = new com.example.sch_agro.util.DatePicker();
-                mDatePickerDialogFragment.show(getSupportFragmentManager(), "DATE PICK");
+               // mDatePickerDialogFragment = new com.example.sch_agro.util.DatePicker();
+              //  mDatePickerDialogFragment.show(getSupportFragmentManager(), "DATE PICK");
             }
         });
 
@@ -88,7 +88,7 @@ public class Registo extends AppCompatActivity implements DatePickerDialog.OnDat
         insertData();
         spinner = findViewById(R.id.spinner1);
         spinner2 = findViewById(R.id.spinner2);
-      //  spinner.setOnItemSelectedListener(this);
+      // spinner.setOnItemSelectedListener(this);
        // spinner2.setOnItemSelectedListener(this);
         loadSpinnerData();
         loadSpinnerData2();
@@ -137,7 +137,7 @@ public class Registo extends AppCompatActivity implements DatePickerDialog.OnDat
     private void loadSpinnerData2() {
         ArrayAdapter adapter = ArrayAdapter.createFromResource(
                 this,
-                R.array.tipo_trabalahador,
+                R.array.tipo_actividade,
                 android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.select_dialog_item);
         //link the adapter to the spinner

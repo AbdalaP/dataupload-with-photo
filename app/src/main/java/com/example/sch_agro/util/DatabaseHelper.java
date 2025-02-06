@@ -16,7 +16,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String testimage ="testimage";
     public static final String trabalhadores ="trabalhadores";
     public static final String taskgeba ="taskgeba";
-    public static final String tasksan ="tasksan";
+    public static final String controle_actividade ="controle_actividade";
     public static final String users ="users";
     public static final String activity ="activity";
 
@@ -30,15 +30,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase MyDatabase) {
-        MyDatabase.execSQL("CREATE TABLE users (email TEXT PRIMARY KEY, password TEXT, isSynced BOOLEAN DEFAULT 0)");
+        MyDatabase.execSQL("CREATE TABLE users (userid INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
+                "nome TEXT,email TEXT, username TEXT, " +
+                "password TEXT,role TEXT," +
+                "user_date TEXT DEFAULT CURRENT_TIMESTAMP, isSynced BOOLEAN DEFAULT 0)");
 
         MyDatabase.execSQL("CREATE TABLE activity (" +
-                "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
+                "activity_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
                 "empresa TEXT NOT NULL, " +
                 "activity_name TEXT NOT NULL UNIQUE, " +
                 "person TEXT NOT NULL, " +
-                "target TEXT NOT NULL, " +
-                "registration_date TEXT DEFAULT CURRENT_TIMESTAMP, " +
+                "category_act TEXT NOT NULL, " +
+                "valor TEXT NOT NULL, " +
+                "userlog TEXT, " +
+                "act_date TEXT DEFAULT CURRENT_TIMESTAMP, " +
                 "isSynced BOOLEAN DEFAULT 0)");
 
         MyDatabase.execSQL("CREATE TABLE trabalhadores (" +
@@ -46,11 +51,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "empresa TEXT NOT NULL, " +
                 "nome TEXT NOT NULL, " +
                 "docid TEXT NOT NULL UNIQUE, " +
-                "idade TEXT NOT NULL, " +
+                "data_nascimento TEXT NOT NULL, " +
                 "genero TEXT NOT NULL, " +
-                "telefone TEXT, " +
-                "image BLOB, " +
-                "tipo TEXT NOT NULL, " +
+                "telefone TEXT NOT NULL, " +
+                "image BLOB NOT NULL, " +
+                "activity_id TEXT NOT NULL, " +
+                "userlog TEXT, " +
                 "registration_date TEXT DEFAULT CURRENT_TIMESTAMP, " +
                 "isSynced BOOLEAN DEFAULT 0)");
 
@@ -73,13 +79,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "user_id TEXT NOT NULL, " +
                 "isSynced BOOLEAN DEFAULT 0)");
 
-        MyDatabase.execSQL("CREATE TABLE tasksan (" +
-                "task_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
-                "name TEXT NOT NULL, " +
-                "act TEXT NOT NULL, " +
-                "feita TEXT NOT NULL, " +
-                "valorDia INT DEFAULT 193, " +
-                "image BLOB NOT NULL, " +
+        MyDatabase.execSQL("CREATE TABLE controle_actividade (" +
+                "ctrID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
+                "activity_id TEXT NOT NULL, " +
+                "trabalhador_id TEXT NOT NULL, " +
+                "target TEXT, " +
+                "faltas TEXT, " +
+                "userlog TEXT, " +
                 "task_date TEXT DEFAULT CURRENT_TIMESTAMP, " +
                 "user_id TEXT NOT NULL, " +
                 "isSynced BOOLEAN DEFAULT 0)");
@@ -87,13 +93,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase MyDB, int oldVersion, int newVersion) {
-        // Atualize as tabelas para incluir a coluna isSynced
-        MyDB.execSQL("ALTER TABLE users ADD COLUMN isSynced BOOLEAN DEFAULT 0");
-        MyDB.execSQL("ALTER TABLE activity ADD COLUMN isSynced BOOLEAN DEFAULT 0");
-        MyDB.execSQL("ALTER TABLE trabalhadores ADD COLUMN isSynced BOOLEAN DEFAULT 0");
-        MyDB.execSQL("ALTER TABLE testimage ADD COLUMN isSynced BOOLEAN DEFAULT 0");
-        MyDB.execSQL("ALTER TABLE taskgeba ADD COLUMN isSynced BOOLEAN DEFAULT 0");
-        MyDB.execSQL("ALTER TABLE tasksan ADD COLUMN isSynced BOOLEAN DEFAULT 0");
+        MyDB.execSQL("drop Table if exists users");
+        MyDB.execSQL("drop Table if exists activity");
+        MyDB.execSQL("drop Table if exists trabalhadores");
+        MyDB.execSQL("drop Table if exists testimage");
+        MyDB.execSQL("drop Table if exists taskgeba");
+        MyDB.execSQL("drop Table controle_actividade");
     }
 
 
@@ -172,11 +177,14 @@ public List<String> getAllLabels(){
 }
  */
 
-    public Boolean insertData(String email, String password) {
+    public Boolean insertData(String nome, String email,String username, String password,String role) {
         SQLiteDatabase MyDatabase = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
+        contentValues.put("nome", nome);
         contentValues.put("email", email);
+        contentValues.put("username", username);
         contentValues.put("password", password);
+        contentValues.put("role", role);
         long result = MyDatabase.insert("users", null, contentValues);
         if (result == -1) {
             return false;
@@ -194,10 +202,19 @@ public List<String> getAllLabels(){
             return false;
         }
     }
-
-    public Boolean checkEmailPassword(String email, String password) {
+    public Boolean checkusername(String username) {
         SQLiteDatabase MyDatabase = this.getWritableDatabase();
-        Cursor cursor = MyDatabase.rawQuery("Select * from users where email = ? and password = ?", new String[]{email, password});
+        Cursor cursor = MyDatabase.rawQuery("Select * from users where username = ?", new String[]{username});
+        if (cursor.getCount() > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public Boolean checkEmailPassword(String username, String password) {
+        SQLiteDatabase MyDatabase = this.getWritableDatabase();
+        Cursor cursor = MyDatabase.rawQuery("Select * from users where username = ? and password = ?", new String[]{username, password});
         if (cursor.getCount() > 0) {
             return true;
         } else {
@@ -206,13 +223,16 @@ public List<String> getAllLabels(){
     }
 
 
-    public Boolean insertactivity(String nome, String spinner,String person,String target) {
+
+    public Boolean insertactivity(String nome, String spinner,String spinner2,String person,String target,String userlogged) {
         SQLiteDatabase MyDatabase = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("empresa", spinner);
+        contentValues.put("category_act", spinner2);
         contentValues.put("activity_name", nome);
         contentValues.put("person", person);
-        contentValues.put("target", target);
+        contentValues.put("valor", target);
+        contentValues.put("userlog", userlogged);
         long result = MyDatabase.insert("activity", null, contentValues);
         if (result == -1) {
             return false;
@@ -259,6 +279,19 @@ public List<String> getAllLabels(){
             return false;
         }
     }
+
+    public void checkcategory(String username) {
+        SQLiteDatabase MyDatabase = this.getWritableDatabase();
+        Cursor cursor = MyDatabase.rawQuery("Select nome from users where username = ?", new String[]{username});
+        if (cursor.getCount() > 0) {
+           // return Boolean.valueOf(username);
+            checkcategory(username);
+        } else {
+          //  return false;
+        }
+    }
+
+
     public int getCount(String tableName) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM " + tableName, null);

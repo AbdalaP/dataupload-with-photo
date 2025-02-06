@@ -81,14 +81,14 @@
             android:drawablePadding="8dp" />
 
         <EditText
-            android:id="@+id/idade"
+            android:id="@+id/data_nascimento"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginTop="20dp"
             android:background="@drawable/lavender_border"
             android:drawableLeft="@drawable/baseline_date_range_24"
             android:drawablePadding="8dp"
-            android:hint="Seclecione data..."
+            android:hint="[Seclecione data...]"
             android:inputType="number"
             android:padding="8dp"
             android:textColor="@color/black"
@@ -140,12 +140,13 @@
             android:drawablePadding="8dp" />
 
         <Spinner
-            android:id="@+id/spinner2"
+            android:id="@+id/spinner_tipoAct"
             android:layout_width="fill_parent"
             android:layout_height="50dp"
             android:dropDownSelector="@color/black"
             android:layout_marginTop="15dp"
             android:background="@drawable/lavender_border"/>
+
 
         <Button
             android:id="@+id/Submit"
@@ -160,10 +161,10 @@
             android:textStyle="bold" />
 
         <Button
+            android:id="@+id/btn_edit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Inserir Actividade"
-            android:id="@+id/btn_edit"
             android:textSize="18sp"
             android:layout_marginTop="30dp"
             android:layout_marginLeft="70dp"

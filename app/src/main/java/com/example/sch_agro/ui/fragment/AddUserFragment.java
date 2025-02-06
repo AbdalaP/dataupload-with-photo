@@ -27,6 +27,7 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -37,24 +38,27 @@ import androidx.fragment.app.Fragment;
 import com.example.sch_agro.R;
 import com.example.sch_agro.databinding.FragmentAddUserBinding;
 import com.example.sch_agro.ui.activity.MainActivity;
+import com.example.sch_agro.ui.activity.Session;
 import com.example.sch_agro.util.DatabaseHelper;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.text.DateFormat;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link AddUserFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AddUserFragment extends Fragment implements AdapterView.OnItemSelectedListener{
+public class AddUserFragment extends Fragment implements AdapterView.OnItemSelectedListener, DatePickerDialog.OnDateSetListener{
 
     FragmentAddUserBinding binding;
     DatabaseHelper databaseHelper;
     SQLiteDatabase sqLiteDatabase;
-    EditText name,docid,idade,telefone,gender,id;
+    EditText name,docid,telefone,gender,id;
+    TextView data_nascimento;
     DatePickerDialog datePickerDialog;
-    Spinner spinner1,spinner2;
+    Spinner spinner1,spinner_tipoAct;
 
     String doid;
     Button Submit,edit;
@@ -62,7 +66,7 @@ public class AddUserFragment extends Fragment implements AdapterView.OnItemSelec
     RadioButton male,female;
     RadioGroup radioGroup;
 
-
+    TextView tvDate;
     String userGender = "";
     String checked;
 
@@ -124,31 +128,8 @@ public class AddUserFragment extends Fragment implements AdapterView.OnItemSelec
 
         }
 
-        // perform click event on edit text
-        idade.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // calender class's instance and get current date , month and year from calender
-                final Calendar c = Calendar.getInstance();
-                int mYear = c.get(Calendar.YEAR); // current year
-                int mMonth = c.get(Calendar.MONTH); // current month
-                int mDay = c.get(Calendar.DAY_OF_MONTH); // current day
-                // date picker dialog
-                datePickerDialog = new DatePickerDialog(AddUserFragment.super.getContext(), new DatePickerDialog.OnDateSetListener() {
 
-                    @Override
-                    public void onDateSet(DatePicker view, int year,
-                                          int monthOfYear, int dayOfMonth) {
-                        // set day of month , month and year value in the edit text
-                        idade.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
-
-                    }
-                }, mYear, mMonth, mDay);
-                datePickerDialog.show();
-            }
-        });
-
-
+ 
     }
 
     @Override
@@ -159,7 +140,7 @@ public class AddUserFragment extends Fragment implements AdapterView.OnItemSelec
        // binding= AddUserFragment.inflate(inflater, container, false);
 
 
-
+        Session session = new Session(AddUserFragment.super.requireActivity());
         binding= FragmentAddUserBinding.inflate(inflater, container, false);
 
         databaseHelper = new DatabaseHelper(super.getContext());
@@ -175,10 +156,10 @@ public class AddUserFragment extends Fragment implements AdapterView.OnItemSelec
                 sqLiteDatabase = databaseHelper.getWritableDatabase();
 
                 try {
-                if (name.length() == 0 || docid.length() == 0 || idade.length() == 0 || userGender.isEmpty() || telefone.length() == 0 || image.equals(ic_launcher)) {
+                if (name.length() == 0 || docid.length() == 0 || data_nascimento.length() == 0 || userGender.isEmpty() || telefone.length() == 0 || image.equals(ic_launcher)) {
 
                     Toast.makeText(AddUserFragment.super.getContext(), "All fields are mandatory", Toast.LENGTH_SHORT).show();
-                }else if(spinner2.getItemAtPosition(spinner2.getSelectedItemPosition()).toString().equals("[Tipo de Trabalhador…]")||spinner1.getItemAtPosition(spinner1.getSelectedItemPosition()).toString().equals("[Escolhe Empresa…]")){
+                }else if(spinner_tipoAct.getItemAtPosition(spinner_tipoAct.getSelectedItemPosition()).toString().equals("[Escolhe Actividade…]")||spinner1.getItemAtPosition(spinner1.getSelectedItemPosition()).toString().equals("[Escolhe Empresa…]")){
                     Toast.makeText(AddUserFragment.super.getContext(), "Empresa ou tipo de trabalhador nao seleciondo!", Toast.LENGTH_SHORT).show();
                 }
                 // image.callOnClick(); this function one day i have to investigate so that when submit button is clicked it opens camera and take image and save image together with the data.
@@ -189,16 +170,17 @@ public class AddUserFragment extends Fragment implements AdapterView.OnItemSelec
 
                         //   databaseHelper.RadioButtonClicked();
                         if (checdocid == false) {
-
+                            String thisUser = session.getKeyUserId();
                             ContentValues cv = new ContentValues();
                             cv.put("empresa", spinner1.getItemAtPosition(spinner1.getSelectedItemPosition()).toString());
                             cv.put("nome", name.getText().toString());
                             cv.put("docid", docid.getText().toString());
-                            cv.put("idade", idade.getText().toString());
+                            cv.put("data_nascimento", data_nascimento.getText().toString());
                             cv.put("genero", userGender.toString());
                             cv.put("telefone", telefone.getText().toString());
-                            cv.put("tipo", spinner2.getItemAtPosition(spinner2.getSelectedItemPosition()).toString());
+                            cv.put("activity_id", spinner_tipoAct.getItemAtPosition(spinner_tipoAct.getSelectedItemPosition()).toString());
                             cv.put("image", ImageViewToBy(image));
+                            cv.put("userlog",thisUser);
 
                             long result = sqLiteDatabase.insert("trabalhadores", null, cv);
 
@@ -214,11 +196,11 @@ public class AddUserFragment extends Fragment implements AdapterView.OnItemSelec
                                 startActivity(intent);
                                 name.setText("");
                                 docid.setText("");
-                                idade.setText("");
+                                data_nascimento.setText("");
                                 gender.setText("");
                                 telefone.setText("");
                                 spinner1.setSelection(0);
-                                spinner2.setSelection(0);
+                                spinner_tipoAct.setSelection(0);
                                 image.setImageResource(ic_launcher);
 
                             }
@@ -280,8 +262,10 @@ this funcion is only used in the useredit activity and not here.
  */
 
         return binding.getRoot();
+
+
     }
-    
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -292,10 +276,10 @@ this funcion is only used in the useredit activity and not here.
         //editData();
         //insertData();
         spinner1 = view.findViewById(R.id.spinner1);
-        spinner2 = view.findViewById(R.id.spinner2);
+        spinner_tipoAct = view.findViewById(R.id.spinner_tipoAct);
         name= (EditText)view.findViewById(R.id.nome);
         docid= (EditText)view.findViewById(R.id.docid);
-        idade= (EditText)view.findViewById(R.id.idade);
+        data_nascimento= (TextView) view.findViewById(R.id.data_nascimento);
         male = (RadioButton)view.findViewById(R.id.male);
         female = (RadioButton)view.findViewById(R.id.female);
         telefone= (EditText)view.findViewById(R.id.telefone);
@@ -305,7 +289,7 @@ this funcion is only used in the useredit activity and not here.
         Submit = (Button)view.findViewById(R.id.Submit);
         edit = (Button)view.findViewById(R.id.btn_edit);
         spinner1.setOnItemSelectedListener(this);
-        spinner2.setOnItemSelectedListener(this);
+        spinner_tipoAct.setOnItemSelectedListener(this);
        // loadSpinnerData(); only useful in editactivity
         //image= findViewById(R.id.edtimage);
 
@@ -344,6 +328,23 @@ this funcion is only used in the useredit activity and not here.
                 }
             }
         });
+/*
+        // perform click event on edit text
+        data_nascimento.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // Please note that use your package name here
+                com.example.sch_agro.util.DatePicker mDatePickerDialogFragment;
+                mDatePickerDialogFragment = new com.example.sch_agro.util.DatePicker();
+                mDatePickerDialogFragment.show(getParentFragmentManager(), "DATE PICK");
+
+
+
+            }
+        });
+
+ */
 
 
 
@@ -427,10 +428,10 @@ this funcion is only used in the useredit activity and not here.
 
 
 
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(requireActivity(),R.array.tipo_trabalahador, android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(requireActivity(),R.array.tipo_actividade, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.select_dialog_item);
-        spinner2.setAdapter(adapter);
-        spinner2.setOnItemSelectedListener(this);
+        spinner_tipoAct.setAdapter(adapter);
+        spinner_tipoAct.setOnItemSelectedListener(this);
 
     }
 
@@ -447,7 +448,7 @@ this funcion is only used in the useredit activity and not here.
             //spinner.setText(bundle.getString("act"));
             Submit.setVisibility(View.GONE);
             edit.setVisibility(View.VISIBLE);
-            idade.setVisibility(View.GONE);
+            data_nascimento.setVisibility(View.GONE);
             male.setVisibility(View.GONE);
             female.setVisibility(View.GONE);
             spinner1.setVisibility(View.VISIBLE);
@@ -513,6 +514,15 @@ this funcion is only used in the useredit activity and not here.
 
 
 
+    @Override
+    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+        Calendar mCalendar = Calendar.getInstance();
+        mCalendar.set(Calendar.YEAR, year);
+        mCalendar.set(Calendar.MONTH, month);
+        mCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+        String selectedDate = DateFormat.getDateInstance(DateFormat.DATE_FIELD).format(mCalendar.getTime());
+        data_nascimento.setText(selectedDate);
+    }
 
 
 //isto nao estava no primeiro ver bem
