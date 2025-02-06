@@ -5,7 +5,7 @@ import com.example.sch_agro.DTO.LoginDTO;
 import com.example.sch_agro.DTO.LoginResponseDTO;
 import com.example.sch_agro.Model.Activity;
 import com.example.sch_agro.Model.TaskGeba;
-import com.example.sch_agro.Model.TaskSan;
+import com.example.sch_agro.Model.ControleActividade;
 import com.example.sch_agro.Model.Trabalhadores;
 import com.example.sch_agro.Model.User;
 import com.example.sch_agro.util.ApiResponse;
@@ -21,7 +21,7 @@ public interface ApiService {
     Call<ApiResponse<LoginResponseDTO>> login(@Body LoginDTO user);
 
     // Endpoint para enviar dados de usuários
-    @POST("users/sync")
+    @POST("user/sync")
     Call<Void> sendUser(@Body User user);
 
     // Endpoint para enviar dados de atividades
@@ -37,8 +37,8 @@ public interface ApiService {
     Call<Void> sendTaskGeba(@Body TaskGeba taskGeba);
 
     // Endpoint para enviar dados de tarefas (TaskSan)
-    @POST("tasks/san/sync")
-    Call<Void> sendTaskSan(@Body TaskSan taskSan);
+    @POST("controle-atividades/sync")
+    Call<Void> sendControleAtividade(@Body ControleActividade controleActividade);
 
     @POST("atividades")
     Call<Void> creatActivity(@Body AtividadeDTO activity);

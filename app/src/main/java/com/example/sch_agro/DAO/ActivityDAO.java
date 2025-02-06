@@ -61,12 +61,14 @@ public class ActivityDAO {
                 Activity activity = new Activity();
 
                 // Preenchendo os campos da classe Activity
-                activity.setId(cursor.getInt(cursor.getColumnIndexOrThrow("id")));
+                activity.setId(cursor.getInt(cursor.getColumnIndexOrThrow("activity_id")));
                 activity.setEmpresa(cursor.getString(cursor.getColumnIndexOrThrow("empresa")));
-                activity.setActivityName(cursor.getString(cursor.getColumnIndexOrThrow("activity_name")));
-                activity.setPerson(cursor.getString(cursor.getColumnIndexOrThrow("person")));
-                activity.setTarget(cursor.getString(cursor.getColumnIndexOrThrow("target")));
-                activity.setRegistrationDate(new Date(cursor.getLong(cursor.getColumnIndexOrThrow("registration_date")))); // Convertendo timestamp para Date
+                activity.setDesignacao(cursor.getString(cursor.getColumnIndexOrThrow("activity_name")));
+                activity.setResponsavel(cursor.getString(cursor.getColumnIndexOrThrow("person")));
+                activity.setTipoValidacao(cursor.getString(cursor.getColumnIndexOrThrow("category_act")));
+                activity.setUser(cursor.getString(cursor.getColumnIndexOrThrow("userlog")));
+                activity.setValor(cursor.getDouble(cursor.getColumnIndexOrThrow("valor")));
+                activity.setRegistrationDate(new Date(cursor.getLong(cursor.getColumnIndexOrThrow("act_date")))); // Convertendo timestamp para Date
                 activity.setSynced(cursor.getInt(cursor.getColumnIndexOrThrow("isSynced")) == 1); // Convertendo de int para boolean
 
                 activityList.add(activity);
@@ -83,10 +85,12 @@ public class ActivityDAO {
 
         // Preenchendo os valores que serão atualizados
         values.put("empresa", activity.getEmpresa());
-        values.put("activity_name", activity.getActivityName());
-        values.put("person", activity.getPerson());
-        values.put("target", activity.getTarget());
-        values.put("registration_date", activity.getRegistrationDate().getTime()); // Convertendo Date para timestamp
+        values.put("activity_name", activity.getDesignacao());
+        values.put("person", activity.getResponsavel());
+        values.put("category_act", activity.getTipoValidacao());
+        values.put("valor", activity.getValor());
+        values.put("userlog", activity.getUser());
+        values.put("act_date", activity.getRegistrationDate().getTime()); // Convertendo Date para timestamp
         values.put("isSynced", activity.isSynced() ? 1 : 0); // Convertendo boolean para int
 
         // Condição de atualização (com base no ID da atividade)

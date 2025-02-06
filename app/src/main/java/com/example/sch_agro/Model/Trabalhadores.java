@@ -6,16 +6,17 @@ public class Trabalhadores {
     private int id;
     private String empresa;
     private String nome;
-    private String docid;
-    private String idade;
+    private String documentoIdentificacao;
+    private String dataNascimento;
     private String genero;
     private String telefone;
     private byte[] image;
-    private String tipo;
+    private String atividade;
     private Date registrationDate;
+
+    private String user;
     private boolean isSynced;
 
-    // Getters and Setters
     public int getId() {
         return id;
     }
@@ -40,20 +41,20 @@ public class Trabalhadores {
         this.nome = nome;
     }
 
-    public String getDocid() {
-        return docid;
+    public String getDocumentoIdentificacao() {
+        return documentoIdentificacao;
     }
 
-    public void setDocid(String docid) {
-        this.docid = docid;
+    public void setDocumentoIdentificacao(String documentoIdentificacao) {
+        this.documentoIdentificacao = documentoIdentificacao;
     }
 
-    public String getIdade() {
-        return idade;
+    public String getDataNascimento() {
+        return dataNascimento;
     }
 
-    public void setIdade(String idade) {
-        this.idade = idade;
+    public void setDataNascimento(String dataNascimento) {
+        this.dataNascimento = dataNascimento;
     }
 
     public String getGenero() {
@@ -80,12 +81,12 @@ public class Trabalhadores {
         this.image = image;
     }
 
-    public String getTipo() {
-        return tipo;
+    public String getAtividade() {
+        return atividade;
     }
 
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
+    public void setAtividade(String atividade) {
+        this.atividade = atividade;
     }
 
     public Date getRegistrationDate() {
@@ -94,6 +95,14 @@ public class Trabalhadores {
 
     public void setRegistrationDate(Date registrationDate) {
         this.registrationDate = registrationDate;
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
     }
 
     public boolean isSynced() {

@@ -2,15 +2,15 @@ package com.example.sch_agro.Services;
 
 import com.example.sch_agro.Configuration.ApiClient;
 import com.example.sch_agro.DAO.ActivityDAO;
+import com.example.sch_agro.DAO.ControleActividadeDAO;
 import com.example.sch_agro.DAO.TaskGebaDAO;
-import com.example.sch_agro.DAO.TaskSanDAO;
 import com.example.sch_agro.DAO.TrabalhadoresDAO;
 import com.example.sch_agro.DAO.UserDAO;
 import com.example.sch_agro.DTO.LoginDTO;
 import com.example.sch_agro.DTO.LoginResponseDTO;
 import com.example.sch_agro.Model.Activity;
 import com.example.sch_agro.Model.TaskGeba;
-import com.example.sch_agro.Model.TaskSan;
+import com.example.sch_agro.Model.ControleActividade;
 import com.example.sch_agro.Model.Trabalhadores;
 import com.example.sch_agro.Model.User;
 import com.example.sch_agro.util.ApiResponse;
@@ -29,15 +29,15 @@ public class DataSyncManager {
     private final ActivityDAO activityDao;
     private final TrabalhadoresDAO trabalhadoresDao;
     private final TaskGebaDAO taskGebaDao;
-    private final TaskSanDAO taskSanDao;
+    private final ControleActividadeDAO controleActividadeDAO;
     private final ApiService apiService;
 
-    public DataSyncManager(UserDAO usersDao, ActivityDAO activityDao, TrabalhadoresDAO trabalhadoresDao, TaskGebaDAO taskGebaDao, TaskSanDAO taskSanDao, ApiService apiService) {
+    public DataSyncManager(UserDAO usersDao, ActivityDAO activityDao, TrabalhadoresDAO trabalhadoresDao, TaskGebaDAO taskGebaDao, ControleActividadeDAO controleActividadeDAO, ApiService apiService) {
         this.usersDao = usersDao;
         this.activityDao = activityDao;
         this.trabalhadoresDao = trabalhadoresDao;
         this.taskGebaDao = taskGebaDao;
-        this.taskSanDao = taskSanDao;
+        this.controleActividadeDAO = controleActividadeDAO;
         this.apiService = apiService;
     }
 
@@ -66,8 +66,8 @@ public class DataSyncManager {
                         syncUsers();
                         syncActivities();
                         syncTrabalhadores();
-                        syncTaskGeba();
-                        syncTaskSan();
+//                        syncTaskGeba();
+                        syncControleAtividadea();
                     } else {
                         System.err.println("Erro no login: " + apiResponse.getMessage());
                     }
@@ -153,13 +153,13 @@ public class DataSyncManager {
                 });
     }
 
-    private void syncTaskSan() {
-        List<TaskSan> unsyncedTaskSan = taskSanDao.getUnsyncedTasks();
-        syncData(unsyncedTaskSan,
-                apiService::sendTaskSan,
+    private void syncControleAtividadea() {
+        List<ControleActividade> unsyncedControleActividade = controleActividadeDAO.getUnsyncedTasks();
+        syncData(unsyncedControleActividade,
+                apiService::sendControleAtividade,
                 task -> {
                     task.setSynced(true);
-                    taskSanDao.update(task);
+                    controleActividadeDAO.update(task);
                 });
     }
 

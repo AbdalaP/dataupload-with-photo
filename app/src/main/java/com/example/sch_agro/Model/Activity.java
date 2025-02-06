@@ -5,13 +5,15 @@ import java.util.Date;
 public class Activity {
     private int id;
     private String empresa;
-    private String activityName;
-    private String person;
-    private String target;
+    private String designacao;
+    private String responsavel;
+    private Double valor;
+    private String tipoValidacao;
     private Date registrationDate;
+
+    private String user;
     private boolean isSynced;
 
-    // Getters and Setters
     public int getId() {
         return id;
     }
@@ -28,28 +30,36 @@ public class Activity {
         this.empresa = empresa;
     }
 
-    public String getActivityName() {
-        return activityName;
+    public String getDesignacao() {
+        return designacao;
     }
 
-    public void setActivityName(String activityName) {
-        this.activityName = activityName;
+    public void setDesignacao(String designacao) {
+        this.designacao = designacao;
     }
 
-    public String getPerson() {
-        return person;
+    public String getResponsavel() {
+        return responsavel;
     }
 
-    public void setPerson(String person) {
-        this.person = person;
+    public void setResponsavel(String responsavel) {
+        this.responsavel = responsavel;
     }
 
-    public String getTarget() {
-        return target;
+    public Double getValor() {
+        return valor;
     }
 
-    public void setTarget(String target) {
-        this.target = target;
+    public void setValor(Double valor) {
+        this.valor = valor;
+    }
+
+    public String getTipoValidacao() {
+        return tipoValidacao;
+    }
+
+    public void setTipoValidacao(String tipoValidacao) {
+        this.tipoValidacao = tipoValidacao;
     }
 
     public Date getRegistrationDate() {
@@ -58,6 +68,14 @@ public class Activity {
 
     public void setRegistrationDate(Date registrationDate) {
         this.registrationDate = registrationDate;
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
     }
 
     public boolean isSynced() {

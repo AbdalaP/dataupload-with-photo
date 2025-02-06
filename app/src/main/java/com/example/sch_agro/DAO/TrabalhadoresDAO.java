@@ -67,12 +67,12 @@ public class TrabalhadoresDAO {
                 trabalhador.setId(cursor.getInt(cursor.getColumnIndexOrThrow("id")));
                 trabalhador.setEmpresa(cursor.getString(cursor.getColumnIndexOrThrow("empresa")));
                 trabalhador.setNome(cursor.getString(cursor.getColumnIndexOrThrow("nome")));
-                trabalhador.setDocid(cursor.getString(cursor.getColumnIndexOrThrow("docid")));
-                trabalhador.setIdade(cursor.getString(cursor.getColumnIndexOrThrow("idade")));
+                trabalhador.setDocumentoIdentificacao(cursor.getString(cursor.getColumnIndexOrThrow("docid")));
+                trabalhador.setDataNascimento(cursor.getString(cursor.getColumnIndexOrThrow("data_nascimento")));
                 trabalhador.setGenero(cursor.getString(cursor.getColumnIndexOrThrow("genero")));
                 trabalhador.setTelefone(cursor.getString(cursor.getColumnIndexOrThrow("telefone")));
                 trabalhador.setImage(cursor.getBlob(cursor.getColumnIndexOrThrow("image")));
-                trabalhador.setTipo(cursor.getString(cursor.getColumnIndexOrThrow("tipo")));
+                trabalhador.setAtividade(cursor.getString(cursor.getColumnIndexOrThrow("activity_id")));
                 trabalhador.setRegistrationDate(new Date(cursor.getLong(cursor.getColumnIndexOrThrow("registration_date")))); // Convertendo timestamp para Date
                 trabalhador.setSynced(cursor.getInt(cursor.getColumnIndexOrThrow("isSynced")) == 1); // Convertendo de int para boolean
 
@@ -91,11 +91,11 @@ public class TrabalhadoresDAO {
         // Preenchendo os valores que serão atualizados
         values.put("empresa", trabalhador.getEmpresa());
         values.put("nome", trabalhador.getNome());
-        values.put("docid", trabalhador.getDocid());
-        values.put("idade", trabalhador.getIdade());
+        values.put("docid", trabalhador.getDocumentoIdentificacao());
+        values.put("idade", trabalhador.getDataNascimento());
         values.put("genero", trabalhador.getGenero());
         values.put("telefone", trabalhador.getTelefone());
-        values.put("tipo", trabalhador.getTipo());
+        values.put("activity_id", trabalhador.getAtividade());
         values.put("image", trabalhador.getImage()); // Adicionando imagem (caso necessário)
         values.put("registration_date", trabalhador.getRegistrationDate().getTime()); // Convertendo Date para timestamp
         values.put("isSynced", trabalhador.isSynced() ? 1 : 0); // Convertendo boolean para int
