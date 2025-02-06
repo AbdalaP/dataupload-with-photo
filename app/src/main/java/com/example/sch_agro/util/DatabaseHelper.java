@@ -259,11 +259,15 @@ public List<String> getAllLabels(){
             return false;
         }
     }
-
-
-
-
-
-
-
+    public int getCount(String tableName) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM " + tableName, null);
+        int count = 0;
+        if (cursor.moveToFirst()) {
+            count = cursor.getInt(0);
+        }
+        cursor.close();
+        db.close();
+        return count;
+    }
 }

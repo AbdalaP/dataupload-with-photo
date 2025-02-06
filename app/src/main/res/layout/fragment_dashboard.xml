@@ -84,10 +84,11 @@
                                             android:src="@drawable/baseline_person_24" />
 
                                         <TextView
+                                            android:id="@+id/trabalhadores_count"
                                             android:layout_width="136dp"
                                             android:layout_height="39dp"
                                             android:background="@drawable/lavender_border"
-                                            android:hint="1"
+                                            android:hint=""
                                             android:textAlignment="center"
                                             android:textSize="20dp"
 
@@ -96,7 +97,7 @@
                                         <TextView
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:text="Registados (un)"
+                                            android:text="Registados"
                                             android:textAlignment="center"
                                             android:textSize="18dp" />
                                 </LinearLayout>
@@ -131,17 +132,18 @@
                                             android:src="@drawable/sisal_icon" />
 
                                         <TextView
+                                            android:id="@+id/atividades_count"
                                             android:layout_width="136dp"
                                             android:layout_height="39dp"
                                             android:background="@drawable/lavender_border"
-                                            android:hint="2"
+                                            android:hint=""
                                             android:textAlignment="center"
                                             android:textSize="20dp" />
 
                                         <TextView
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:text="Total (un)"
+                                            android:text="Registadas"
                                             android:textAlignment="center"
                                             android:textSize="18dp" />
                                 </LinearLayout>

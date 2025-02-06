@@ -101,7 +101,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         handler.post(syncRunnable);
     }
 
-
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
