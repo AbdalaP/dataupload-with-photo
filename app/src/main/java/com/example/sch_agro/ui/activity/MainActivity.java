@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.icu.util.Calendar;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
@@ -18,6 +19,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.sch_agro.Configuration.ApiClient;
 import com.example.sch_agro.Configuration.DatabaseInstance;
 import com.example.sch_agro.DAO.ActivityDAO;
 import com.example.sch_agro.DAO.TaskGebaDAO;
@@ -25,6 +27,8 @@ import com.example.sch_agro.DAO.TaskSanDAO;
 import com.example.sch_agro.DAO.TrabalhadoresDAO;
 import com.example.sch_agro.DAO.UserDAO;
 import com.example.sch_agro.R;
+import com.example.sch_agro.Services.ApiService;
+import com.example.sch_agro.Services.DataSyncManager;
 import com.example.sch_agro.Services.NetworkMonitor;
 import com.example.sch_agro.ui.fragment.AddActFragment;
 import com.example.sch_agro.ui.fragment.AddUserFragment;
@@ -39,6 +43,9 @@ import java.util.Objects;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, DatePickerDialog.OnDateSetListener{
 
     private DrawerLayout drawerLayout;
+    private Handler handler = new Handler();
+    private Runnable syncRunnable;
+    private static final long SYNC_INTERVAL = 15 * 60 * 1000; // 15 minutos em milissegundos
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,14 +120,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         TaskSanDAO taskSanDao = DatabaseInstance.getInstance(this).taskSanDao();
 
         // Instância da ApiService
-        //ApiService apiService = ApiClient.getClient().create(ApiService.class);
+        ApiService apiService = ApiClient.getClient().create(ApiService.class);
 
         // Instância do DataSyncManager com os DAOs e ApiService
-       // DataSyncManager syncManager = new DataSyncManager(userDao, activityDao, trabalhadorDao, taskGebaDao, taskSanDao, apiService);
+       DataSyncManager syncManager = new DataSyncManager(userDao, activityDao, trabalhadorDao, taskGebaDao, taskSanDao, apiService);
 
         // Iniciar o monitoramento da rede e executar sincronização quando conectado
-       // networkMonitor.startMonitoring(syncManager::syncData);
+       networkMonitor.startMonitoring(syncManager::syncData);
 
+        // Agendar a sincronização a cada 15 minutos
+        syncRunnable = new Runnable() {
+            @Override
+            public void run() {
+                networkMonitor.startMonitoring(syncManager::syncData);
+                handler.postDelayed(this, SYNC_INTERVAL);
+            }
+        };
+
+        // Iniciar a primeira sincronização
+        handler.post(syncRunnable);
     }
 
 
@@ -199,7 +217,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
  */
 
         }
-
 
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
