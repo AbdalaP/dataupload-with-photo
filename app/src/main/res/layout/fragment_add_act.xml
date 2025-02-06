@@ -110,6 +110,7 @@
             android:drawablePadding="8dp"
             android:hint="valor Por Pago"
             android:padding="8dp"
+            android:inputType="number"
             tools:ignore="ObsoleteLayoutParam" />
 
         <Button

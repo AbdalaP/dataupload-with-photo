@@ -2,42 +2,37 @@ package com.example.sch_agro.util;
 
 public class Model{
 
-    private String id;
+
     private byte[] proavatar;
-    private String username;
-    private String docid;
+    private String nome;
+    private String activity_id,trabalhador_id;
     private String telefone;
 
-
-
     //constructor
-    public Model(String id,String username,byte[]proavatar,String docid,String telefone){
-        this.id=id;
-        this.username =username;
-        this.telefone =telefone;
+    public Model(String trabalhador_id,String nome,byte[]proavatar,String activity_id){
+        this.trabalhador_id=trabalhador_id;
+        this.nome =nome;
         this.proavatar =proavatar;
-        this.docid =docid;
-
-
+        this.activity_id =activity_id;
     }
 
     //getter and setter method
 
 
-    public String getId() {
-        return id;
+    public String getTrabalhador_id() {
+        return trabalhador_id;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setTrabalhador_id(String trabalhador_id) {
+        this.trabalhador_id = trabalhador_id;
     }
 
-    public String getUsername() {
-        return username;
+    public String getnome() {
+        return nome;
     }
 
-    public void setDocid(String docid) {
-        this.docid = docid;
+    public void setActivity_id(String activity_id) {
+        this.activity_id = activity_id;
     }
     public String getTelefone() {
         return telefone;
@@ -46,12 +41,12 @@ public class Model{
     public void setTelefone(String telefone) {
         this.telefone = telefone;
     }
-    public String getDocid() {
-        return docid;
+    public String getActivity_id() {
+        return activity_id;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setNome(String nome) {
+        this.nome = nome;
     }
     public byte[] getProavatar() {
         return proavatar;

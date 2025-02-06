@@ -19,22 +19,25 @@ import com.example.sch_agro.R;
 import com.example.sch_agro.Services.ApiService;
 import com.example.sch_agro.databinding.FragmentAddActBinding;
 import com.example.sch_agro.ui.activity.MainActivity;
+import com.example.sch_agro.ui.activity.Session;
 import com.example.sch_agro.util.DatabaseHelper;
 
 
 public class AddActFragment extends Fragment implements AdapterView.OnItemSelectedListener {
 
     FragmentAddActBinding binding;
-
+    //EditText pessoa;
     ApiService apiService;
 
     DatabaseHelper databaseHelper;
     SQLiteDatabase sqLiteDatabase;
-    Spinner spinner1;
+    Spinner spinner1,spinner_tipo;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
+        Session session = new Session(AddActFragment.super.requireActivity());
 
         binding= FragmentAddActBinding.inflate(inflater, container, false);
         databaseHelper = new DatabaseHelper(super.getContext());
@@ -44,28 +47,32 @@ public class AddActFragment extends Fragment implements AdapterView.OnItemSelect
 
             @Override
             public void onClick(View v) {
-
+                String thisUser = session.getKeyUserId();
                 String spinner= spinner1.getItemAtPosition(spinner1.getSelectedItemPosition()).toString();
+                String spinner2= spinner_tipo.getItemAtPosition(spinner_tipo.getSelectedItemPosition()).toString();
                 String nome = binding.name.getText().toString();
                 String pessoa = binding.pessoaResponsavel.getText().toString();
                 String target = binding.target.getText().toString();
-                System.out.println(spinner);
+                //System.out.println(spinner);
                 if (nome.equals("") || pessoa.equals("")||target.equals("")) {
                     Toast.makeText(AddActFragment.super.getContext(), "All fields are mandatory", Toast.LENGTH_SHORT).show();
-                }else if(spinner1.getItemAtPosition(spinner1.getSelectedItemPosition()).toString().equals("[Escolhe Empresa…]")){
-                    Toast.makeText(AddActFragment.super.getContext(), "Por favor selectione a empresa!", Toast.LENGTH_SHORT).show();
+                }else if(spinner1.getItemAtPosition(spinner1.getSelectedItemPosition()).toString().equals("[Escolhe Empresa…]")||spinner_tipo.getItemAtPosition(spinner_tipo.getSelectedItemPosition()).toString().equals("[Escolhe Categoria…]")){
+                    Toast.makeText(AddActFragment.super.getContext(), "Empresa ou funcao de actividade nao seleciondo!", Toast.LENGTH_SHORT).show();
                 }
                 else {
                     Boolean checkactivity = databaseHelper.checkactivity(nome);
-                    if (checkactivity == false) {
-                        Boolean insert = databaseHelper.insertactivity(nome, spinner,pessoa,target);
-                        if (insert == true) {
-                            Toast.makeText(AddActFragment.super.getContext(), "Dados inseridos com Sucesso!", Toast.LENGTH_SHORT).show();
+                    if (!checkactivity) {
+                        Boolean insert = databaseHelper.insertactivity(nome,spinner,spinner2,pessoa,target, thisUser);
+                        if (insert) {
                             spinner1.setSelection(0);
-                            pessoa.equals("");
+                            spinner_tipo.setSelection(0);
                             nome.equals("");
                             target.equals("");
-                            Intent intent = new Intent(getContext(), MainActivity.class);
+                            pessoa.equals("");
+
+                            Toast.makeText(AddActFragment.super.getContext(), "Dados inseridos com Sucesso!", Toast.LENGTH_SHORT).show();
+
+                            Intent intent = new Intent(getContext(), MainActivity.class); //pode-se registar varias actividades nao precisa sair
                             startActivity(intent);
 /*
                             AtividadeDTO dto = new AtividadeDTO(
@@ -110,6 +117,7 @@ public class AddActFragment extends Fragment implements AdapterView.OnItemSelect
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         spinner1 = view.findViewById(R.id.spinner1);
+        spinner_tipo = view.findViewById(R.id.spinner_tipo);
         loadSpinnerData();
     }
 
@@ -118,6 +126,11 @@ public class AddActFragment extends Fragment implements AdapterView.OnItemSelect
         adapter1.setDropDownViewResource(android.R.layout.select_dialog_item);
         spinner1.setAdapter(adapter1);
         spinner1.setOnItemSelectedListener(this);
+
+        ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(requireActivity(), R.array.categoria, android.R.layout.simple_spinner_item);
+        adapter1.setDropDownViewResource(android.R.layout.select_dialog_item);
+        spinner_tipo.setAdapter(adapter2);
+        spinner_tipo.setOnItemSelectedListener(this);
 
     }
 

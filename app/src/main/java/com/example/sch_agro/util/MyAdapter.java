@@ -59,8 +59,8 @@ SQLiteDatabase sqLiteDatabase;
         byte[]image=model.getProavatar();
         Bitmap bitmap= BitmapFactory.decodeByteArray(image,0,image.length);
         holder.imageavatar.setImageBitmap(bitmap);
-        holder.txtid.setText(model.getId());
-        holder.txtname.setText(model.getUsername());
+        holder.txtid.setText(model.getTrabalhador_id());
+        holder.txtname.setText(model.getnome());
 
         //flow menu
         holder.flowmenu.setOnClickListener(new View.OnClickListener() {
@@ -75,11 +75,11 @@ SQLiteDatabase sqLiteDatabase;
                         if (itemId==R.id.edit_menuGeba){
                             Bundle bundle=new Bundle();
                             bundle.putByteArray("image",model.getProavatar());
-                            bundle.putString("name",model.getUsername());
-                            bundle.putString("docid",model.getDocid());
+                            bundle.putString("name",model.getnome());
+                            bundle.putString("docid",model.getActivity_id());
                             bundle.putString("telefone",model.getTelefone());
-                            bundle.putString("act",model.getId());
-                            bundle.putString("user_id",model.getId());
+                            //bundle.putString("act",model.getId());
+                            bundle.putString("trabalhador_id",model.getTrabalhador_id());
                             Intent intent=new Intent(context, UserEditGeba.class);
                             intent.putExtra("userdata",bundle);
                             context.startActivity(intent);
@@ -87,9 +87,9 @@ SQLiteDatabase sqLiteDatabase;
                         } else if (itemId==R.id.Edit_menuSan) {
                             Bundle bundle=new Bundle();
                             bundle.putByteArray("image",model.getProavatar());
-                            bundle.putString("name",model.getUsername());
-                            bundle.putString("act",model.getId());
-                            bundle.putString("user_id",model.getId());
+                            bundle.putString("name",model.getnome());
+                            bundle.putString("trabalhador_id",model.getTrabalhador_id());
+                            bundle.putString("activity_id",model.getActivity_id());
                             Intent intent=new Intent(context, UserEditSan.class);
                             intent.putExtra("userdata",bundle);
                             context.startActivity(intent);
@@ -132,7 +132,7 @@ SQLiteDatabase sqLiteDatabase;
            }else {
                String filterPattern = constraint.toString().toLowerCase().trim();
                for (Model models: modelArrayListFull){
-                   if (models.getUsername().toLowerCase().contains(filterPattern)||models.getId().toLowerCase().contains(filterPattern))
+                   if (models.getnome().toLowerCase().contains(filterPattern)||models.getTrabalhador_id().toLowerCase().contains(filterPattern))
                        filteredModelList.add(models);
                }
            }

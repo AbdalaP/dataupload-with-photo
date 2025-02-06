@@ -1,8 +1,9 @@
 package com.example.sch_agro.ui.activity;
 
 import static com.example.sch_agro.R.mipmap.ic_launcher;
-import static com.example.sch_agro.util.DatabaseHelper.tasksan;
+import static com.example.sch_agro.util.DatabaseHelper.controle_actividade;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -35,7 +36,7 @@ import java.util.List;
 
 public class UserEditSan extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
 
-   private EditText targets,feitas;
+  // private EditText target;
    private TextView totals;
    private TextWatcher text = null;
    Button button;
@@ -43,21 +44,27 @@ public class UserEditSan extends AppCompatActivity implements AdapterView.OnItem
 
     DatabaseHelper databaseHelper;
     SQLiteDatabase sqLiteDatabase;
-    EditText name,id,target,feita;
+    TextView name;
+    TextView activity_id;
+    EditText target;
+    TextView trabalhador_id;
     Spinner spinner;
 
 
     Button btn_edit;
+    Button btn_falta;
     ImageView image;
 
     public static final int CAMERA_REQUEST=100;
     public static final int STORAGE_REQUEST=101;
     String cameraPermission[];
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user_edit_san);
+        setContentView(R.layout.controlo_actividades);
 
+       // Session session = new Session(this);
         databaseHelper= new DatabaseHelper(this);
         findid();
         editData();
@@ -68,9 +75,10 @@ public class UserEditSan extends AppCompatActivity implements AdapterView.OnItem
 
 
        // targets = (EditText)findViewById(R.id.target);
-        feitas = (EditText)findViewById(R.id.feita);
+        target = (EditText)findViewById(R.id.target);
        // totals = (TextView)findViewById(R.id.total);
         button =(Button)findViewById(R.id.btn_edit);
+        button =(Button)findViewById(R.id.btn_falta);
 
 /*
     button.setOnClickListener(new View.OnClickListener() {
@@ -154,30 +162,60 @@ public class UserEditSan extends AppCompatActivity implements AdapterView.OnItem
     }
 
     private void insertData() {
+        Session session = new Session(this);
+        String act = activity_id.getText().toString();
+      //  databaseHelper.checkcategory(act); // por a funcionar depois para levar funcao no activity
+       // if (act!="Presença")
+if (act.equals("Motorista")||act.equals("Ajudante")){
+    View b = findViewById(R.id.btn_edit);
+    b.setVisibility(View.GONE);
+    View c = findViewById(R.id.target);
+    c.setVisibility(View.GONE);
 
+    View d = findViewById(R.id.btn_falta);
+    d.setVisibility(View.VISIBLE);
+   // insertDataMotorista(); //falta button
+
+}else {
+    View b = findViewById(R.id.btn_edit);
+    b.setVisibility(View.VISIBLE);
+    View c = findViewById(R.id.target);
+    c.setVisibility(View.VISIBLE);
+
+    View d = findViewById(R.id.btn_falta);
+    d.setVisibility(View.GONE);
+
+
+
+}
+       // Session session = new Session(this); //calling session class that keeps de userid after user logsin
         //////////button edit or inserting new data tasksan
         btn_edit.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
 
 
                 // sqLiteDatabase=databaseHelper.getReadableDatabase();
-
+                String thisUser = session.getKeyUserId();
                 ContentValues cv =new ContentValues();
-                cv.put("image",ImageViewToBy(image));//is diferente imageviewtobyte original.
-                cv.put("name",name.getText().toString());
-                cv.put("act",spinner.getItemAtPosition(spinner.getSelectedItemPosition()).toString());
-                cv.put("user_id",id.getText().toString());
+                //cv.put("image",ImageViewToBy(image));//is diferente imageviewtobyte original.
+               // cv.put("name",name.getText().toString());
+                cv.put("activity_id",name.getText().toString());
+               // cv.put("act",spinner.getItemAtPosition(spinner.getSelectedItemPosition()).toString());
+                cv.put("trabalhador_id",trabalhador_id.getText().toString());
                // cv.put("target",target.getText().toString());
-                cv.put("feita",feita.getText().toString());
+                cv.put("target",target.getText().toString());
+                //cv.put("faltas",feita.getText().toString());
+               // cv.put("faltas","True");
+                cv.put("userlog",thisUser);
 
                 sqLiteDatabase=databaseHelper.getWritableDatabase();
 
-                if (feita.length()==0) {
-                    Toast.makeText(UserEditSan.this, "Insira o Numero de bloco", Toast.LENGTH_SHORT).show();
+                if (target.length()==0) {
+                    Toast.makeText(UserEditSan.this, "Insira o Numero da meta diaria", Toast.LENGTH_SHORT).show();
                 }
-                if (spinner.getItemAtPosition(spinner.getSelectedItemPosition()).toString() != "[Escolhe Actividade...]") {
-                    long recedit = sqLiteDatabase.insert(tasksan, null, cv);
+                    long recedit = sqLiteDatabase.insert(controle_actividade, null, cv);
                     if (recedit != -1) {
                         Toast.makeText(UserEditSan.this, "Data Inserted successfully", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
@@ -190,14 +228,49 @@ public class UserEditSan extends AppCompatActivity implements AdapterView.OnItem
                         Toast.makeText(UserEditSan.this, "Something is wrong", Toast.LENGTH_SHORT).show();
                     }
 
-                } else {
-                    Toast.makeText(UserEditSan.this, "Escolhe Actividade", Toast.LENGTH_SHORT).show();
-                }
+            }
+        });
 
+        btn_falta.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                // sqLiteDatabase=databaseHelper.getReadableDatabase();
+
+                ContentValues cv =new ContentValues();
+                String thisUser = session.getKeyUserId();
+                //cv.put("image",ImageViewToBy(image));//is diferente imageviewtobyte original.
+                // cv.put("name",name.getText().toString());
+                cv.put("activity_id",name.getText().toString());
+                // cv.put("act",spinner.getItemAtPosition(spinner.getSelectedItemPosition()).toString());
+                cv.put("trabalhador_id",trabalhador_id.getText().toString());
+                // cv.put("target",target.getText().toString());
+                cv.put("target",target.getText().toString());
+                cv.put("faltas","True");
+                cv.put("userlog",thisUser);
+
+                sqLiteDatabase=databaseHelper.getWritableDatabase();
+
+
+                long recedit = sqLiteDatabase.insert(controle_actividade, null, cv);
+                if (recedit != -1) {
+                    Toast.makeText(UserEditSan.this, "Data Inserted successfully", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    startActivity(intent);
+                    image.setImageResource(ic_launcher);
+                    name.setText("");
+                    btn_falta.setVisibility(View.VISIBLE);
+
+                } else {
+                    Toast.makeText(UserEditSan.this, "Something is wrong", Toast.LENGTH_SHORT).show();
+                }
 
             }
         });
     }
+   // Session session = new Session(this); //calling session class that keeps de userid after user logsin
+
 
     private void editData() {
         if(getIntent().getBundleExtra("userdata")!=null){
@@ -205,13 +278,15 @@ public class UserEditSan extends AppCompatActivity implements AdapterView.OnItem
             byte[]bytes=bundle.getByteArray("image");
             Bitmap bitmap= BitmapFactory.decodeByteArray(bytes,0,bytes.length);
             image.setImageBitmap(bitmap);
-            id.setText(bundle.getString("user_id"));
+            trabalhador_id.setText(bundle.getString("trabalhador_id"));
+            activity_id.setText(bundle.getString("activity_id"));
             name.setText(bundle.getString("name"));
            // target.setText(bundle.getString("target"));
-            feita.setText(bundle.getString("feita"));
+            target.setText(bundle.getString("target"));
             name.setEnabled(false);
             image.setEnabled(false);
-            id.setEnabled(false);
+            trabalhador_id.setEnabled(false);
+            activity_id.setEnabled(false);
 
         }
 
@@ -248,7 +323,7 @@ public class UserEditSan extends AppCompatActivity implements AdapterView.OnItem
             image.setImageBitmap(bitmap);
 
         }else {
-            Toast.makeText(this, "something is shit", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "something went wrong", Toast.LENGTH_SHORT).show();
 
         }
 
@@ -259,13 +334,13 @@ public class UserEditSan extends AppCompatActivity implements AdapterView.OnItem
 
 
         //target = (EditText)findViewById(R.id.target);
-        name= (EditText)findViewById(R.id.nome);
-        feita= (EditText)findViewById(R.id.feita);
-
-        spinner= (Spinner) findViewById(R.id.spinner1);
-        id= (EditText)findViewById(R.id.user_id);
+        name= (TextView)findViewById(R.id.nome);
+        target= (EditText)findViewById(R.id.target);
+        activity_id= (TextView)findViewById(R.id.activity_id);
+        trabalhador_id= (TextView)findViewById(R.id.trabalhador_id);
         image = (ImageView)findViewById(R.id.edtimage);
         btn_edit = (Button)findViewById(R.id.btn_edit);
+        btn_falta = (Button)findViewById(R.id.btn_falta);
 
     }
 

@@ -10,21 +10,21 @@
             android:icon="@drawable/baseline_dashboard_24"
             android:title="Dashboard"/>
         <item
-            android:id="@+id/nav_verprodutores"
+            android:id="@+id/nav_vertrabalhadores"
             android:icon="@drawable/baseline_person_search_24"
-            android:title="Produtores"/>
+            android:title="Trabalhadores"/>
         <item
             android:id="@+id/nav_actividades"
             android:icon="@drawable/baseline_add_task_24"
-            android:title="Adicionar Actividade"/>
+            android:title="Adicionar Actividades"/>
         <item
-            android:id="@+id/nav_addprodutores"
+            android:id="@+id/nav_addtrabalhadores"
             android:icon="@drawable/person_add"
-            android:title="Produtores Novos"/>
+            android:title="Trabalhadores Novos"/>
         <item
             android:id="@+id/nav_report"
             android:icon="@drawable/baseline_report_24"
-            android:title="Relatório"/>
+            android:title="Relatórios"/>
     </group>
     <item
         android:title="">
@@ -36,7 +36,7 @@
             <item
                 android:id="@+id/nav_addUser"
                 android:icon="@drawable/baseline_person_add_alt_24"
-                android:title="Adicionar Tecnico"/>
+                android:title="Adicionar Utilizador"/>
         </menu>
     </item>
 </menu>

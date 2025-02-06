@@ -42,7 +42,7 @@ public class UserEditGeba extends AppCompatActivity implements AdapterView.OnIte
 
     DatabaseHelper databaseHelper;
     SQLiteDatabase sqLiteDatabase;
-    EditText name,docid,idade,telefone,gender,id,bloc;
+    EditText name,docid,data_nascimento,telefone,gender,id,bloc;
     Spinner spinner;
 
     String doid;
@@ -335,7 +335,7 @@ The upload image in only in the user registrarion this not useful
         bloc = (EditText)findViewById(R.id.bloc);
         name= (EditText)findViewById(R.id.nome);
         docid= (EditText)findViewById(R.id.docid);
-        idade= (EditText)findViewById(R.id.idade);
+        data_nascimento= (EditText)findViewById(R.id.data_nascimento);
         male = (RadioButton) findViewById(R.id.male);
         female = (RadioButton) findViewById(R.id.female);
         telefone= (EditText)findViewById(R.id.telefone);

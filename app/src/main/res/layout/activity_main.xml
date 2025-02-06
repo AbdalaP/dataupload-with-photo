@@ -16,6 +16,7 @@
         android:orientation="vertical">
 
         <androidx.appcompat.widget.Toolbar
+
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:id="@+id/toolbar"
@@ -40,5 +41,7 @@
         app:menu="@menu/nav_menu"
         app:itemIconTint="@color/lavender"
         app:itemTextColor="@color/lavender"/>
+
+
 
 </androidx.drawerlayout.widget.DrawerLayout>

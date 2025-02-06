@@ -118,12 +118,11 @@ public class ViewFarmerFragment extends Fragment {
         ArrayList<Model> models=new ArrayList<>();
         while (cursor.moveToNext()){
 
-            String id=cursor.getString(0);
+            String trabalhador_id=cursor.getString(0);
             String name=cursor.getString(2);
-            String docid=cursor.getString(3);
-            String telefone=cursor.getString(6);
+            String activity_id=cursor.getString(8);
             byte[]image=cursor.getBlob(7);
-            models.add(new Model(id,name,image,docid,telefone));
+            models.add(new Model(trabalhador_id,name,image,activity_id));
         }
         cursor.close();
         myAdapter=new MyAdapter(getContext(), R.layout.singledata,models,sqLiteDatabase);
