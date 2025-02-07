@@ -280,6 +280,22 @@ public List<String> getAllLabels(){
         }
     }
 
+    public Cursor populatespinner() {
+        try {
+            SQLiteDatabase MyDatabase = this.getWritableDatabase();
+            Cursor filas = MyDatabase.rawQuery("SELECT activity_name FROM  activity", null);
+            if (filas.moveToFirst()){
+                return filas;
+            }else {
+                return null;
+            }
+        } catch (Exception ex) {
+            return null;
+        }
+    }
+
+
+
     public void checkcategory(String username) {
         SQLiteDatabase MyDatabase = this.getWritableDatabase();
         Cursor cursor = MyDatabase.rawQuery("Select nome from users where username = ?", new String[]{username});
@@ -287,7 +303,7 @@ public List<String> getAllLabels(){
            // return Boolean.valueOf(username);
             checkcategory(username);
         } else {
-          //  return false;
+
         }
     }
 

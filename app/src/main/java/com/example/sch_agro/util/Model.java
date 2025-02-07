@@ -55,4 +55,6 @@ public class Model{
     public void setProavatar(byte[] proavatar) {
         this.proavatar = proavatar;
     }
+
+
 }

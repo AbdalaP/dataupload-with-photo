@@ -80,7 +80,7 @@
             android:textColor="@color/black"
             android:drawablePadding="8dp" />
 
-        <EditText
+        <TextView
             android:id="@+id/data_nascimento"
             android:layout_width="match_parent"
             android:layout_height="50dp"

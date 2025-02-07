@@ -42,6 +42,7 @@ import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, DatePickerDialog.OnDateSetListener{
 
+    TextView idade;
     private DrawerLayout drawerLayout;
     private Handler handler = new Handler();
     private Runnable syncRunnable;
@@ -52,10 +53,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        AddUserFragment add = new AddUserFragment();
         Session session = new Session(this);
         //TextView txtsession = findViewById(R.id.txtsession);
 
         NavigationView nav_view= (NavigationView)findViewById(R.id.nav_view);//this is navigation view from my main xml where i call another xml file
+
+       // TextView nav_videw= (TextView).
+
 
         View header = nav_view.getHeaderView(0);//set View header to nav_view first element (i guess)
 
@@ -237,7 +242,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void onPointerCaptureChanged(boolean hasCapture) {
         super.onPointerCaptureChanged(hasCapture);
     }
-
+/*
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
         Calendar mCalendar = Calendar.getInstance();
@@ -249,9 +254,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
        // idade.setText(selectedDate);
         //TextView idade= (TextView)AddUserFragment.ImageViewToBy(R.id.idade);
 
+
     }
-/*
-    @Override
+
+ */
+
+     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
         Calendar mCalendar = Calendar.getInstance();
         mCalendar.set(Calendar.YEAR, year);
@@ -260,6 +268,4 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         String selectedDate = DateFormat.getDateInstance(DateFormat.DATE_FIELD).format(mCalendar.getTime());
         idade.setText(selectedDate);
     }
-
- */
 }

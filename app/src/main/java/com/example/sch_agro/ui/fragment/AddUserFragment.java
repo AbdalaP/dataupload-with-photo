@@ -3,10 +3,12 @@ package com.example.sch_agro.ui.fragment;
 import static com.example.sch_agro.R.mipmap.ic_launcher;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -39,11 +41,14 @@ import com.example.sch_agro.R;
 import com.example.sch_agro.databinding.FragmentAddUserBinding;
 import com.example.sch_agro.ui.activity.MainActivity;
 import com.example.sch_agro.ui.activity.Session;
+import com.example.sch_agro.util.CatActividades;
 import com.example.sch_agro.util.DatabaseHelper;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.text.DateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -272,6 +277,10 @@ this funcion is only used in the useredit activity and not here.
         super.onViewCreated(view, savedInstanceState);
 
 
+        List<CatActividades> listaCategorias = llenarCategorias();
+        ArrayAdapter<CatActividades> arrayAdapter = new ArrayAdapter<>(getContext(), R.layout.spinner_dropdown_layout, listaCategorias);
+        spinner_tipoAct.setAdapter(arrayAdapter);
+
         databaseHelper= new DatabaseHelper(super.getContext());
         //editData();
         //insertData();
@@ -328,7 +337,7 @@ this funcion is only used in the useredit activity and not here.
                 }
             }
         });
-/*
+
         // perform click event on edit text
         data_nascimento.setOnClickListener(new View.OnClickListener() {
 
@@ -344,7 +353,7 @@ this funcion is only used in the useredit activity and not here.
             }
         });
 
- */
+
 
 
 
@@ -428,10 +437,10 @@ this funcion is only used in the useredit activity and not here.
 
 
 
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(requireActivity(),R.array.tipo_actividade, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.select_dialog_item);
-        spinner_tipoAct.setAdapter(adapter);
-        spinner_tipoAct.setOnItemSelectedListener(this);
+        //ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(requireActivity(),R.array.tipo_actividade, android.R.layout.simple_spinner_item);
+      //  adapter.setDropDownViewResource(android.R.layout.select_dialog_item);
+       // spinner_tipoAct.setAdapter(adapter);
+       // spinner_tipoAct.setOnItemSelectedListener(this);
 
     }
 
@@ -522,8 +531,27 @@ this funcion is only used in the useredit activity and not here.
         mCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
         String selectedDate = DateFormat.getDateInstance(DateFormat.DATE_FIELD).format(mCalendar.getTime());
         data_nascimento.setText(selectedDate);
+
     }
 
+    @SuppressLint("Range")
+    private List<CatActividades> llenarCategorias(){
+        List<CatActividades> listaCat = new ArrayList<>();
+        DatabaseHelper dbCategorias = new DatabaseHelper(AddUserFragment.super.getActivity());
+        Cursor cursor = dbCategorias.populatespinner();
+        if(cursor != null){
+            if(cursor.moveToFirst()){
+                do{
+                    CatActividades cat = new CatActividades();
+                    cat.setNombre(cursor.getString(cursor.getColumnIndex("activity_name")));
+                    listaCat.add(cat);
+                } while (cursor.moveToNext());
+            }
+        }
+        dbCategorias.close();
+
+        return listaCat;
+    }
 
 //isto nao estava no primeiro ver bem
 
