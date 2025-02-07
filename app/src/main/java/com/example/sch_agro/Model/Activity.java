@@ -1,5 +1,11 @@
 package com.example.sch_agro.Model;
 
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
+
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 
 public class Activity {
@@ -9,7 +15,7 @@ public class Activity {
     private String responsavel;
     private Double valor;
     private String tipoValidacao;
-    private Date registrationDate;
+    private String registrationDate;
 
     private String user;
     private boolean isSynced;
@@ -62,12 +68,21 @@ public class Activity {
         this.tipoValidacao = tipoValidacao;
     }
 
-    public Date getRegistrationDate() {
-        return registrationDate;
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public LocalDate getRegistrationDate() {
+        return LocalDate.parse(registrationDate);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void setRegistrationDate(Date registrationDate) {
-        this.registrationDate = registrationDate;
+        if (registrationDate != null) {
+            // Converte java.util.Date para java.time.LocalDate
+            this.registrationDate = registrationDate.toInstant()
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDate().toString();
+        } else {
+            this.registrationDate = null; // Ou defina um valor padrão, se necessário
+        }
     }
 
     public String getUser() {

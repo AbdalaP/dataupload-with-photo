@@ -4,6 +4,9 @@ import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
 
 import com.example.sch_agro.Model.Activity;
 import com.example.sch_agro.util.DatabaseHelper;
@@ -51,6 +54,7 @@ public class ActivityDAO {
         return activities;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public List<Activity> getUnsyncedActivities() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM activity WHERE isSynced = 0", null); // "isSynced = 0" para registros não sincronizados
@@ -84,17 +88,10 @@ public class ActivityDAO {
         ContentValues values = new ContentValues();
 
         // Preenchendo os valores que serão atualizados
-        values.put("empresa", activity.getEmpresa());
-        values.put("activity_name", activity.getDesignacao());
-        values.put("person", activity.getResponsavel());
-        values.put("category_act", activity.getTipoValidacao());
-        values.put("valor", activity.getValor());
-        values.put("userlog", activity.getUser());
-        values.put("act_date", activity.getRegistrationDate().getTime()); // Convertendo Date para timestamp
         values.put("isSynced", activity.isSynced() ? 1 : 0); // Convertendo boolean para int
 
         // Condição de atualização (com base no ID da atividade)
-        String whereClause = "id = ?";
+        String whereClause = "activity_id = ?";
         String[] whereArgs = {String.valueOf(activity.getId())};
 
         // Executando a atualização

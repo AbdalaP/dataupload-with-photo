@@ -201,7 +201,7 @@ if (act.equals("Motorista")||act.equals("Ajudante")){
                 ContentValues cv =new ContentValues();
                 //cv.put("image",ImageViewToBy(image));//is diferente imageviewtobyte original.
                // cv.put("name",name.getText().toString());
-                cv.put("activity_id",name.getText().toString());
+                cv.put("activity_id",activity_id.getText().toString());
                // cv.put("act",spinner.getItemAtPosition(spinner.getSelectedItemPosition()).toString());
                 cv.put("trabalhador_id",trabalhador_id.getText().toString());
                // cv.put("target",target.getText().toString());

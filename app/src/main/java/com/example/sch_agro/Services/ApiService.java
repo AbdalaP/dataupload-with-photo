@@ -10,9 +10,13 @@ import com.example.sch_agro.Model.Trabalhadores;
 import com.example.sch_agro.Model.User;
 import com.example.sch_agro.util.ApiResponse;
 
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 
 public interface ApiService {
 
@@ -25,12 +29,16 @@ public interface ApiService {
     Call<Void> sendUser(@Body User user);
 
     // Endpoint para enviar dados de atividades
-    @POST("activities/sync")
+    @POST("atividades/sync")
     Call<Void> sendActivity(@Body Activity activity);
 
     // Endpoint para enviar dados de trabalhadores
+    @Multipart
     @POST("trabalhadores/sync")
-    Call<Void> sendTrabalhador(@Body Trabalhadores trabalhador);
+    Call<Void> sendTrabalhador(
+            @Part("data") RequestBody data,
+            @Part MultipartBody.Part image
+    );
 
     // Endpoint para enviar dados de tarefas (TaskGeba)
     @POST("tasks/geba/sync")

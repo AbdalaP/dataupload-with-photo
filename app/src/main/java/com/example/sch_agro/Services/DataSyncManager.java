@@ -1,5 +1,9 @@
 package com.example.sch_agro.Services;
 
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
+
 import com.example.sch_agro.Configuration.ApiClient;
 import com.example.sch_agro.DAO.ActivityDAO;
 import com.example.sch_agro.DAO.ControleActividadeDAO;
@@ -14,13 +18,21 @@ import com.example.sch_agro.Model.ControleActividade;
 import com.example.sch_agro.Model.Trabalhadores;
 import com.example.sch_agro.Model.User;
 import com.example.sch_agro.util.ApiResponse;
+import com.google.gson.Gson;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -93,23 +105,44 @@ public class DataSyncManager {
     }
 
     private <T> void syncData(List<T> unsyncedData, Function<T, Call<Void>> sendFunction, Consumer<T> updateFunction) {
-        for (T item : unsyncedData) {
-            sendFunction.apply(item).enqueue(new Callback<Void>() {
-                @Override
-                public void onResponse(Call<Void> call, Response<Void> response) {
-                    if (response.isSuccessful()) {
-                        updateFunction.accept(item); // Atualiza como sincronizado
-                    } else {
-                        System.err.println("Erro ao sincronizar: " + response.message());
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<Void> call, Throwable t) {
-                    System.err.println("Erro na requisição: " + t.getMessage());
-                }
-            });
+        if (unsyncedData.isEmpty()) {
+            return;
         }
+
+        // Inicia a sincronização com o primeiro item
+        syncNext(new ArrayList<>(unsyncedData), 0, sendFunction, updateFunction);
+    }
+
+    private <T> void syncNext(List<T> unsyncedData, int currentIndex,
+                              Function<T, Call<Void>> sendFunction,
+                              Consumer<T> updateFunction) {
+        // Verifica se todos os itens foram processados
+        if (currentIndex >= unsyncedData.size()) {
+            return;
+        }
+
+        T currentItem = unsyncedData.get(currentIndex);
+        sendFunction.apply(currentItem).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    updateFunction.accept(currentItem);
+                    // Processa o próximo item apenas após o sucesso do atual
+                    syncNext(unsyncedData, currentIndex + 1, sendFunction, updateFunction);
+                } else {
+                    System.err.println("Erro ao sincronizar: " + response.message());
+                    // Em caso de erro, pode-se decidir continuar ou não com o próximo item
+                    syncNext(unsyncedData, currentIndex + 1, sendFunction, updateFunction);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                System.err.println("Erro na requisição: " + t.getMessage());
+                // Em caso de falha, pode-se decidir continuar ou não com o próximo item
+                syncNext(unsyncedData, currentIndex + 1, sendFunction, updateFunction);
+            }
+        });
     }
 
 
@@ -133,26 +166,75 @@ public class DataSyncManager {
                 });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void syncTrabalhadores() {
         List<Trabalhadores> unsyncedTrabalhadores = trabalhadoresDao.getUnsyncedTrabalhadores();
-        syncData(unsyncedTrabalhadores,
-                apiService::sendTrabalhador,
-                trabalhador -> {
+        if (unsyncedTrabalhadores.isEmpty()) {
+            return;
+        }
+
+        syncNext(new ArrayList<>(unsyncedTrabalhadores), 0);
+    }
+
+    private void syncNext(List<Trabalhadores> unsyncedTrabalhadores, int currentIndex) {
+        if (currentIndex >= unsyncedTrabalhadores.size()) {
+            return;
+        }
+
+        Trabalhadores trabalhador = unsyncedTrabalhadores.get(currentIndex);
+
+        // Converter trabalhador para JSON
+        String trabalhadorJson = new Gson().toJson(trabalhador);
+        RequestBody requestBody = RequestBody.create(
+                MediaType.parse("application/json"),
+                trabalhadorJson
+        );
+
+        // Criar MultipartBody.Part para a imagem se existir
+        MultipartBody.Part imagePart = null;
+        byte[] imageBytes = trabalhador.getImage();
+        if (imageBytes != null && imageBytes.length > 0) {
+            RequestBody imageRequestBody = RequestBody.create(
+                    MediaType.parse("image/*"),
+                    imageBytes
+            );
+            imagePart = MultipartBody.Part.createFormData("image",
+                    "image.jpg",  // Nome padrão para o arquivo
+                    imageRequestBody
+            );
+        }
+
+        // Criar RequestBody para o campo data
+        RequestBody dataRequestBody = RequestBody.create(
+                MediaType.parse("application/json"),
+                trabalhadorJson
+        );
+
+        apiService.sendTrabalhador(dataRequestBody, imagePart).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
                     trabalhador.setSynced(true);
                     trabalhadoresDao.update(trabalhador);
-                });
+                    // Processa o próximo item após sucesso
+                    syncNext(unsyncedTrabalhadores, currentIndex + 1);
+                } else {
+                    System.err.println("Erro ao sincronizar: " + response.message());
+                    // Decide se continua com o próximo em caso de erro
+                    syncNext(unsyncedTrabalhadores, currentIndex + 1);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                System.err.println("Erro na requisição: " + t.getMessage());
+                // Decide se continua com o próximo em caso de falha
+                syncNext(unsyncedTrabalhadores, currentIndex + 1);
+            }
+        });
     }
 
-    private void syncTaskGeba() {
-        List<TaskGeba> unsyncedTaskGeba = taskGebaDao.getUnsyncedTasks();
-        syncData(unsyncedTaskGeba,
-                apiService::sendTaskGeba,
-                task -> {
-                    task.setSynced(true);
-                    taskGebaDao.update(task);
-                });
-    }
-
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void syncControleAtividadea() {
         List<ControleActividade> unsyncedControleActividade = controleActividadeDAO.getUnsyncedTasks();
         syncData(unsyncedControleActividade,

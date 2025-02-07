@@ -4,6 +4,9 @@ import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
 
 import com.example.sch_agro.Model.ControleActividade;
 import com.example.sch_agro.util.DatabaseHelper;
@@ -45,6 +48,7 @@ public class ControleActividadeDAO {
         return tasks;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public List<com.example.sch_agro.Model.ControleActividade> getUnsyncedTasks() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM controle_actividade WHERE isSynced = 0", null); // "isSynced = 0" para booleano no SQLite

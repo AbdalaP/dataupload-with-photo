@@ -1,5 +1,11 @@
 package com.example.sch_agro.Model;
 
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
+
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 
 public class Trabalhadores {
@@ -12,7 +18,7 @@ public class Trabalhadores {
     private String telefone;
     private byte[] image;
     private String atividade;
-    private Date registrationDate;
+    private String registrationDate;
 
     private String user;
     private boolean isSynced;
@@ -54,7 +60,7 @@ public class Trabalhadores {
     }
 
     public void setDataNascimento(String dataNascimento) {
-        this.dataNascimento = dataNascimento;
+        this.dataNascimento = dataNascimento + "-01-01";
     }
 
     public String getGenero() {
@@ -62,7 +68,12 @@ public class Trabalhadores {
     }
 
     public void setGenero(String genero) {
-        this.genero = genero;
+        if(genero == "male"){
+            this.genero = "MASCULINO";
+        }
+        else {
+            this.genero = "FEMININO";
+        }
     }
 
     public String getTelefone() {
@@ -89,12 +100,21 @@ public class Trabalhadores {
         this.atividade = atividade;
     }
 
-    public Date getRegistrationDate() {
-        return registrationDate;
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public LocalDate getRegistrationDate() {
+        return LocalDate.parse(registrationDate);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void setRegistrationDate(Date registrationDate) {
-        this.registrationDate = registrationDate;
+        if (registrationDate != null) {
+            // Converte java.util.Date para java.time.LocalDate
+            this.registrationDate = registrationDate.toInstant()
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDate().toString();
+        } else {
+            this.registrationDate = null; // Ou defina um valor padrão, se necessário
+        }
     }
 
     public String getUser() {

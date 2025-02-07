@@ -87,7 +87,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "faltas TEXT, " +
                 "userlog TEXT, " +
                 "task_date TEXT DEFAULT CURRENT_TIMESTAMP, " +
-                "user_id TEXT NOT NULL, " +
                 "isSynced BOOLEAN DEFAULT 0)");
     }
 
