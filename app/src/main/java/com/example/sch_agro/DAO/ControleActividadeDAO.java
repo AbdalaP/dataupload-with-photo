@@ -4,18 +4,21 @@ import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 
-import com.example.sch_agro.Model.TaskSan;
+import androidx.annotation.RequiresApi;
+
+import com.example.sch_agro.Model.ControleActividade;
 import com.example.sch_agro.util.DatabaseHelper;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class TaskSanDAO {
+public class ControleActividadeDAO {
     private final DatabaseHelper dbHelper;
 
-    public TaskSanDAO(DatabaseHelper dbHelper) {
+    public ControleActividadeDAO(DatabaseHelper dbHelper) {
         this.dbHelper = dbHelper;
     }
 
@@ -28,13 +31,13 @@ public class TaskSanDAO {
         values.put("valorDia", valorDia);
         values.put("image", image);
         values.put("user_id", userId);
-        return db.insert("tasksan", null, values) != -1;
+        return db.insert("controle_actividade", null, values) != -1;
     }
 
     @SuppressLint("Range")
     public List<String> getAllTasks() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM tasksan", null);
+        Cursor cursor = db.rawQuery("SELECT * FROM controle_actividade", null);
         List<String> tasks = new ArrayList<>();
         if (cursor.moveToFirst()) {
             do {
@@ -45,24 +48,24 @@ public class TaskSanDAO {
         return tasks;
     }
 
-    public List<TaskSan> getUnsyncedTasks() {
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public List<com.example.sch_agro.Model.ControleActividade> getUnsyncedTasks() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM tasksan WHERE isSynced = 0", null); // "isSynced = 0" para booleano no SQLite
-        List<TaskSan> tasks = new ArrayList<>();
+        Cursor cursor = db.rawQuery("SELECT * FROM controle_actividade WHERE isSynced = 0", null); // "isSynced = 0" para booleano no SQLite
+        List<com.example.sch_agro.Model.ControleActividade> tasks = new ArrayList<>();
 
         if (cursor.moveToFirst()) {
             do {
-                TaskSan task = new TaskSan();
+                ControleActividade task = new ControleActividade();
 
                 // Preenchendo os campos da classe TaskSan
-                task.setTaskId(cursor.getInt(cursor.getColumnIndexOrThrow("taskId")));
-                task.setName(cursor.getString(cursor.getColumnIndexOrThrow("name")));
-                task.setAct(cursor.getString(cursor.getColumnIndexOrThrow("act")));
-                task.setFeita(cursor.getString(cursor.getColumnIndexOrThrow("feita")));
-                task.setValorDia(cursor.getInt(cursor.getColumnIndexOrThrow("valorDia")));
-                task.setImage(cursor.getBlob(cursor.getColumnIndexOrThrow("image")));
-                task.setTaskDate(new Date(cursor.getLong(cursor.getColumnIndexOrThrow("taskDate")))); // Convertendo timestamp para Date
-                task.setUserId(cursor.getString(cursor.getColumnIndexOrThrow("userId")));
+                task.setId(cursor.getInt(cursor.getColumnIndexOrThrow("ctrId")));
+                task.setAtividadeId(cursor.getString(cursor.getColumnIndexOrThrow("activity_id")));
+                task.setTrabalhadorId(cursor.getString(cursor.getColumnIndexOrThrow("trabalhador_id")));
+                task.setQuantidadeFeita(cursor.getInt(cursor.getColumnIndexOrThrow("target")));
+                task.setPresenca(cursor.getInt(cursor.getColumnIndexOrThrow("faltas")));
+                task.setUser(cursor.getString(cursor.getColumnIndexOrThrow("userlog")));
+                task.setTask_date(new Date(cursor.getLong(cursor.getColumnIndexOrThrow("task_date")))); // Convertendo timestamp para Date
                 task.setSynced(cursor.getInt(cursor.getColumnIndexOrThrow("isSynced")) == 1); // Convertendo de inteiro para booleano
 
                 tasks.add(task);
@@ -73,26 +76,19 @@ public class TaskSanDAO {
         return tasks;
     }
 
-    public void update(TaskSan task) {
+    public void update(ControleActividade task) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
 
         // Preenchendo os valores que serão atualizados
-        values.put("name", task.getName());
-        values.put("act", task.getAct());
-        values.put("feita", task.getFeita());
-        values.put("valorDia", task.getValorDia());
-        values.put("image", task.getImage()); // Adicionando imagem (caso necessário)
-        values.put("user_id", task.getUserId());
-        values.put("taskDate", task.getTaskDate().getTime()); // Convertendo Date para timestamp
         values.put("isSynced", task.isSynced() ? 1 : 0); // Convertendo boolean para int
 
         // Condição de atualização (com base no taskId do task)
-        String whereClause = "taskId = ?";
-        String[] whereArgs = {String.valueOf(task.getTaskId())};
+        String whereClause = "ctrID = ?";
+        String[] whereArgs = {String.valueOf(task.getId())};
 
         // Executando a atualização
-        int rowsUpdated = db.update("tasksan", values, whereClause, whereArgs);
+        int rowsUpdated = db.update("controle_actividade", values, whereClause, whereArgs);
 
         if (rowsUpdated > 0) {
             System.out.println("TaskSan atualizada com sucesso.");

@@ -2,11 +2,17 @@ package com.example.sch_agro.Model;
 
 public class User {
     private int id;
-    private String name;
+    private String nomeCompleto;
     private String email;
+    private String username;
+
+    private String password;
+
+    private String role;
+
+    private String user_date;
     private boolean isSynced;
 
-    // Getters e Setters
     public int getId() {
         return id;
     }
@@ -15,12 +21,12 @@ public class User {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getNomeCompleto() {
+        return nomeCompleto;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setNomeCompleto(String nomeCompleto) {
+        this.nomeCompleto = nomeCompleto;
     }
 
     public String getEmail() {
@@ -29,6 +35,38 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public String getUser_date() {
+        return user_date;
+    }
+
+    public void setUser_date(String user_date) {
+        this.user_date = user_date;
     }
 
     public boolean isSynced() {

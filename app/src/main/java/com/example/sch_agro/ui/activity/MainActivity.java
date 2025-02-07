@@ -23,7 +23,7 @@ import com.example.sch_agro.Configuration.ApiClient;
 import com.example.sch_agro.Configuration.DatabaseInstance;
 import com.example.sch_agro.DAO.ActivityDAO;
 import com.example.sch_agro.DAO.TaskGebaDAO;
-import com.example.sch_agro.DAO.TaskSanDAO;
+import com.example.sch_agro.DAO.ControleActividadeDAO;
 import com.example.sch_agro.DAO.TrabalhadoresDAO;
 import com.example.sch_agro.DAO.UserDAO;
 import com.example.sch_agro.R;
@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private DrawerLayout drawerLayout;
     private Handler handler = new Handler();
     private Runnable syncRunnable;
-    private static final long SYNC_INTERVAL = 15 * 60 * 1000; // 15 minutos em milissegundos
+    private static final long SYNC_INTERVAL = 3 * 60 * 1000; // 3 minutos em milissegundos
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,13 +122,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         ActivityDAO activityDao = DatabaseInstance.getInstance(this).activityDao();
         TrabalhadoresDAO trabalhadorDao = DatabaseInstance.getInstance(this).trabalhadorDao();
         TaskGebaDAO taskGebaDao = DatabaseInstance.getInstance(this).taskGebaDao();
-        TaskSanDAO taskSanDao = DatabaseInstance.getInstance(this).taskSanDao();
+        ControleActividadeDAO controleActividadeDAO = DatabaseInstance.getInstance(this).taskSanDao();
 
         // Instância da ApiService
         ApiService apiService = ApiClient.getClient().create(ApiService.class);
 
         // Instância do DataSyncManager com os DAOs e ApiService
-       DataSyncManager syncManager = new DataSyncManager(userDao, activityDao, trabalhadorDao, taskGebaDao, taskSanDao, apiService);
+       DataSyncManager syncManager = new DataSyncManager(userDao, activityDao, trabalhadorDao, taskGebaDao, controleActividadeDAO, apiService);
 
         // Iniciar o monitoramento da rede e executar sincronização quando conectado
        networkMonitor.startMonitoring(syncManager::syncData);
@@ -145,7 +145,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Iniciar a primeira sincronização
         handler.post(syncRunnable);
     }
-
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {

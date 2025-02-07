@@ -24,7 +24,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private Object Context;
     Context context;
     public DatabaseHelper(@Nullable Context context) {
-        super(context, "SchAgro.db", null, 1);
+        super(context, "SchAgro.db", null, 3);
 
     }
 
@@ -99,7 +99,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         MyDB.execSQL("drop Table if exists taskgeba");
         MyDB.execSQL("drop Table controle_actividade");
     }
-
 
 
 // Select All Data
@@ -308,4 +307,15 @@ public List<String> getAllLabels(){
     }
 
 
+    public int getCount(String tableName) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM " + tableName, null);
+        int count = 0;
+        if (cursor.moveToFirst()) {
+            count = cursor.getInt(0);
+        }
+        cursor.close();
+        db.close();
+        return count;
+    }
 }

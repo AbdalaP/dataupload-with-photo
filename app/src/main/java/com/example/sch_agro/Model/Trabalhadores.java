@@ -1,21 +1,28 @@
 package com.example.sch_agro.Model;
 
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
+
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 
 public class Trabalhadores {
     private int id;
     private String empresa;
     private String nome;
-    private String docid;
-    private String idade;
+    private String documentoIdentificacao;
+    private String dataNascimento;
     private String genero;
     private String telefone;
     private byte[] image;
-    private String tipo;
-    private Date registrationDate;
+    private String atividade;
+    private String registrationDate;
+
+    private String user;
     private boolean isSynced;
 
-    // Getters and Setters
     public int getId() {
         return id;
     }
@@ -40,20 +47,20 @@ public class Trabalhadores {
         this.nome = nome;
     }
 
-    public String getDocid() {
-        return docid;
+    public String getDocumentoIdentificacao() {
+        return documentoIdentificacao;
     }
 
-    public void setDocid(String docid) {
-        this.docid = docid;
+    public void setDocumentoIdentificacao(String documentoIdentificacao) {
+        this.documentoIdentificacao = documentoIdentificacao;
     }
 
-    public String getIdade() {
-        return idade;
+    public String getDataNascimento() {
+        return dataNascimento;
     }
 
-    public void setIdade(String idade) {
-        this.idade = idade;
+    public void setDataNascimento(String dataNascimento) {
+        this.dataNascimento = dataNascimento + "-01-01";
     }
 
     public String getGenero() {
@@ -61,7 +68,12 @@ public class Trabalhadores {
     }
 
     public void setGenero(String genero) {
-        this.genero = genero;
+        if(genero == "male"){
+            this.genero = "MASCULINO";
+        }
+        else {
+            this.genero = "FEMININO";
+        }
     }
 
     public String getTelefone() {
@@ -80,20 +92,37 @@ public class Trabalhadores {
         this.image = image;
     }
 
-    public String getTipo() {
-        return tipo;
+    public String getAtividade() {
+        return atividade;
     }
 
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
+    public void setAtividade(String atividade) {
+        this.atividade = atividade;
     }
 
-    public Date getRegistrationDate() {
-        return registrationDate;
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public LocalDate getRegistrationDate() {
+        return LocalDate.parse(registrationDate);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void setRegistrationDate(Date registrationDate) {
-        this.registrationDate = registrationDate;
+        if (registrationDate != null) {
+            // Converte java.util.Date para java.time.LocalDate
+            this.registrationDate = registrationDate.toInstant()
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDate().toString();
+        } else {
+            this.registrationDate = null; // Ou defina um valor padrão, se necessário
+        }
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
     }
 
     public boolean isSynced() {

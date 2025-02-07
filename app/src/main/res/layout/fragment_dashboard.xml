@@ -37,7 +37,6 @@
             android:text="         Trabalhadores                      Actividades"
             android:textSize="18sp"
             android:textStyle="bold"
-
             android:layout_below="@id/imageview"
             tools:ignore="HardcodedText" />
 
@@ -53,7 +52,6 @@
                     android:layout_marginTop="23dp"
                     android:columnCount="2"
                     android:rowCount="3">
-
 
                         <androidx.cardview.widget.CardView
                             android:id="@+id/produtores"
@@ -84,24 +82,23 @@
                                             android:src="@drawable/baseline_person_24" />
 
                                         <TextView
+                                            android:id="@+id/trabalhadores_count"
                                             android:layout_width="136dp"
                                             android:layout_height="39dp"
                                             android:background="@drawable/lavender_border"
-                                            android:hint="1"
+                                            android:hint=""
                                             android:textAlignment="center"
                                             android:textSize="20dp"
-
                                             tools:ignore="HardcodedText,SpUsage" />
 
                                         <TextView
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:text="Registados (un)"
+                                            android:text="Registados"
                                             android:textAlignment="center"
                                             android:textSize="18dp" />
                                 </LinearLayout>
                         </androidx.cardview.widget.CardView>
-
 
                         <androidx.cardview.widget.CardView
                             android:layout_width="wrap_content"
@@ -131,200 +128,279 @@
                                             android:src="@drawable/sisal_icon" />
 
                                         <TextView
+                                            android:id="@+id/atividades_count"
                                             android:layout_width="136dp"
                                             android:layout_height="39dp"
                                             android:background="@drawable/lavender_border"
-                                            android:hint="2"
+                                            android:hint=""
                                             android:textAlignment="center"
                                             android:textSize="20dp" />
 
                                         <TextView
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:text="Total (un)"
+                                            android:text="Registadas"
                                             android:textAlignment="center"
                                             android:textSize="18dp" />
                                 </LinearLayout>
                         </androidx.cardview.widget.CardView>
 
+<!--                        <androidx.cardview.widget.CardView-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_row="1"-->
+<!--                            android:layout_rowWeight="1"-->
+<!--                            android:layout_column="0"-->
+<!--                            android:layout_columnWeight="1"-->
+<!--                            android:layout_below="@id/imageview"-->
+<!--                            android:layout_gravity="fill"-->
+<!--                            android:layout_margin="8dp"-->
+<!--                            app:cardCornerRadius="8dp"-->
+<!--                            app:cardElevation="8dp">-->
+
+<!--                                <LinearLayout-->
+<!--                                    android:layout_width="wrap_content"-->
+<!--                                    android:layout_height="wrap_content"-->
+<!--                                    android:layout_gravity="center_vertical|center_horizontal"-->
+<!--                                    android:gravity="center"-->
+<!--                                    android:orientation="vertical">-->
+
+<!--                                        <ImageView-->
+<!--                                            android:id="@+id/xsx"-->
+<!--                                            android:layout_width="84dp"-->
+<!--                                            android:layout_height="56dp"-->
+<!--                                            android:contentDescription="TODO"-->
+<!--                                            android:src="@drawable/baseline_person_24" />-->
+
+<!--                                        <TextView-->
+<!--                                            android:layout_width="136dp"-->
+<!--                                            android:layout_height="39dp"-->
+<!--                                            android:background="@drawable/lavender_border"-->
+<!--                                            android:hint="Coming Soon!"-->
+<!--                                            android:textAlignment="center"-->
+<!--                                            android:textSize="20dp" />-->
+
+<!--                                        <TextView-->
+<!--                                            android:layout_width="wrap_content"-->
+<!--                                            android:layout_height="wrap_content"-->
+<!--                                            android:text="Sanzonais (un)"-->
+<!--                                            android:textAlignment="center"-->
+<!--                                            android:textSize="18dp" />-->
+<!--                                </LinearLayout>-->
+<!--                        </androidx.cardview.widget.CardView>-->
+
+<!--                        <androidx.cardview.widget.CardView-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_row="1"-->
+<!--                            android:layout_rowWeight="1"-->
+<!--                            android:layout_column="1"-->
+<!--                            android:layout_columnWeight="1"-->
+<!--                            android:layout_below="@id/imageview"-->
+<!--                            android:layout_gravity="fill"-->
+<!--                            android:layout_margin="8dp"-->
+<!--                            app:cardCornerRadius="8dp"-->
+<!--                            app:cardElevation="8dp">-->
+
+<!--                                <LinearLayout-->
+<!--                                    android:layout_width="wrap_content"-->
+<!--                                    android:layout_height="wrap_content"-->
+<!--                                    android:layout_gravity="center_vertical|center_horizontal"-->
+<!--                                    android:gravity="center"-->
+<!--                                    android:orientation="vertical">-->
+
+<!--                                        <ImageView-->
+<!--                                            android:id="@+id/xax"-->
+<!--                                            android:layout_width="84dp"-->
+<!--                                            android:layout_height="56dp"-->
+<!--                                            android:contentDescription="TODO"-->
+<!--                                            android:src="@drawable/sisal_icon" />-->
+
+<!--                                        <TextView-->
+<!--                                            android:layout_width="136dp"-->
+<!--                                            android:layout_height="39dp"-->
+<!--                                            android:background="@drawable/lavender_border"-->
+<!--                                            android:hint="Coming Soon!"-->
+<!--                                            android:textAlignment="center"-->
+<!--                                            android:textSize="20dp" />-->
+
+<!--                                        <TextView-->
+<!--                                            android:layout_width="wrap_content"-->
+<!--                                            android:layout_height="wrap_content"-->
+<!--                                            android:text="Realizadas (un)"-->
+<!--                                            android:textAlignment="center"-->
+<!--                                            android:textSize="18dp" />-->
+<!--                                </LinearLayout>-->
+<!--                        </androidx.cardview.widget.CardView>-->
+
+                        <!-- Card largo com tabela -->
                         <androidx.cardview.widget.CardView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_row="1"
-                            android:layout_rowWeight="1"
-                            android:layout_column="0"
-                            android:layout_columnWeight="1"
-                            android:layout_below="@id/imageview"
-                            android:layout_gravity="fill"
-                            android:layout_margin="8dp"
-                            app:cardCornerRadius="8dp"
-                            app:cardElevation="8dp">
-
-                                <LinearLayout
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center_vertical|center_horizontal"
-                                    android:gravity="center"
-                                    android:orientation="vertical">
-
-                                        <ImageView
-                                            android:id="@+id/xsx"
-                                            android:layout_width="84dp"
-                                            android:layout_height="56dp"
-                                            android:contentDescription="TODO"
-                                            android:src="@drawable/baseline_person_24" />
-
-                                        <TextView
-                                            android:layout_width="136dp"
-                                            android:layout_height="39dp"
-                                            android:background="@drawable/lavender_border"
-                                            android:hint="Coming Soon!"
-                                            android:textAlignment="center"
-                                            android:textSize="20dp" />
-
-                                        <TextView
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:text="Sanzonais (un)"
-                                            android:textAlignment="center"
-                                            android:textSize="18dp" />
-                                </LinearLayout>
-                        </androidx.cardview.widget.CardView>
-
-                        <androidx.cardview.widget.CardView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_row="1"
-                            android:layout_rowWeight="1"
-                            android:layout_column="1"
-                            android:layout_columnWeight="1"
-                            android:layout_below="@id/imageview"
-                            android:layout_gravity="fill"
-                            android:layout_margin="8dp"
-                            app:cardCornerRadius="8dp"
-                            app:cardElevation="8dp">
-
-                                <LinearLayout
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center_vertical|center_horizontal"
-                                    android:gravity="center"
-                                    android:orientation="vertical">
-
-                                        <ImageView
-                                            android:id="@+id/xax"
-                                            android:layout_width="84dp"
-                                            android:layout_height="56dp"
-                                            android:contentDescription="TODO"
-                                            android:src="@drawable/sisal_icon" />
-
-                                        <TextView
-                                            android:layout_width="136dp"
-                                            android:layout_height="39dp"
-                                            android:background="@drawable/lavender_border"
-                                            android:hint="Coming Soon!"
-                                            android:textAlignment="center"
-                                            android:textSize="20dp" />
-
-                                        <TextView
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:text="Realizadas (un)"
-                                            android:textAlignment="center"
-                                            android:textSize="18dp" />
-                                </LinearLayout>
-                        </androidx.cardview.widget.CardView>
-
-                        <!--  Hidden two more cards in here -->
-                        <androidx.cardview.widget.CardView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_row="2"
-                            android:layout_rowWeight="1"
-                            android:layout_column="0"
-                            android:layout_columnWeight="1"
-                            android:layout_below="@id/imageview"
-                            android:layout_gravity="fill"
-                            android:layout_margin="8dp"
-                            app:cardCornerRadius="8dp"
-                            app:cardElevation="8dp">
-
-                                <LinearLayout
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center_vertical|center_horizontal"
-                                    android:gravity="center"
-                                    android:orientation="vertical">
-
-                                        <ImageView
-                                            android:id="@+id/xasx"
-                                            android:layout_width="84dp"
-                                            android:layout_height="56dp"
-                                            android:contentDescription="TODO"
-                                            android:src="@drawable/baseline_person_24" />
-
-                                        <TextView
-                                            android:layout_width="136dp"
-                                            android:layout_height="39dp"
-                                            android:background="@drawable/lavender_border"
-                                            android:hint="Coming Soon!"
-                                            android:textAlignment="center"
-                                            android:textSize="20dp" />
-
-                                        <TextView
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:text="Permanentes (un)"
-                                            android:textAlignment="center"
-                                            android:textSize="18dp" />
-                                </LinearLayout>
-                        </androidx.cardview.widget.CardView>
-
-                        <androidx.cardview.widget.CardView
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_row="2"
                             android:layout_rowWeight="1"
-                            android:layout_column="1"
-                            android:layout_columnWeight="1"
-                            android:layout_below="@id/imageview"
+                            android:layout_column="0"
+                            android:layout_columnSpan="2"
                             android:layout_gravity="fill"
                             android:layout_margin="8dp"
+                            android:color="@color/lavender"
                             app:cardCornerRadius="8dp"
                             app:cardElevation="8dp">
 
                                 <LinearLayout
-                                    android:layout_width="wrap_content"
+                                    android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_gravity="center_vertical|center_horizontal"
-                                    android:gravity="center"
-                                    android:orientation="vertical">
+                                    android:orientation="vertical"
+                                    android:padding="16dp">
 
-                                        <ImageView
-                                            android:id="@+id/aaxx"
-                                            android:layout_width="84dp"
-                                            android:layout_height="56dp"
-                                            android:contentDescription="TODO"
-                                            android:src="@drawable/sisal_icon" />
-
-                                        <TextView
-                                            android:layout_width="136dp"
-                                            android:layout_height="39dp"
-                                            android:background="@drawable/lavender_border"
-                                            android:hint="Coming Soon!"
-                                            android:textAlignment="center"
-                                            android:textSize="20dp" />
-
-                                        <TextView
-                                            android:layout_width="wrap_content"
+                                        <TableLayout
+                                            android:layout_width="match_parent"
                                             android:layout_height="wrap_content"
-                                            android:text="Total Pago (mzn)"
-                                            android:textAlignment="center"
-                                            android:textSize="18dp" />
+                                            android:stretchColumns="*">
+
+                                                <TableRow
+                                                    android:layout_width="match_parent"
+                                                    android:layout_height="wrap_content">
+
+                                                        <TextView
+                                                            android:layout_width="0dp"
+                                                            android:layout_height="wrap_content"
+                                                            android:layout_weight="1"
+                                                            android:text="Categoria"
+                                                            android:textSize="18sp"
+                                                            android:textStyle="bold"
+                                                            android:padding="8dp"
+                                                            android:gravity="center" />
+
+                                                        <TextView
+                                                            android:layout_width="0dp"
+                                                            android:layout_height="wrap_content"
+                                                            android:layout_weight="1"
+                                                            android:text="Quantidade"
+                                                            android:textSize="18sp"
+                                                            android:textStyle="bold"
+                                                            android:padding="8dp"
+                                                            android:gravity="center" />
+                                                </TableRow>
+
+                                                <View
+                                                    android:layout_width="match_parent"
+                                                    android:layout_height="2dp"
+                                                    android:background="@color/lavender"/>
+
+                                                <TableRow
+                                                    android:layout_width="match_parent"
+                                                    android:layout_height="wrap_content">
+
+                                                        <TextView
+                                                            android:layout_width="0dp"
+                                                            android:layout_height="wrap_content"
+                                                            android:layout_weight="1"
+                                                            android:text="Fabrica"
+                                                            android:textSize="16sp"
+                                                            android:padding="8dp"
+                                                            android:gravity="center" />
+
+                                                        <TextView
+                                                            android:layout_width="0dp"
+                                                            android:layout_height="wrap_content"
+                                                            android:layout_weight="1"
+                                                            android:text="16"
+                                                            android:textSize="16sp"
+                                                            android:padding="8dp"
+                                                            android:gravity="center" />
+                                                </TableRow>
+
+                                                <View
+                                                    android:layout_width="match_parent"
+                                                    android:layout_height="2dp"
+                                                    android:background="@color/lavender"/>
+
+                                                <TableRow
+                                                    android:layout_width="match_parent"
+                                                    android:layout_height="wrap_content">
+
+                                                        <TextView
+                                                            android:layout_width="0dp"
+                                                            android:layout_height="wrap_content"
+                                                            android:layout_weight="1"
+                                                            android:text="Desensaque"
+                                                            android:textSize="16sp"
+                                                            android:padding="8dp"
+                                                            android:gravity="center" />
+
+                                                        <TextView
+                                                            android:layout_width="0dp"
+                                                            android:layout_height="wrap_content"
+                                                            android:layout_weight="1"
+                                                            android:text="24"
+                                                            android:textSize="16sp"
+                                                            android:padding="8dp"
+                                                            android:gravity="center" />
+                                                </TableRow>
+
+                                                <View
+                                                    android:layout_width="match_parent"
+                                                    android:layout_height="2dp"
+                                                    android:background="@color/lavender"/>
+
+                                                <TableRow
+                                                    android:layout_width="match_parent"
+                                                    android:layout_height="wrap_content">
+
+                                                        <TextView
+                                                            android:layout_width="0dp"
+                                                            android:layout_height="wrap_content"
+                                                            android:layout_weight="1"
+                                                            android:text="Motorista"
+                                                            android:textSize="16sp"
+                                                            android:padding="8dp"
+                                                            android:gravity="center" />
+
+                                                        <TextView
+                                                            android:layout_width="0dp"
+                                                            android:layout_height="wrap_content"
+                                                            android:layout_weight="1"
+                                                            android:text="8"
+                                                            android:textSize="16sp"
+                                                            android:padding="8dp"
+                                                            android:gravity="center" />
+                                                </TableRow>
+
+                                                <View
+                                                    android:layout_width="match_parent"
+                                                    android:layout_height="2dp"
+                                                    android:background="@color/lavender"/>
+
+                                                <TableRow
+                                                    android:layout_width="match_parent"
+                                                    android:layout_height="wrap_content">
+
+                                                        <TextView
+                                                            android:layout_width="0dp"
+                                                            android:layout_height="wrap_content"
+                                                            android:layout_weight="1"
+                                                            android:text="Servente"
+                                                            android:textSize="16sp"
+                                                            android:padding="8dp"
+                                                            android:gravity="center" />
+
+                                                        <TextView
+                                                            android:layout_width="0dp"
+                                                            android:layout_height="wrap_content"
+                                                            android:layout_weight="1"
+                                                            android:text="30"
+                                                            android:textSize="16sp"
+                                                            android:padding="8dp"
+                                                            android:gravity="center" />
+                                                </TableRow>
+                                                <View
+                                                    android:layout_width="match_parent"
+                                                    android:layout_height="2dp"
+                                                    android:background="@color/lavender"/>
+                                        </TableLayout>
                                 </LinearLayout>
                         </androidx.cardview.widget.CardView>
-
-
                 </GridLayout>
         </ScrollView>
 </RelativeLayout>

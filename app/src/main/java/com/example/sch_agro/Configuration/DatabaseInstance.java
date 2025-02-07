@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.example.sch_agro.DAO.ActivityDAO;
 import com.example.sch_agro.DAO.TaskGebaDAO;
-import com.example.sch_agro.DAO.TaskSanDAO;
+import com.example.sch_agro.DAO.ControleActividadeDAO;
 import com.example.sch_agro.DAO.TrabalhadoresDAO;
 import com.example.sch_agro.DAO.UserDAO;
 import com.example.sch_agro.util.DatabaseHelper;
@@ -45,8 +45,8 @@ public class DatabaseInstance {
         return new TaskGebaDAO(databaseHelper);
     }
 
-    public TaskSanDAO taskSanDao() {
-        return new TaskSanDAO(databaseHelper);
+    public ControleActividadeDAO taskSanDao() {
+        return new ControleActividadeDAO(databaseHelper);
     }
 }
 

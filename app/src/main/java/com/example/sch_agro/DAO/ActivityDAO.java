@@ -4,6 +4,9 @@ import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
 
 import com.example.sch_agro.Model.Activity;
 import com.example.sch_agro.util.DatabaseHelper;
@@ -51,6 +54,7 @@ public class ActivityDAO {
         return activities;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public List<Activity> getUnsyncedActivities() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM activity WHERE isSynced = 0", null); // "isSynced = 0" para registros não sincronizados
@@ -61,12 +65,14 @@ public class ActivityDAO {
                 Activity activity = new Activity();
 
                 // Preenchendo os campos da classe Activity
-                activity.setId(cursor.getInt(cursor.getColumnIndexOrThrow("id")));
+                activity.setId(cursor.getInt(cursor.getColumnIndexOrThrow("activity_id")));
                 activity.setEmpresa(cursor.getString(cursor.getColumnIndexOrThrow("empresa")));
-                activity.setActivityName(cursor.getString(cursor.getColumnIndexOrThrow("activity_name")));
-                activity.setPerson(cursor.getString(cursor.getColumnIndexOrThrow("person")));
-                activity.setTarget(cursor.getString(cursor.getColumnIndexOrThrow("target")));
-                activity.setRegistrationDate(new Date(cursor.getLong(cursor.getColumnIndexOrThrow("registration_date")))); // Convertendo timestamp para Date
+                activity.setDesignacao(cursor.getString(cursor.getColumnIndexOrThrow("activity_name")));
+                activity.setResponsavel(cursor.getString(cursor.getColumnIndexOrThrow("person")));
+                activity.setTipoValidacao(cursor.getString(cursor.getColumnIndexOrThrow("category_act")));
+                activity.setUser(cursor.getString(cursor.getColumnIndexOrThrow("userlog")));
+                activity.setValor(cursor.getDouble(cursor.getColumnIndexOrThrow("valor")));
+                activity.setRegistrationDate(new Date(cursor.getLong(cursor.getColumnIndexOrThrow("act_date")))); // Convertendo timestamp para Date
                 activity.setSynced(cursor.getInt(cursor.getColumnIndexOrThrow("isSynced")) == 1); // Convertendo de int para boolean
 
                 activityList.add(activity);
@@ -82,15 +88,10 @@ public class ActivityDAO {
         ContentValues values = new ContentValues();
 
         // Preenchendo os valores que serão atualizados
-        values.put("empresa", activity.getEmpresa());
-        values.put("activity_name", activity.getActivityName());
-        values.put("person", activity.getPerson());
-        values.put("target", activity.getTarget());
-        values.put("registration_date", activity.getRegistrationDate().getTime()); // Convertendo Date para timestamp
         values.put("isSynced", activity.isSynced() ? 1 : 0); // Convertendo boolean para int
 
         // Condição de atualização (com base no ID da atividade)
-        String whereClause = "id = ?";
+        String whereClause = "activity_id = ?";
         String[] whereArgs = {String.valueOf(activity.getId())};
 
         // Executando a atualização

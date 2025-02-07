@@ -45,7 +45,7 @@ public class UserDAO {
 
     public List<User> getUnsyncedUsers() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM users", null); // Consulta para obter usuários não sincronizados
+        Cursor cursor = db.rawQuery("SELECT * FROM users WHERE isSynced = 0", null); // Consulta para obter usuários não sincronizados
         List<User> userList = new ArrayList<>();
 
         if (cursor.moveToFirst()) {
@@ -53,10 +53,14 @@ public class UserDAO {
                 User user = new User();
 
                 // Preenchendo os campos da classe User
-//                user.setId(cursor.getInt(cursor.getColumnIndexOrThrow("id")));
-                user.setName(cursor.getString(cursor.getColumnIndexOrThrow("password")));
+                user.setId(cursor.getInt(cursor.getColumnIndexOrThrow("userid")));
+                user.setPassword(cursor.getString(cursor.getColumnIndexOrThrow("password")));
                 user.setEmail(cursor.getString(cursor.getColumnIndexOrThrow("email")));
-//                user.setSynced(cursor.getInt(cursor.getColumnIndexOrThrow("isSynced")) == 1); // Convertendo de int para boolean
+                user.setNomeCompleto(cursor.getString(cursor.getColumnIndexOrThrow("nome")));
+                user.setUsername(cursor.getString(cursor.getColumnIndexOrThrow("username")));
+                user.setRole(cursor.getString(cursor.getColumnIndexOrThrow("role")));
+                user.setUser_date(cursor.getString(cursor.getColumnIndexOrThrow("user_date")));
+                user.setSynced(cursor.getInt(cursor.getColumnIndexOrThrow("isSynced")) == 1); // Convertendo de int para boolean
 
                 userList.add(user);
             } while (cursor.moveToNext());
@@ -71,12 +75,11 @@ public class UserDAO {
         ContentValues contentValues = new ContentValues();
 
         // Adicione os valores a serem atualizados
-        contentValues.put("email", user.getEmail());
-//        contentValues.put("password", user.getPassword());
+        contentValues.put("isSynced", user.isSynced() ? 1 : 0);
 
         // Condição de atualização
-        String whereClause = "email = ?";
-        String[] whereArgs = {user.getEmail()}; // Supondo que o email é a chave primária
+        String whereClause = "userid = ?";
+        String[] whereArgs = {String.valueOf(user.getId())}; // Supondo que o email é a chave primária
 
         // Executa a atualização
         int rowsUpdated = db.update("users", contentValues, whereClause, whereArgs);
