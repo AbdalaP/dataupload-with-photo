@@ -1,13 +1,10 @@
 package com.example.sch_agro.ui.activity;
 
-import android.app.DatePickerDialog;
 import android.content.Intent;
-import android.icu.util.Calendar;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,8 +19,8 @@ import androidx.fragment.app.FragmentTransaction;
 import com.example.sch_agro.Configuration.ApiClient;
 import com.example.sch_agro.Configuration.DatabaseInstance;
 import com.example.sch_agro.DAO.ActivityDAO;
-import com.example.sch_agro.DAO.TaskGebaDAO;
 import com.example.sch_agro.DAO.ControleActividadeDAO;
+import com.example.sch_agro.DAO.TaskGebaDAO;
 import com.example.sch_agro.DAO.TrabalhadoresDAO;
 import com.example.sch_agro.DAO.UserDAO;
 import com.example.sch_agro.R;
@@ -37,10 +34,9 @@ import com.example.sch_agro.ui.fragment.RelatoriosFragment;
 import com.example.sch_agro.ui.fragment.ViewFarmerFragment;
 import com.google.android.material.navigation.NavigationView;
 
-import java.text.DateFormat;
 import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, DatePickerDialog.OnDateSetListener{
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
     TextView idade;
     private DrawerLayout drawerLayout;
@@ -258,13 +254,5 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
  */
 
-     @Override
-    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-        Calendar mCalendar = Calendar.getInstance();
-        mCalendar.set(Calendar.YEAR, year);
-        mCalendar.set(Calendar.MONTH, month);
-        mCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-        String selectedDate = DateFormat.getDateInstance(DateFormat.DATE_FIELD).format(mCalendar.getTime());
-        idade.setText(selectedDate);
-    }
+
 }

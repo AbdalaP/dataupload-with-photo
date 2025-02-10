@@ -8,10 +8,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
-import java.text.DateFormat;
 import java.util.Calendar;
 
-public  class DatePicker extends  DialogFragment implements DatePickerDialog.OnDateSetListener{
+public  class DatePicker extends  DialogFragment{
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -29,16 +28,6 @@ public  class DatePicker extends  DialogFragment implements DatePickerDialog.OnD
         //DatePickerDialog dialog = new DatePickerDialog((Context) requireActivity(), (ScheduleMatchOptionActivity)getActivity(), yy, mm,dd);
        // return dialog;
 
-    }
-
-    @Override
-    public void onDateSet(android.widget.DatePicker view, int year, int month, int dayOfMonth) {
-        android.icu.util.Calendar mCalendar = android.icu.util.Calendar.getInstance();
-        mCalendar.set(android.icu.util.Calendar.YEAR, year);
-        mCalendar.set(android.icu.util.Calendar.MONTH, month);
-        mCalendar.set(android.icu.util.Calendar.DAY_OF_MONTH, dayOfMonth);
-        String selectedDate = DateFormat.getDateInstance(DateFormat.DATE_FIELD).format(mCalendar.getTime());
-      //  tvDate.setText(selectedDate);
     }
 
 }

@@ -282,7 +282,7 @@ public List<String> getAllLabels(){
     public Cursor populatespinner() {
         try {
             SQLiteDatabase MyDatabase = this.getWritableDatabase();
-            Cursor filas = MyDatabase.rawQuery("SELECT activity_name FROM  activity", null);
+            Cursor filas = MyDatabase.rawQuery("SELECT activity_name FROM activity", null);
             if (filas.moveToFirst()){
                 return filas;
             }else {

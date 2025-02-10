@@ -33,7 +33,7 @@ public class DashboardFragment extends Fragment {
         // Inicializando as views
         trabalhadoresText = view.findViewById(R.id.trabalhadores_count);
         atividadesText = view.findViewById(R.id.atividades_count);
-        dbHelper = new DatabaseHelper(requireContext());
+        dbHelper = new DatabaseHelper(super.getContext());
 
         // Atualiza os contadores quando a view for criada
         atualizarContadores();
@@ -45,4 +45,6 @@ public class DashboardFragment extends Fragment {
         trabalhadoresText.setText(String.valueOf(totalTrabalhadores));
         atividadesText.setText(String.valueOf(totalAtividades));
     }
+
+
 }
