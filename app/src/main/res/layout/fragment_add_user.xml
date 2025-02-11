@@ -145,6 +145,7 @@
             android:layout_height="50dp"
             android:dropDownSelector="@color/black"
             android:layout_marginTop="15dp"
+            android:hint="okkkkkkkkkkkk"
             android:background="@drawable/lavender_border"/>
 
 
@@ -160,6 +161,17 @@
             android:textSize="18sp"
             android:textStyle="bold" />
 
+        <Button
+            android:id="@+id/okok"
+            android:layout_width="164dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="100dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/btn"
+            android:text="ok"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:textStyle="bold" />
         <Button
             android:id="@+id/btn_edit"
             android:layout_width="wrap_content"

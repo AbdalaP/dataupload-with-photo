@@ -12,6 +12,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.icu.util.Calendar;
 import android.net.Uri;
@@ -46,7 +47,6 @@ import com.example.sch_agro.util.DatabaseHelper;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,7 +55,7 @@ import java.util.List;
  * Use the {@link AddUserFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AddUserFragment extends Fragment implements AdapterView.OnItemSelectedListener, DatePickerDialog.OnDateSetListener{
+public class AddUserFragment extends Fragment implements AdapterView.OnItemSelectedListener,View.OnClickListener{
 
     FragmentAddUserBinding binding;
     DatabaseHelper databaseHelper;
@@ -80,7 +80,8 @@ public class AddUserFragment extends Fragment implements AdapterView.OnItemSelec
     String cameraPermission[];
     String storagePermission[];
 
-
+    int year_x,month_x,day_x;
+    static final int DILOG_ID=0;
 
 
 
@@ -128,13 +129,10 @@ public class AddUserFragment extends Fragment implements AdapterView.OnItemSelec
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
 
-            //
-
-
         }
 
 
- 
+
     }
 
     @Override
@@ -220,52 +218,6 @@ public class AddUserFragment extends Fragment implements AdapterView.OnItemSelec
 
         });
 
-/*
-this funcion is only used in the useredit activity and not here.
-        //////////button edit or inserting new data task
-        binding.btnEdit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-
-                // sqLiteDatabase=databaseHelper.getReadableDatabase();
-
-                ContentValues cv =new ContentValues();
-                // cv.put("id",id);
-                cv.put("image",ImageViewToBy(image));//is diferente imageviewtobyte original.
-                cv.put("name",name.getText().toString());
-                cv.put("docid",docid.getText().toString());
-                cv.put("telefone",telefone.getText().toString());
-                //cv.put("act",act.getText().toString());
-                cv.put("act",spinner.getItemAtPosition(spinner.getSelectedItemPosition()).toString());
-                cv.put("user_id",id.getText().toString());
-
-                sqLiteDatabase=databaseHelper.getWritableDatabase();
-
-                if (spinner.getItemAtPosition(spinner.getSelectedItemPosition()).toString()!="[Escolhe Actividade...]"){
-                    long recedit = sqLiteDatabase.insert(task, null, cv);
-                    if (recedit!=-1){
-                        Toast.makeText(AddUserFragment.super.getContext(), "Data Inserted successfully", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(getContext(), MainActivity.class);
-                        startActivity(intent);
-                        image.setImageResource(ic_launcher);
-                        name.setText("");
-                        Submit.setVisibility(View.GONE);
-                        edit.setVisibility(View.VISIBLE);
-
-                    } else{
-                        Toast.makeText(AddUserFragment.super.getContext(), "Something is wrong", Toast.LENGTH_SHORT).show();
-                    }
-
-                }
-                else{
-                    Toast.makeText(AddUserFragment.super.getContext(), "Escolhe Actividade", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
- */
-
         return binding.getRoot();
 
 
@@ -277,9 +229,10 @@ this funcion is only used in the useredit activity and not here.
         super.onViewCreated(view, savedInstanceState);
 
 
-        List<CatActividades> listaCategorias = llenarCategorias();
-        ArrayAdapter<CatActividades> arrayAdapter = new ArrayAdapter<>(getContext(), R.layout.spinner_dropdown_layout, listaCategorias);
-        spinner_tipoAct.setAdapter(arrayAdapter);
+        final java.util.Calendar cal = java.util.Calendar.getInstance();
+        year_x=cal.get(java.util.Calendar.YEAR);
+        month_x=cal.get(java.util.Calendar.MONTH);
+        day_x=cal.get(java.util.Calendar.DAY_OF_MONTH);
 
         databaseHelper= new DatabaseHelper(super.getContext());
         //editData();
@@ -301,7 +254,7 @@ this funcion is only used in the useredit activity and not here.
         spinner_tipoAct.setOnItemSelectedListener(this);
        // loadSpinnerData(); only useful in editactivity
         //image= findViewById(R.id.edtimage);
-
+        data_nascimento.setOnClickListener(this);
 
         cameraPermission=new String[]{Manifest.permission.CAMERA,Manifest.permission.WRITE_EXTERNAL_STORAGE};
         storagePermission=new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
@@ -339,49 +292,33 @@ this funcion is only used in the useredit activity and not here.
         });
 
         // perform click event on edit text
-        data_nascimento.setOnClickListener(new View.OnClickListener() {
+
+        List<CatActividades> listaCategorias = llenarCategorias();
+        ArrayAdapter<CatActividades> arrayAdapter = new ArrayAdapter<>(requireContext(), androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, listaCategorias);
+        spinner_tipoAct.setAdapter(arrayAdapter);
+
+        spinner_tipoAct.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+                ((TextView) adapterView.getChildAt(0)).setTextColor(Color.BLACK);
+                ((TextView) adapterView.getChildAt(0)).setTextSize(18);
+
+                String nombreCat = ((CatActividades) adapterView.getSelectedItem()).getNombre();
+
+               // Toast.makeText(AddUserFragment.super.getActivity(), idCat + " - " + nombreCat, Toast.LENGTH_LONG).show();
+            }
+
 
             @Override
-            public void onClick(View v) {
-                // Please note that use your package name here
-                com.example.sch_agro.util.DatePicker mDatePickerDialogFragment;
-                mDatePickerDialogFragment = new com.example.sch_agro.util.DatePicker();
-                mDatePickerDialogFragment.show(getParentFragmentManager(), "DATE PICK");
-
+            public void onNothingSelected(AdapterView<?> parent) {
 
 
             }
+
         });
 
-
-
-
-
-/*
-            sqLiteDatabase = databaseHelper.getWritableDatabase();
-            Cursor c = sqLiteDatabase.rawQuery("select activity_name  from activity",null);
-
-                     // create an array to specify which fields we want to display
-            String[] from = new String[]{"activity_name"};
-
-            // create an array of the display item we want to bind our data to
-            int[] to = new int[]{android.R.id.text1};
-
-            // create simple cursor adapter
-            SimpleCursorAdapter adapter =
-                    new SimpleCursorAdapter(this.getContext(), android.R.layout.simple_spinner_item, c, from, to );
-
-            adapter.setDropDownViewResource( android.R.layout.simple_spinner_dropdown_item );
-
-            // get reference to our spinner
-            spinner2.setAdapter(adapter);
-        spinner2.setOnItemSelectedListener(this);
-
- */
-
-           // bd.close();
-
-    }
+        }
 
     private void requestCameraPermission() {requestPermissions(cameraPermission,CAMERA_REQUEST);}
 
@@ -523,17 +460,8 @@ this funcion is only used in the useredit activity and not here.
 
 
 
-    @Override
-    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-        Calendar mCalendar = Calendar.getInstance();
-        mCalendar.set(Calendar.YEAR, year);
-        mCalendar.set(Calendar.MONTH, month);
-        mCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-        String selectedDate = DateFormat.getDateInstance(DateFormat.DATE_FIELD).format(mCalendar.getTime());
-        data_nascimento.setText(selectedDate);
 
-    }
-
+//load spinner with cursor.
     @SuppressLint("Range")
     private List<CatActividades> llenarCategorias(){
         List<CatActividades> listaCat = new ArrayList<>();
@@ -551,6 +479,33 @@ this funcion is only used in the useredit activity and not here.
         dbCategorias.close();
 
         return listaCat;
+    }
+
+    @Override
+    public void onClick(View v) {
+
+        if (v == data_nascimento) {
+
+            // Get Current Date
+            final Calendar c = Calendar.getInstance();
+            year_x = c.get(Calendar.YEAR);
+            month_x = c.get(Calendar.MONTH);
+            day_x = c.get(Calendar.DAY_OF_MONTH);
+
+
+            DatePickerDialog datePickerDialog = new DatePickerDialog(AddUserFragment.super.requireActivity(),
+                    new DatePickerDialog.OnDateSetListener() {
+
+                        @Override
+                        public void onDateSet(DatePicker view, int year,
+                                              int monthOfYear, int dayOfMonth) {
+
+                            data_nascimento.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+
+                        }
+                    }, year_x, month_x, day_x);
+            datePickerDialog.show();
+        }
     }
 
 //isto nao estava no primeiro ver bem

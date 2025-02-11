@@ -3,6 +3,7 @@ package com.example.sch_agro;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -10,7 +11,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.icu.util.Calendar;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -36,12 +36,12 @@ import com.example.sch_agro.util.DatabaseHelper;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileWriter;
-import java.text.DateFormat;
 import java.util.List;
 
 import au.com.bytecode.opencsv.CSVWriter;
 
-public class Registo extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
+public class Registo extends AppCompatActivity {
+
 
     DatabaseHelper databaseHelper;
     SQLiteDatabase sqLiteDatabase;
@@ -54,8 +54,12 @@ public class Registo extends AppCompatActivity implements DatePickerDialog.OnDat
     String cameraPermission[];
     String storagePermission[];
 
-    TextView tvDate;
+    TextView date;
     Button btPickDate;
+
+
+    int year_x,month_x,day_x;
+    static final int DILOG_ID=0;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -63,17 +67,16 @@ public class Registo extends AppCompatActivity implements DatePickerDialog.OnDat
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registo);
 
-        tvDate = findViewById(R.id.tvDate);
+
+
+        final java.util.Calendar cal = java.util.Calendar.getInstance();
+        year_x=cal.get(java.util.Calendar.YEAR);
+        month_x=cal.get(java.util.Calendar.MONTH);
+        day_x=cal.get(java.util.Calendar.DAY_OF_MONTH);
+
+        showDialogontextclic();
         //btPickDate = findViewById(R.id.btPickDate);
-        tvDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Please note that use your package name here
-                com.example.sch_agro.util.DatePicker mDatePickerDialogFragment;
-               // mDatePickerDialogFragment = new com.example.sch_agro.util.DatePicker();
-              //  mDatePickerDialogFragment.show(getSupportFragmentManager(), "DATE PICK");
-            }
-        });
+
 
 
         //below the links for data export from database table to excel
@@ -91,7 +94,7 @@ public class Registo extends AppCompatActivity implements DatePickerDialog.OnDat
       // spinner.setOnItemSelectedListener(this);
        // spinner2.setOnItemSelectedListener(this);
         loadSpinnerData();
-        loadSpinnerData2();
+        //loadSpinnerData2();
 
         cameraPermission=new String[]{Manifest.permission.CAMERA,Manifest.permission.WRITE_EXTERNAL_STORAGE};
         storagePermission=new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
@@ -115,6 +118,40 @@ public class Registo extends AppCompatActivity implements DatePickerDialog.OnDat
 
     }
 
+    public void showDialogontextclic(){
+        date = findViewById(R.id.date);
+        date.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialog(DILOG_ID);
+
+
+
+            }
+        });
+    }
+
+
+    protected Dialog onCreateDialog(int id){
+    if(id==DILOG_ID)
+    return new DatePickerDialog(this,dpickerListner,year_x,month_x,day_x);
+return null;
+
+    }
+
+    private DatePickerDialog.OnDateSetListener dpickerListner= new DatePickerDialog.OnDateSetListener() {
+        @Override
+        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+            year_x=year;
+            month_x=month+1;
+            day_x=dayOfMonth;
+           // Toast.makeText(Registo.this, year_x +"/"+month_x+"/"+day_x,Toast.LENGTH_SHORT).show();
+
+            date.setText(year_x +"/"+month_x+"/"+day_x);
+
+        }
+    };
+
 
 
 
@@ -134,19 +171,7 @@ public class Registo extends AppCompatActivity implements DatePickerDialog.OnDat
         //spinner.setOnItemSelectedListener(this);
     }
 
-    private void loadSpinnerData2() {
-        ArrayAdapter adapter = ArrayAdapter.createFromResource(
-                this,
-                R.array.tipo_actividade,
-                android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.select_dialog_item);
-        //link the adapter to the spinner
-        Spinner coffeeChoice = (Spinner) findViewById(R.id.spinner2);
-        coffeeChoice.setAdapter(adapter);
-
-    }
-
-
+/*
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
         Calendar mCalendar = Calendar.getInstance();
@@ -156,6 +181,8 @@ public class Registo extends AppCompatActivity implements DatePickerDialog.OnDat
         String selectedDate = DateFormat.getDateInstance(DateFormat.DATE_FIELD).format(mCalendar.getTime());
         tvDate.setText(selectedDate);
     }
+
+ */
 
     // THIS FUNCTION SHOWS DATA FROM THE DATABASE
 
