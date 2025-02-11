@@ -8,6 +8,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import androidx.annotation.Nullable;
 
+import org.mindrot.jbcrypt.BCrypt;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -178,11 +180,13 @@ public List<String> getAllLabels(){
 
     public Boolean insertData(String nome, String email,String username, String password,String role) {
         SQLiteDatabase MyDatabase = this.getWritableDatabase();
+
+        String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
         ContentValues contentValues = new ContentValues();
         contentValues.put("nome", nome);
         contentValues.put("email", email);
         contentValues.put("username", username);
-        contentValues.put("password", password);
+        contentValues.put("password", hashedPassword);
         contentValues.put("role", role);
         long result = MyDatabase.insert("users", null, contentValues);
         if (result == -1) {
@@ -211,7 +215,7 @@ public List<String> getAllLabels(){
         }
     }
 
-    public Boolean checkEmailPassword(String username, String password) {
+    public Boolean checkEmailPassword1(String username, String password) {
         SQLiteDatabase MyDatabase = this.getWritableDatabase();
         Cursor cursor = MyDatabase.rawQuery("Select * from users where username = ? and password = ?", new String[]{username, password});
         if (cursor.getCount() > 0) {
@@ -221,7 +225,31 @@ public List<String> getAllLabels(){
         }
     }
 
+    public Boolean checkEmailPassword(String username, String password) {
+        SQLiteDatabase MyDatabase = null;
+        Cursor cursor = null;
 
+        try {
+            MyDatabase = this.getReadableDatabase();
+            cursor = MyDatabase.rawQuery("SELECT password FROM users WHERE username = ?", new String[]{username});
+
+            if (cursor.moveToFirst()) {
+                String hashedPassword = cursor.getString(0);
+                return BCrypt.checkpw(password, hashedPassword);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            if (MyDatabase != null) {
+                MyDatabase.close();
+            }
+        }
+
+        return false;
+    }
 
     public Boolean insertactivity(String nome, String spinner,String spinner2,String person,String target,String userlogged) {
         SQLiteDatabase MyDatabase = this.getWritableDatabase();

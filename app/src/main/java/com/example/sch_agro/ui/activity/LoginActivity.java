@@ -7,6 +7,17 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.sch_agro.Configuration.ApiClient;
+import com.example.sch_agro.Configuration.DatabaseInstance;
+import com.example.sch_agro.DAO.ActivityDAO;
+import com.example.sch_agro.DAO.ControleActividadeDAO;
+import com.example.sch_agro.DAO.TaskGebaDAO;
+import com.example.sch_agro.DAO.TrabalhadoresDAO;
+import com.example.sch_agro.DAO.UserDAO;
+import com.example.sch_agro.Services.ApiService;
+import com.example.sch_agro.Services.DataSyncManager;
+import com.example.sch_agro.Services.DataSyncUsers;
+import com.example.sch_agro.Services.NetworkMonitor;
 import com.example.sch_agro.databinding.ActivityLoginBinding;
 import com.example.sch_agro.util.DatabaseHelper;
 
@@ -25,6 +36,21 @@ public class LoginActivity extends AppCompatActivity {
         Session session = new Session(this);
 
         databaseHelper = new DatabaseHelper(this);
+
+        // Inicialização do monitor de rede
+        NetworkMonitor networkMonitor = new NetworkMonitor(this);
+
+        // Instância dos DAOs
+        UserDAO userDao = DatabaseInstance.getInstance(this).userDao();
+
+        // Instância da ApiService
+        ApiService apiService = ApiClient.getClient().create(ApiService.class);
+
+        // Instância do DataSyncManager com os DAOs e ApiService
+        DataSyncUsers syncManager = new DataSyncUsers(userDao, apiService, this);
+
+        // Iniciar o monitoramento da rede e executar sincronização quando conectado
+        networkMonitor.startMonitoring(syncManager::syncData);
 
         binding.loginButton.setOnClickListener(new View.OnClickListener() {
             @Override

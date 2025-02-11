@@ -128,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         ApiService apiService = ApiClient.getClient().create(ApiService.class);
 
         // Instância do DataSyncManager com os DAOs e ApiService
-       DataSyncManager syncManager = new DataSyncManager(userDao, activityDao, trabalhadorDao, taskGebaDao, controleActividadeDAO, apiService);
+       DataSyncManager syncManager = new DataSyncManager(userDao, activityDao, trabalhadorDao, taskGebaDao, controleActividadeDAO, apiService, this);
 
         // Iniciar o monitoramento da rede e executar sincronização quando conectado
        networkMonitor.startMonitoring(syncManager::syncData);

@@ -23,18 +23,45 @@ public class TrabalhadoresDAO {
         this.dbHelper = dbHelper;
     }
 
-    public boolean insertTrabalhador(String empresa, String nome, String docid, String idade, String genero, String telefone, String tipo) {
+    public boolean insertTrabalhador(String empresa, String nome, String docid, String data_nascimento,
+                                     String genero, String telefone, String atividade, String userlogged, byte[] imageBytes) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("empresa", empresa);
-        values.put("nome", nome);
-        values.put("docid", docid);
-        values.put("idade", idade);
-        values.put("genero", genero);
-        values.put("telefone", telefone);
-        values.put("tipo", tipo);
-        return db.insert("trabalhadores", null, values) != -1;
+
+        // Verifica se o trabalhador já existe com base no docid
+        String query = "SELECT COUNT(*) FROM trabalhadores WHERE docid = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{docid});
+
+        boolean exists = false;
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                exists = cursor.getInt(0) > 0;
+            }
+            cursor.close();
+        }
+
+        // Se não existir, insere o novo trabalhador
+        if (!exists) {
+            ContentValues values = new ContentValues();
+            values.put("empresa", empresa);
+            values.put("nome", nome);
+            values.put("docid", docid);
+            values.put("data_nascimento", data_nascimento);
+            values.put("genero", genero);
+            values.put("telefone", telefone);
+            values.put("activity_id", atividade);
+            values.put("userlog", userlogged);
+            values.put("isSynced", 1);
+            values.put("image", imageBytes); // Armazena a imagem em formato BLOB
+
+            long result = db.insert("trabalhadores", null, values);
+            db.close();
+            return result != -1;
+        }
+
+        return false; // Retorna false se o trabalhador já existir
     }
+
+
 
     public boolean checkDocId(String docid) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -110,6 +137,22 @@ public class TrabalhadoresDAO {
         }
 
         db.close(); // Fecha a conexão com o banco de dados
+    }
+
+    public boolean trabalhadorExists(String docid, String empresa) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        String query = "SELECT COUNT(*) FROM trabalhadores WHERE docid = ? AND empresa = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{docid, empresa});
+
+        boolean exists = false;
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                exists = cursor.getInt(0) > 0;
+            }
+            cursor.close();
+        }
+        db.close();
+        return exists;
     }
 
 }

@@ -22,15 +22,38 @@ public class ActivityDAO {
         this.dbHelper = dbHelper;
     }
 
-    public boolean insertActivity(String empresa, String activityName, String person, String target) {
+    public boolean insertActivity(String empresa, String activityName, String person, String target, String categoria, String userlogged) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("empresa", empresa);
-        values.put("activity_name", activityName);
-        values.put("person", person);
-        values.put("target", target);
-        return db.insert("activity", null, values) != -1;
+
+        // Verifica se já existe um registro com os mesmos dados
+        String query = "SELECT COUNT(*) FROM activity WHERE empresa = ? AND category_act = ? AND activity_name = ? AND person = ? AND valor = ? AND userlog = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{empresa, categoria, activityName, person, target, userlogged});
+
+        boolean exists = false;
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                exists = cursor.getInt(0) > 0;
+            }
+            cursor.close();
+        }
+
+        // Se não existir, insere a nova atividade
+        if (!exists) {
+            ContentValues values = new ContentValues();
+            values.put("empresa", empresa);
+            values.put("category_act", categoria);
+            values.put("activity_name", activityName);
+            values.put("person", person);
+            values.put("valor", target);
+            values.put("userlog", userlogged);
+            values.put("isSynced", 1);
+
+            return db.insert("activity", null, values) != -1;
+        }
+
+        return false; // Retorna false se a atividade já existir
     }
+
 
     public boolean checkActivity(String activityName) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -104,6 +127,22 @@ public class ActivityDAO {
         }
 
         db.close(); // Fecha a conexão com o banco de dados
+    }
+
+    public boolean activityExists(String designacao, String empresa) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        String query = "SELECT COUNT(*) FROM activity WHERE activity_name = ? AND empresa = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{designacao, empresa});
+
+        boolean exists = false;
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                exists = cursor.getInt(0) > 0;
+            }
+            cursor.close();
+        }
+        db.close();
+        return exists;
     }
 
 }

@@ -10,8 +10,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
+import com.example.sch_agro.R;
 import com.example.sch_agro.databinding.FragmentRelatoriosBinding;
 import com.example.sch_agro.util.DatabaseHelper;
 
@@ -56,14 +58,14 @@ public class RelatoriosFragment extends Fragment {
                 exportTB();
             }
         });
-        binding.btnActivityExport.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                exportAct();
-
-            }
-        });
+//        binding.btnActivityExport.setOnClickListener(new View.OnClickListener() {
+//
+//            @Override
+//            public void onClick(View v) {
+//                exportAct();
+//
+//            }
+//        });
         binding.btnabout.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -73,6 +75,13 @@ public class RelatoriosFragment extends Fragment {
             }
         });
 
+        // Pegar o último CardView
+        CardView lastCardView = binding.btn;
+
+        lastCardView.setOnClickListener(v -> {
+            ExportDialogFragment dialogFragment = new ExportDialogFragment();
+            dialogFragment.show(getParentFragmentManager(), "exportDialog");
+        });
 
         return binding.getRoot();
     }
