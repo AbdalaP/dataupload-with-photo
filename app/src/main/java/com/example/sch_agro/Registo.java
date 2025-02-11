@@ -94,7 +94,7 @@ public class Registo extends AppCompatActivity {
       // spinner.setOnItemSelectedListener(this);
        // spinner2.setOnItemSelectedListener(this);
         loadSpinnerData();
-        loadSpinnerData2();
+        //loadSpinnerData2();
 
         cameraPermission=new String[]{Manifest.permission.CAMERA,Manifest.permission.WRITE_EXTERNAL_STORAGE};
         storagePermission=new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
@@ -119,7 +119,7 @@ public class Registo extends AppCompatActivity {
     }
 
     public void showDialogontextclic(){
-       // date = findViewById(R.id.date);
+        date = findViewById(R.id.date);
         date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -169,18 +169,6 @@ return null;
 
         spinner.setSelection(dataAdapter.getCount()); //set the hint the default selection so it appears on launch.
         //spinner.setOnItemSelectedListener(this);
-    }
-
-    private void loadSpinnerData2() {
-        ArrayAdapter adapter = ArrayAdapter.createFromResource(
-                this,
-                R.array.tipo_actividade,
-                android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.select_dialog_item);
-        //link the adapter to the spinner
-        Spinner coffeeChoice = (Spinner) findViewById(R.id.spinner2);
-        coffeeChoice.setAdapter(adapter);
-
     }
 
 /*

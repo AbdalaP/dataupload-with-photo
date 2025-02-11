@@ -5,7 +5,6 @@ import static com.example.sch_agro.R.mipmap.ic_launcher;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -15,6 +14,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
+import android.icu.util.Calendar;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -55,7 +55,7 @@ import java.util.List;
  * Use the {@link AddUserFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AddUserFragment extends Fragment implements AdapterView.OnItemSelectedListener{
+public class AddUserFragment extends Fragment implements AdapterView.OnItemSelectedListener,View.OnClickListener{
 
     FragmentAddUserBinding binding;
     DatabaseHelper databaseHelper;
@@ -234,8 +234,6 @@ public class AddUserFragment extends Fragment implements AdapterView.OnItemSelec
         month_x=cal.get(java.util.Calendar.MONTH);
         day_x=cal.get(java.util.Calendar.DAY_OF_MONTH);
 
-      //  showDialogontextclic();
-
         databaseHelper= new DatabaseHelper(super.getContext());
         //editData();
         //insertData();
@@ -256,7 +254,7 @@ public class AddUserFragment extends Fragment implements AdapterView.OnItemSelec
         spinner_tipoAct.setOnItemSelectedListener(this);
        // loadSpinnerData(); only useful in editactivity
         //image= findViewById(R.id.edtimage);
-
+        data_nascimento.setOnClickListener(this);
 
         cameraPermission=new String[]{Manifest.permission.CAMERA,Manifest.permission.WRITE_EXTERNAL_STORAGE};
         storagePermission=new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
@@ -321,46 +319,6 @@ public class AddUserFragment extends Fragment implements AdapterView.OnItemSelec
         });
 
         }
-
-
-
-
-
-    protected Dialog onCreateDialog(int id){
-        if(id==DILOG_ID)
-            return new DatePickerDialog(AddUserFragment.super.getActivity(),dpickerListner,year_x,month_x,day_x);
-        return null;
-
-    }
-
-    private DatePickerDialog.OnDateSetListener dpickerListner= new DatePickerDialog.OnDateSetListener() {
-        @Override
-        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-            year_x=year;
-            month_x=month+1;
-            day_x=dayOfMonth;
-            // Toast.makeText(Registo.this, year_x +"/"+month_x+"/"+day_x,Toast.LENGTH_SHORT).show();
-
-            data_nascimento.setText(year_x +"/"+month_x+"/"+day_x);
-
-        }
-    };
-/*
-    public void showDialogontextclic(){
-
-        data_nascimento.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-              //  Registo r = new Registo();
-              //  r.showDialogontextclic();
-
-            }
-        });
-    }
-
- */
-
 
     private void requestCameraPermission() {requestPermissions(cameraPermission,CAMERA_REQUEST);}
 
@@ -521,6 +479,33 @@ public class AddUserFragment extends Fragment implements AdapterView.OnItemSelec
         dbCategorias.close();
 
         return listaCat;
+    }
+
+    @Override
+    public void onClick(View v) {
+
+        if (v == data_nascimento) {
+
+            // Get Current Date
+            final Calendar c = Calendar.getInstance();
+            year_x = c.get(Calendar.YEAR);
+            month_x = c.get(Calendar.MONTH);
+            day_x = c.get(Calendar.DAY_OF_MONTH);
+
+
+            DatePickerDialog datePickerDialog = new DatePickerDialog(AddUserFragment.super.requireActivity(),
+                    new DatePickerDialog.OnDateSetListener() {
+
+                        @Override
+                        public void onDateSet(DatePicker view, int year,
+                                              int monthOfYear, int dayOfMonth) {
+
+                            data_nascimento.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+
+                        }
+                    }, year_x, month_x, day_x);
+            datePickerDialog.show();
+        }
     }
 
 //isto nao estava no primeiro ver bem
