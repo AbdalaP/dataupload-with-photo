@@ -52,7 +52,7 @@ public class ControleActividadeDAO {
     public List<com.example.sch_agro.Model.ControleActividade> getUnsyncedTasks() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM controle_actividade WHERE isSynced = 0", null); // "isSynced = 0" para booleano no SQLite
-        List<com.example.sch_agro.Model.ControleActividade> tasks = new ArrayList<>();
+        List<ControleActividade> tasks = new ArrayList<>();
 
         if (cursor.moveToFirst()) {
             do {

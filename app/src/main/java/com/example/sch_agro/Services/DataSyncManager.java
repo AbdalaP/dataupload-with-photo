@@ -75,8 +75,15 @@ public class DataSyncManager {
         this.context = context;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void syncData() {
-        login();
+//        login();
+        syncUsers();
+        syncActivities();
+        syncTrabalhadores();
+        syncControleAtividadea();
+        fetchActivities();
+        fetchTrabalhadores();
     }
 
     private void login() {
