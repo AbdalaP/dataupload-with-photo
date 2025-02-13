@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:title="EditGeba"
-        android:id="@+id/edit_menuGeba"/>
+    <item android:title="Activar/Desativar"
+        android:id="@+id/activar_desativar"/>
     <item android:title="EditSan"
         android:id="@+id/Edit_menuSan"/>
 

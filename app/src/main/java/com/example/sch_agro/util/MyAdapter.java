@@ -22,7 +22,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sch_agro.R;
-import com.example.sch_agro.ui.activity.UserEditGeba;
+import com.example.sch_agro.ui.activity.UserActivoInativo;
 import com.example.sch_agro.ui.activity.UserEditSan;
 
 import java.util.ArrayList;
@@ -72,17 +72,16 @@ SQLiteDatabase sqLiteDatabase;
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         int itemId=item.getItemId();
-                        if (itemId==R.id.edit_menuGeba){
+                        if (itemId==R.id.activar_desativar){
                             Bundle bundle=new Bundle();
                             bundle.putByteArray("image",model.getProavatar());
                             bundle.putString("name",model.getnome());
-                            bundle.putString("docid",model.getActivity_id());
-                            bundle.putString("telefone",model.getTelefone());
-                            //bundle.putString("act",model.getId());
                             bundle.putString("trabalhador_id",model.getTrabalhador_id());
-                            Intent intent=new Intent(context, UserEditGeba.class);
+                            Intent intent=new Intent(context, UserActivoInativo.class);
                             intent.putExtra("userdata",bundle);
                             context.startActivity(intent);
+
+
 
                         } else if (itemId==R.id.Edit_menuSan) {
                             Bundle bundle=new Bundle();

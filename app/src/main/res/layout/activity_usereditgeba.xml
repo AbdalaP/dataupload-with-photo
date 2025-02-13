@@ -35,87 +35,50 @@
             android:background="@color/green"/>
 
         <EditText
-            android:id="@+id/user_id"
-            android:layout_width="220dp"
-            android:layout_height="50dp"
-            android:layout_marginTop="15dp"
-            android:background="@drawable/lavender_border"
-            android:drawableLeft="@drawable/baseline_person_pin_24"
-            android:drawablePadding="8dp"
-            android:hint="ID"
-            android:padding="8dp"
-            android:textColor="@color/black"
-            android:textColorHint="@color/black" />
-        <EditText
-            android:id="@+id/nome"
-            android:layout_width="match_parent"
+            android:id="@+id/trabalhador_id"
+            android:layout_width="221dp"
             android:layout_height="50dp"
             android:layout_marginTop="15dp"
             android:background="@drawable/lavender_border"
             android:drawableLeft="@drawable/person_add"
             android:drawablePadding="8dp"
-            android:hint="Nome"
-            android:textColorHint="@color/black"
+            android:hint="User_ID"
+            android:padding="8dp"
             android:textColor="@color/black"
-            android:padding="8dp"/>
+            android:textColorHint="@color/black" />
 
 
         <EditText
-            android:id="@+id/docid"
+            android:id="@+id/name"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginTop="15dp"
             android:background="@drawable/lavender_border"
             android:drawableLeft="@drawable/card_id"
             android:drawablePadding="8dp"
-            android:hint="Nr de documento"
+            android:hint="Nome"
             android:padding="8dp"
             android:textColor="@color/black"
             android:textColorHint="@color/black" />
 
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:id="@+id/telefone"
-            android:background="@drawable/lavender_border"
-            android:layout_marginTop="15dp"
-            android:padding="8dp"
-            android:hint="Telefone"
-            android:textColorHint="@color/black"
-            android:textColor="@color/black"
-            android:inputType="number"
-            android:drawableLeft="@drawable/call"
-            android:drawablePadding="8dp" />
 
         <Spinner
-            android:id="@+id/spinner1"
+            android:id="@+id/status"
             android:layout_width="fill_parent"
             android:layout_height="50dp"
             android:layout_alignParentTop="true"
             android:background="@drawable/lavender_border"
             android:layout_marginTop="15dp"/>
 
-        <EditText
-            android:id="@+id/bloc"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginTop="15dp"
-            android:background="@drawable/lavender_border"
-            android:drawableLeft="@drawable/card_id"
-            android:drawablePadding="8dp"
-            android:hint="Nr de Bloco"
-            android:padding="8dp"
-            android:textColor="@color/black"
-            android:textColorHint="@color/black" />
 
         <Button
-            android:id="@+id/btn_edit"
+            android:id="@+id/btn_update"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="55dp"
             android:layout_marginTop="15dp"
             android:background="@drawable/btn"
-            android:text="Gravar"
+            android:text="Actualizar"
             android:textColor="@color/white"
             android:textSize="18sp"
             android:textStyle="bold" />
