@@ -24,6 +24,13 @@ public class DatabaseInstance {
         return instance;
     }
 
+    public void close() {
+        if (databaseHelper != null) {
+            databaseHelper.close();
+        }
+        instance = null; // Libera a instância para evitar vazamento de memória
+    }
+
     public DatabaseHelper getDatabaseHelper() {
         return databaseHelper;
     }

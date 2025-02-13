@@ -75,14 +75,11 @@ public class LoginActivity extends AppCompatActivity {
                     Boolean checkCredentials = databaseHelper.checkEmailPassword(email, password);
                     if(checkCredentials == true){
                         LoginDTO login = new LoginDTO(email, password);
-
                         apiService.login(login).enqueue(new Callback<ApiResponse<LoginResponseDTO>>() {
-                            @RequiresApi(api = Build.VERSION_CODES.O)
                             @Override
                             public void onResponse(Call<ApiResponse<LoginResponseDTO>> call, Response<ApiResponse<LoginResponseDTO>> response) {
                                 if (response.isSuccessful() && response.body() != null) {
                                     ApiResponse<LoginResponseDTO> apiResponse = response.body();
-
                                     if (apiResponse.isSuccess()) {
                                         System.out.println("Login bem-sucedido: " + apiResponse.getMessage());
                                         String token = apiResponse.getData().getToken();

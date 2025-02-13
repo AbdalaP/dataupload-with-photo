@@ -169,7 +169,7 @@ public class ExportDialogFragment extends DialogFragment {
     private void showDatePickerDialog(TextInputEditText textView) {
         Calendar calendar = Calendar.getInstance();
         DatePickerDialog datePickerDialog = new DatePickerDialog(
-                getContext() != null ? getContext() : requireActivity(),  // Substituído requireContext() por getContext() com verificação
+                getContext() != null ? getContext() : requireActivity(),
                 (DatePicker view, int year, int month, int dayOfMonth) -> {
                     String selectedDate = dayOfMonth + "/" + (month + 1) + "/" + year;
                     textView.setText(selectedDate);

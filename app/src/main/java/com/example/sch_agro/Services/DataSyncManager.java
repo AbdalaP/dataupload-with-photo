@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
@@ -74,6 +75,18 @@ public class DataSyncManager {
         this.apiService = apiService;
         this.context = context;
     }
+
+    private ExecutorService executorService1 = Executors.newFixedThreadPool(4);
+
+    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+
+    public void shutdown() {
+        if (executorService1 != null && !executorService1.isShutdown()) {
+            executorService1.shutdown();
+            Log.d("DATABASE", "DataSyncManager foi desligado corretamente.");
+        }
+    }
+
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void syncData() {
@@ -364,9 +377,6 @@ public class DataSyncManager {
             }
         });
     }
-
-
-    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     public byte[] downloadImage(String imageUrl) {
         if (imageUrl == null || imageUrl.isEmpty()) {

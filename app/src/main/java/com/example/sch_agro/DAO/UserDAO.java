@@ -98,6 +98,7 @@ public class UserDAO {
         }
 
         cursor.close(); // Fechando o cursor para liberar recursos
+        db.close();
         return userList;
     }
 
