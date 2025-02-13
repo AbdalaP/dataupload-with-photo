@@ -342,7 +342,8 @@ public class DataSyncManager {
                     for (TrabalhadorResponseDTO trabalhador : trabalhadores) {
                         if (!trabalhadorExists(trabalhador.getDocumentoIdentificacao(), trabalhador.getEmpresaNome())) {
 
-                            byte[] imageBytes = downloadImage(trabalhador.getImagem());
+                            String url = substituirString(trabalhador.getImagem(), "localhost:8081", "192.168.8.101:8081");
+                            byte[] imageBytes = downloadImage(url);
                             boolean inserted = trabalhadoresDao.insertTrabalhador(
                                     trabalhador.getEmpresaNome(),
                                     trabalhador.getNome(),
@@ -377,7 +378,12 @@ public class DataSyncManager {
             }
         });
     }
-
+    public static String substituirString(String original, String alvo, String substituto) {
+        if (original == null || alvo == null || substituto == null) {
+            return original;
+        }
+        return original.replace(alvo, substituto);
+    }
     public byte[] downloadImage(String imageUrl) {
         if (imageUrl == null || imageUrl.isEmpty()) {
             return getDefaultImage(context);
