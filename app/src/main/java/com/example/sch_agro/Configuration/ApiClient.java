@@ -28,7 +28,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import java.io.IOException;
 
 public class ApiClient {
-    private static final String BASE_URL = "http://192.168.8.119:8081/";
+    private static final String BASE_URL = "http://192.168.8.101:8081/";
     private static Retrofit retrofit;
     private static String token; // Variável para armazenar o token globalmente
 

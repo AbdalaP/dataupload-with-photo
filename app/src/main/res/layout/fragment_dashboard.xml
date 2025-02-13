@@ -254,10 +254,12 @@
                                     android:padding="16dp">
 
                                         <TableLayout
+                                            android:id="@+id/tableLayout"
                                             android:layout_width="match_parent"
                                             android:layout_height="wrap_content"
                                             android:stretchColumns="*">
 
+                                                <!-- Cabeçalho -->
                                                 <TableRow
                                                     android:layout_width="match_parent"
                                                     android:layout_height="wrap_content">
@@ -282,123 +284,13 @@
                                                             android:padding="8dp"
                                                             android:gravity="center" />
                                                 </TableRow>
-
                                                 <View
                                                     android:layout_width="match_parent"
                                                     android:layout_height="2dp"
                                                     android:background="@color/lavender"/>
 
-                                                <TableRow
-                                                    android:layout_width="match_parent"
-                                                    android:layout_height="wrap_content">
-
-                                                        <TextView
-                                                            android:layout_width="0dp"
-                                                            android:layout_height="wrap_content"
-                                                            android:layout_weight="1"
-                                                            android:text="Fabrica"
-                                                            android:textSize="16sp"
-                                                            android:padding="8dp"
-                                                            android:gravity="center" />
-
-                                                        <TextView
-                                                            android:layout_width="0dp"
-                                                            android:layout_height="wrap_content"
-                                                            android:layout_weight="1"
-                                                            android:text="16"
-                                                            android:textSize="16sp"
-                                                            android:padding="8dp"
-                                                            android:gravity="center" />
-                                                </TableRow>
-
-                                                <View
-                                                    android:layout_width="match_parent"
-                                                    android:layout_height="2dp"
-                                                    android:background="@color/lavender"/>
-
-                                                <TableRow
-                                                    android:layout_width="match_parent"
-                                                    android:layout_height="wrap_content">
-
-                                                        <TextView
-                                                            android:layout_width="0dp"
-                                                            android:layout_height="wrap_content"
-                                                            android:layout_weight="1"
-                                                            android:text="Desensaque"
-                                                            android:textSize="16sp"
-                                                            android:padding="8dp"
-                                                            android:gravity="center" />
-
-                                                        <TextView
-                                                            android:layout_width="0dp"
-                                                            android:layout_height="wrap_content"
-                                                            android:layout_weight="1"
-                                                            android:text="24"
-                                                            android:textSize="16sp"
-                                                            android:padding="8dp"
-                                                            android:gravity="center" />
-                                                </TableRow>
-
-                                                <View
-                                                    android:layout_width="match_parent"
-                                                    android:layout_height="2dp"
-                                                    android:background="@color/lavender"/>
-
-                                                <TableRow
-                                                    android:layout_width="match_parent"
-                                                    android:layout_height="wrap_content">
-
-                                                        <TextView
-                                                            android:layout_width="0dp"
-                                                            android:layout_height="wrap_content"
-                                                            android:layout_weight="1"
-                                                            android:text="Motorista"
-                                                            android:textSize="16sp"
-                                                            android:padding="8dp"
-                                                            android:gravity="center" />
-
-                                                        <TextView
-                                                            android:layout_width="0dp"
-                                                            android:layout_height="wrap_content"
-                                                            android:layout_weight="1"
-                                                            android:text="8"
-                                                            android:textSize="16sp"
-                                                            android:padding="8dp"
-                                                            android:gravity="center" />
-                                                </TableRow>
-
-                                                <View
-                                                    android:layout_width="match_parent"
-                                                    android:layout_height="2dp"
-                                                    android:background="@color/lavender"/>
-
-                                                <TableRow
-                                                    android:layout_width="match_parent"
-                                                    android:layout_height="wrap_content">
-
-                                                        <TextView
-                                                            android:layout_width="0dp"
-                                                            android:layout_height="wrap_content"
-                                                            android:layout_weight="1"
-                                                            android:text="Servente"
-                                                            android:textSize="16sp"
-                                                            android:padding="8dp"
-                                                            android:gravity="center" />
-
-                                                        <TextView
-                                                            android:layout_width="0dp"
-                                                            android:layout_height="wrap_content"
-                                                            android:layout_weight="1"
-                                                            android:text="30"
-                                                            android:textSize="16sp"
-                                                            android:padding="8dp"
-                                                            android:gravity="center" />
-                                                </TableRow>
-                                                <View
-                                                    android:layout_width="match_parent"
-                                                    android:layout_height="2dp"
-                                                    android:background="@color/lavender"/>
                                         </TableLayout>
+
                                 </LinearLayout>
                         </androidx.cardview.widget.CardView>
                 </GridLayout>

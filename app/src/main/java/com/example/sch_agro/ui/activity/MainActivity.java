@@ -1,6 +1,7 @@
 package com.example.sch_agro.ui.activity;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.MenuItem;
@@ -9,6 +10,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -42,8 +44,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private DrawerLayout drawerLayout;
     private Handler handler = new Handler();
     private Runnable syncRunnable;
+    private DataSyncManager syncManager;
+    private NetworkMonitor networkMonitor;
     private static final long SYNC_INTERVAL = 3 * 60 * 1000; // 3 minutos em milissegundos
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -111,7 +116,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         // Inicialização do monitor de rede
-        NetworkMonitor networkMonitor = new NetworkMonitor(this);
+//        NetworkMonitor
+        networkMonitor = new NetworkMonitor(this);
 
         // Instância dos DAOs
         UserDAO userDao = DatabaseInstance.getInstance(this).userDao();
@@ -124,13 +130,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         ApiService apiService = ApiClient.getClient().create(ApiService.class);
 
         // Instância do DataSyncManager com os DAOs e ApiService
-       DataSyncManager syncManager = new DataSyncManager(userDao, activityDao, trabalhadorDao, taskGebaDao, controleActividadeDAO, apiService);
+//       DataSyncManager
+        syncManager = new DataSyncManager(userDao, activityDao, trabalhadorDao, taskGebaDao, controleActividadeDAO, apiService, this);
 
         // Iniciar o monitoramento da rede e executar sincronização quando conectado
-       networkMonitor.startMonitoring(syncManager::syncData);
+//       networkMonitor.startMonitoring(syncManager::syncData);
 
         // Agendar a sincronização a cada 15 minutos
         syncRunnable = new Runnable() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void run() {
                 networkMonitor.startMonitoring(syncManager::syncData);
@@ -181,6 +189,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             transaction.commit();
 
         } else if (itemId == R.id.nav_logout) {
+            // Finalizar sincronização agendada
+            if (syncRunnable != null) {
+                handler.removeCallbacks(syncRunnable);
+            }
+
+            // Parar o monitoramento da rede
+            networkMonitor.stopMonitoring();
+
+            // Fechar conexões com os DAOs
+            DatabaseInstance.getInstance(this).close();
+
+            // Finalizar DataSyncManager
+            if (syncManager != null) {
+                syncManager.shutdown();
+            }
             //Session session = new Session(this);
             session.logoutUser();
             Intent intent = new Intent(getApplicationContext(),LoginActivity.class);

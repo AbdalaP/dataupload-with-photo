@@ -19,19 +19,50 @@ public class UserDAO {
         this.dbHelper = dbHelper;
     }
 
-    public boolean insertUser(String email, String password) {
+    public boolean insertUser(String nome, String email, String username, String password, String role) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("email", email);
-        values.put("password", password);
-        return db.insert("users", null, values) != -1;
+
+        // Verifica se já existe um usuário com o mesmo e-mail ou nome de usuário
+        String query = "SELECT COUNT(*) FROM users WHERE email = ? OR username = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{email, username});
+
+        boolean exists = false;
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                exists = cursor.getInt(0) > 0;
+            }
+            cursor.close();
+        }
+
+        // Se não existir, insere o novo usuário
+        if (!exists) {
+            ContentValues values = new ContentValues();
+            values.put("nome", nome);
+            values.put("email", email);
+            values.put("username", username);
+            values.put("password", password);
+            values.put("role", role);
+            values.put("isSynced", 1);
+
+            return db.insert("users", null, values) != -1;
+        }
+
+        return false; // Retorna false se o usuário já existir
     }
 
-    public boolean checkEmail(String email) {
+
+    public boolean userExists(String email, String username) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM users WHERE email = ?", new String[]{email});
-        boolean exists = cursor.getCount() > 0;
-        cursor.close();
+        String query = "SELECT COUNT(*) FROM users WHERE email = ? OR username = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{email, username});
+
+        boolean exists = false;
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                exists = cursor.getInt(0) > 0;
+            }
+            cursor.close();
+        }
         return exists;
     }
 
@@ -67,6 +98,7 @@ public class UserDAO {
         }
 
         cursor.close(); // Fechando o cursor para liberar recursos
+        db.close();
         return userList;
     }
 

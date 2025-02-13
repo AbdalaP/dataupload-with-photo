@@ -52,16 +52,16 @@ public class ControleActividadeDAO {
     public List<com.example.sch_agro.Model.ControleActividade> getUnsyncedTasks() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM controle_actividade WHERE isSynced = 0", null); // "isSynced = 0" para booleano no SQLite
-        List<com.example.sch_agro.Model.ControleActividade> tasks = new ArrayList<>();
+        List<ControleActividade> tasks = new ArrayList<>();
 
         if (cursor.moveToFirst()) {
             do {
                 ControleActividade task = new ControleActividade();
 
                 // Preenchendo os campos da classe TaskSan
-                task.setId(cursor.getInt(cursor.getColumnIndexOrThrow("ctrId")));
+                task.setId(cursor.getInt(cursor.getColumnIndexOrThrow("ctrID")));
                 task.setAtividadeId(cursor.getString(cursor.getColumnIndexOrThrow("activity_id")));
-                task.setTrabalhadorId(cursor.getString(cursor.getColumnIndexOrThrow("trabalhador_id")));
+                task.setTrabalhadorId(getTrabalhadorNomeById(db, cursor.getString(cursor.getColumnIndexOrThrow("trabalhador_id"))));
                 task.setQuantidadeFeita(cursor.getInt(cursor.getColumnIndexOrThrow("target")));
                 task.setPresenca(cursor.getInt(cursor.getColumnIndexOrThrow("faltas")));
                 task.setUser(cursor.getString(cursor.getColumnIndexOrThrow("userlog")));
@@ -74,6 +74,16 @@ public class ControleActividadeDAO {
 
         cursor.close();
         return tasks;
+    }
+
+    private String getTrabalhadorNomeById(SQLiteDatabase db, String trabalhadorId) {
+        // Consulta para buscar o nome do trabalhador com base no id
+        Cursor cursor = db.rawQuery("SELECT nome FROM trabalhadores WHERE id = ?", new String[]{trabalhadorId});
+        if (cursor.moveToFirst()) {
+            return cursor.getString(cursor.getColumnIndexOrThrow("nome"));
+        }
+        cursor.close();
+        return ""; // Retorna "Desconhecido" se não encontrar o trabalhador
     }
 
     public void update(ControleActividade task) {

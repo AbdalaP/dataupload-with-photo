@@ -6,6 +6,7 @@ import androidx.annotation.RequiresApi;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 public class Trabalhadores {
@@ -59,8 +60,16 @@ public class Trabalhadores {
         return dataNascimento;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void setDataNascimento(String dataNascimento) {
-        this.dataNascimento = dataNascimento + "-01-01";
+
+        DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("d-M-yyyy");
+        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        LocalDate data = LocalDate.parse(dataNascimento, inputFormatter);
+
+        String dataInicioFormatada = data.format(outputFormatter);
+        this.dataNascimento = dataInicioFormatada ;
     }
 
     public String getGenero() {

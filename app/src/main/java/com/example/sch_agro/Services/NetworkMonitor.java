@@ -7,23 +7,34 @@ import android.net.NetworkRequest;
 
 public class NetworkMonitor {
     private final Context context;
+    private final ConnectivityManager.NetworkCallback networkCallback;
+    private final ConnectivityManager connectivityManager;
 
     public NetworkMonitor(Context context) {
         this.context = context;
-    }
-
-    public void startMonitoring(Runnable onConnected) {
-        ConnectivityManager connectivityManager =
-                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        NetworkRequest request = new NetworkRequest.Builder().build();
-
-        connectivityManager.registerNetworkCallback(request, new ConnectivityManager.NetworkCallback() {
+        this.connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        this.networkCallback = new ConnectivityManager.NetworkCallback() {
             @Override
             public void onAvailable(Network network) {
                 super.onAvailable(network);
-                onConnected.run(); // Executa quando a internet está disponível
+                if (onConnectedRunnable != null) {
+                    onConnectedRunnable.run();
+                }
             }
-        });
+        };
+    }
+
+    private Runnable onConnectedRunnable;
+
+    public void startMonitoring(Runnable onConnected) {
+        this.onConnectedRunnable = onConnected;
+        NetworkRequest request = new NetworkRequest.Builder().build();
+        connectivityManager.registerNetworkCallback(request, networkCallback);
+    }
+
+    public void stopMonitoring() {
+        if (connectivityManager != null && networkCallback != null) {
+            connectivityManager.unregisterNetworkCallback(networkCallback);
+        }
     }
 }

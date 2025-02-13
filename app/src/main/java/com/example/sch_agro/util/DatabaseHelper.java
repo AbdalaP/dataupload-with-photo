@@ -5,8 +5,13 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
+
+import com.example.sch_agro.DTO.ActivityCount;
+
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +30,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     Context context;
     public DatabaseHelper(@Nullable Context context) {
         super(context, "SchAgro.db", null, 3);
-
+    }
+    @Override
+    public void onOpen(SQLiteDatabase db) {
+        super.onOpen(db);
+        db.disableWriteAheadLogging();
     }
 
     @Override
@@ -158,11 +167,13 @@ public List<String> getAllLabels(){
 
     public Boolean insertData(String nome, String email,String username, String password,String role) {
         SQLiteDatabase MyDatabase = this.getWritableDatabase();
+
+        String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
         ContentValues contentValues = new ContentValues();
         contentValues.put("nome", nome);
         contentValues.put("email", email);
         contentValues.put("username", username);
-        contentValues.put("password", password);
+        contentValues.put("password", hashedPassword);
         contentValues.put("role", role);
         long result = MyDatabase.insert("users", null, contentValues);
         if (result == -1) {
@@ -191,7 +202,7 @@ public List<String> getAllLabels(){
         }
     }
 
-    public Boolean checkEmailPassword(String username, String password) {
+    public Boolean checkEmailPassword1(String username, String password) {
         SQLiteDatabase MyDatabase = this.getWritableDatabase();
         Cursor cursor = MyDatabase.rawQuery("Select * from users where username = ? and password = ?", new String[]{username, password});
         if (cursor.getCount() > 0) {
@@ -201,7 +212,31 @@ public List<String> getAllLabels(){
         }
     }
 
+    public Boolean checkEmailPassword(String username, String password) {
+        SQLiteDatabase MyDatabase = null;
+        Cursor cursor = null;
 
+        try {
+            MyDatabase = this.getReadableDatabase();
+            cursor = MyDatabase.rawQuery("SELECT password FROM users WHERE username = ?", new String[]{username});
+
+            if (cursor.moveToFirst()) {
+                String hashedPassword = cursor.getString(0);
+                return BCrypt.checkpw(password, hashedPassword);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            if (MyDatabase != null) {
+                MyDatabase.close();
+            }
+        }
+
+        return false;
+    }
 
     public Boolean insertactivity(String nome, String spinner,String spinner2,String person,String target,String userlogged) {
         SQLiteDatabase MyDatabase = this.getWritableDatabase();
@@ -268,7 +303,6 @@ public List<String> getAllLabels(){
         }
     }
 
-
     public int getCount(String tableName) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM " + tableName, null);
@@ -280,4 +314,30 @@ public List<String> getAllLabels(){
         db.close();
         return count;
     }
+
+    public List<ActivityCount> getActivityCount() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        List<ActivityCount> activityList = new ArrayList<>();
+
+        String query = "SELECT a.activity_name, COALESCE(COUNT(t.activity_id), 0) AS total_trabalhadores " +
+                "FROM activity AS a " +
+                "LEFT JOIN trabalhadores AS t ON t.activity_id = a.activity_name " +
+                "GROUP BY a.activity_name";
+
+        Cursor cursor = db.rawQuery(query, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                String activityName = cursor.getString(0);
+                int totalTrabalhadores = cursor.getInt(1);
+                activityList.add(new ActivityCount(activityName, totalTrabalhadores));
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+
+        return activityList;
+    }
+
 }
