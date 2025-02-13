@@ -37,6 +37,13 @@ public class DataSyncUsers {
             }
         }
     }
+
+    public static String removeRolePrefix(String role) {
+        if (role != null && role.startsWith("ROLE_")) {
+            return role.substring(5); // Remove os primeiros 5 caracteres ("ROLE_")
+        }
+        return role;
+    }
     private void fetchUsers() {
         apiService.getAllUsers().enqueue(new Callback<List<UserDTO>>() {
             @Override
@@ -52,7 +59,7 @@ public class DataSyncUsers {
                                     user.getEmail(),
                                     user.getUsername(),
                                     user.getPassword(),
-                                    user.getRoles()
+                                    removeRolePrefix(user.getRoles())
                             );
 
                             if (inserted) {
