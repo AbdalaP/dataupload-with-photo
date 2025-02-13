@@ -27,5 +27,5 @@
         android:layout_marginBottom="16dp"
         android:text="Sociedade Algodoeira do Niassa"
         android:textColor="@color/black"
-        android:textSize="20dp" />
+        android:textSize="15dp" />
 </LinearLayout>
