@@ -80,60 +80,6 @@ public class UserEditSan extends AppCompatActivity implements AdapterView.OnItem
         button =(Button)findViewById(R.id.btn_edit);
         button =(Button)findViewById(R.id.btn_falta);
 
-/*
-    button.setOnClickListener(new View.OnClickListener() {
-      //  @SuppressLint("SetTextI18n")
-        @Override
-        public void onClick(View v) {
-            int n = Integer.parseInt(targets.getText().toString());
-            int ns= Integer.parseInt(feitas.getText().toString());
-            float sum = (float)ns/n;
-            float reminder = (float)ns-n;
-
-            totals.setText("Answer: " + (sum));
-            if (n>ns){
-                Toast.makeText(UserEditSan.this, "A meta é maior que o realizado "+ reminder +" sacos", Toast.LENGTH_SHORT).show();
-            }else if(n==ns) {
-                Toast.makeText(UserEditSan.this, "Parabens Meta atingida " + n +" un", Toast.LENGTH_SHORT).show();
-            }else {
-                Toast.makeText(UserEditSan.this, "A meta é menor que o realizado " + reminder +" sacos", Toast.LENGTH_SHORT).show();
-            }
-
-        }
-    });
-
- */
-
-
-
-     /*
-        text = new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                totals.setText(String.valueOf(sum));
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        };
-
-
-
-        feitas.addTextChangedListener(text);
-
-      */
-
-
-
-
     }
 
     //The query to populate this spineer is in the databaseHelper
@@ -199,15 +145,10 @@ if (act.equals("Motorista")||act.equals("Ajudante")){
                 // sqLiteDatabase=databaseHelper.getReadableDatabase();
                 String thisUser = session.getKeyUserId();
                 ContentValues cv =new ContentValues();
-                //cv.put("image",ImageViewToBy(image));//is diferente imageviewtobyte original.
-               // cv.put("name",name.getText().toString());
                 cv.put("activity_id",activity_id.getText().toString());
                // cv.put("act",spinner.getItemAtPosition(spinner.getSelectedItemPosition()).toString());
                 cv.put("trabalhador_id",trabalhador_id.getText().toString());
-               // cv.put("target",target.getText().toString());
                 cv.put("target",target.getText().toString());
-                //cv.put("faltas",feita.getText().toString());
-               // cv.put("faltas","True");
                 cv.put("userlog",thisUser);
 
                 sqLiteDatabase=databaseHelper.getWritableDatabase();
@@ -235,17 +176,11 @@ if (act.equals("Motorista")||act.equals("Ajudante")){
             @Override
             public void onClick(View v) {
 
-
-                // sqLiteDatabase=databaseHelper.getReadableDatabase();
-
                 ContentValues cv =new ContentValues();
                 String thisUser = session.getKeyUserId();
-                //cv.put("image",ImageViewToBy(image));//is diferente imageviewtobyte original.
-                // cv.put("name",name.getText().toString());
                 cv.put("activity_id",activity_id.getText().toString());
                 // cv.put("act",spinner.getItemAtPosition(spinner.getSelectedItemPosition()).toString());
                 cv.put("trabalhador_id",trabalhador_id.getText().toString());
-                // cv.put("target",target.getText().toString());
                 cv.put("target",target.getText().toString());
                 cv.put("faltas","True");
                 cv.put("userlog",thisUser);

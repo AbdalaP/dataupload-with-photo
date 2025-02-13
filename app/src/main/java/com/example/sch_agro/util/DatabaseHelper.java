@@ -56,6 +56,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "telefone TEXT NOT NULL, " +
                 "image BLOB NOT NULL, " +
                 "activity_id TEXT NOT NULL, " +
+                "status TEXT, " +
                 "userlog TEXT, " +
                 "registration_date TEXT DEFAULT CURRENT_TIMESTAMP, " +
                 "isSynced BOOLEAN DEFAULT 0)");
@@ -153,28 +154,7 @@ public List<String> getAllLabels(){
         return list;
     }
 
-/*
-public List<String> getAllLabels(){
-    List<String> list = new ArrayList<String>();
 
-    // Select All Query
-    String selectQuery = "SELECT  * FROM " + activity;
-
-    SQLiteDatabase db = this.getReadableDatabase();
-    Cursor cursor = db.rawQuery(selectQuery, null);//selectQuery,selectedArguments
-
-    // looping through all rows and adding to list
-    if (cursor.moveToFirst()) {
-        do {
-            list.add(cursor.getString(2));//adding 2nd column data
-        } while (cursor.moveToNext());
-    }
-    // closing connection
-
-    // returning lables
-    return list;
-}
- */
 
     public Boolean insertData(String nome, String email,String username, String password,String role) {
         SQLiteDatabase MyDatabase = this.getWritableDatabase();
@@ -250,24 +230,6 @@ public List<String> getAllLabels(){
         }
     }
 
-    public Boolean insertregistration(String nome, String docid, String idade, String telefone, String genderid) {
-        SQLiteDatabase MyDatabase = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("nome", nome);
-        contentValues.put("docid", docid);
-        contentValues.put("idade", idade);
-        contentValues.put("telefone", telefone);
-       contentValues.put("genero", genderid);
-
-        long result = MyDatabase.insert("trabalhadores", null, contentValues);
-        if (result == -1) {
-            return false;
-        } else {
-            return true;
-
-        }
-
-    }
 
     public Boolean checkdocid(String docid) {
         SQLiteDatabase MyDatabase = this.getWritableDatabase();

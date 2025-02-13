@@ -8,22 +8,21 @@
     android:orientation="vertical"
     android:background="#F2F2F2"
     android:padding="24dp"
-    tools:context=".ui.activity.UserEditSan">
+    tools:context=".ui.activity.UserActivoInativo">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-
         <TextView
             android:id="@+id/textView4"
-            android:layout_width="324dp"
+            android:layout_width="314dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginLeft="10dp"
-            android:layout_marginTop="-5dp"
-            android:text="  Marcar Presença com Actividade!"
+            android:layout_marginTop="15dp"
+            android:text=" Mudar o Status do Trabalhador!"
             android:textColor="@color/blue"
             android:textSize="20dp" />
 
@@ -35,84 +34,56 @@
             android:layout_marginTop="10dp"
             android:background="@color/green"/>
 
-        <TextView
-            android:id="@+id/activity_id"
-            android:layout_width="220dp"
-            android:layout_height="50dp"
-            android:layout_marginTop="15dp"
-            android:background="@drawable/lavender_border"
-            android:drawableLeft="@drawable/baseline_person_pin_24"
-            android:drawablePadding="8dp"
-            android:hint="ID da Actividade"
-            android:padding="8dp"
-            android:textColor="@color/black"
-            android:textColorHint="@color/black" />
-        <TextView
+        <EditText
             android:id="@+id/trabalhador_id"
-            android:layout_width="220dp"
+            android:layout_width="221dp"
             android:layout_height="50dp"
             android:layout_marginTop="15dp"
             android:background="@drawable/lavender_border"
-            android:drawableLeft="@drawable/baseline_person_pin_24"
+            android:drawableLeft="@drawable/card_id"
             android:drawablePadding="8dp"
-            android:hint="ID do Trabalhador"
+            android:hint="User_ID"
             android:padding="8dp"
             android:textColor="@color/black"
             android:textColorHint="@color/black" />
-        <TextView
-            android:id="@+id/nome"
+
+
+        <EditText
+            android:id="@+id/name"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="15dp"
             android:background="@drawable/lavender_border"
             android:drawableLeft="@drawable/person_add"
             android:drawablePadding="8dp"
             android:hint="Nome"
-            android:textColorHint="@color/black"
-            android:textColor="@color/black"
-            android:padding="8dp"/>
-
-
-        <EditText
-            android:id="@+id/target"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginTop="30dp"
-            android:background="@drawable/lavender_border"
-            android:drawableLeft="@drawable/baseline_production_quantity_limits_24"
-            android:drawablePadding="8dp"
-            android:hint="Qty Feita"
             android:padding="8dp"
             android:textColor="@color/black"
-            android:textColorHint="@color/black"
-            android:inputType="number"/>
+            android:textColorHint="@color/black" />
+
+
+        <Spinner
+            android:id="@+id/status"
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:layout_alignParentTop="true"
+            android:background="@drawable/lavender_border"
+            android:layout_marginTop="15dp"/>
+
 
         <Button
-            android:id="@+id/btn_edit"
+            android:id="@+id/btn_update"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="55dp"
             android:layout_marginTop="15dp"
             android:background="@drawable/btn"
-            android:text="Gravar"
+            android:text="Actualizar"
             android:textColor="@color/white"
             android:textSize="18sp"
             android:textStyle="bold" />
-        <Button
-            android:id="@+id/btn_falta"
-            android:layout_width="250dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="55dp"
-            android:layout_marginTop="15dp"
-            android:background="@drawable/btn"
-            android:text="Falta"
-            android:textColor="@color/white"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:visibility="gone"/>
 
 
     </LinearLayout>
-
 
 </ScrollView>
