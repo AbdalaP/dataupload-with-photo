@@ -292,7 +292,6 @@ public class AddUserFragment extends Fragment implements AdapterView.OnItemSelec
         });
 
         // perform click event on edit text
-
         List<CatActividades> listaCategorias = llenarCategorias();
         ArrayAdapter<CatActividades> arrayAdapter = new ArrayAdapter<>(requireContext(), androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, listaCategorias);
         spinner_tipoAct.setAdapter(arrayAdapter);
@@ -300,11 +299,10 @@ public class AddUserFragment extends Fragment implements AdapterView.OnItemSelec
         spinner_tipoAct.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
-                //((TextView) adapterView.getChildAt(0)).setTextColor(Color.BLACK);
+              //  ((TextView) adapterView.getChildAt(0)).setTextColor(Color.BLACK);
               //  ((TextView) adapterView.getChildAt(0)).setTextSize(18);
 
-                String nombreCat = ((CatActividades) adapterView.getSelectedItem()).getNombre();
+              //  String nombreCat = ((CatActividades) adapterView.getSelectedItem()).getNombre();
 
                // Toast.makeText(AddUserFragment.super.getActivity(), idCat + " - " + nombreCat, Toast.LENGTH_LONG).show();
             }
@@ -328,24 +326,6 @@ public class AddUserFragment extends Fragment implements AdapterView.OnItemSelec
         return  result && result1;
     }
 
-    /*
-    Load spinner not required in the user registration level
-    private void loadSpinnerData() {
-        List<String> labels = databaseHelper.getAllLabels();
-        // Creating adapter for spinner
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(super.getContext(),
-                R.layout.color_spinner_layout,
-                labels);
-        // Drop down layout style - list view with radio button
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // attaching data adapter to spinner
-        spinner.setAdapter(dataAdapter);
-        dataAdapter.add("[Escolhe Actividade...]");
-        spinner.setSelection(dataAdapter.getCount()); //set the hint the default selection so it appears on launch.
-        spinner.setOnItemSelectedListener(this);
-    }
-
-     */
 
     private void insertData() {
 
