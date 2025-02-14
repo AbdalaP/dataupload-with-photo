@@ -220,7 +220,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }else Toast.makeText(MainActivity.this, "Somente Admin e RH pode criar utilizadores!", Toast.LENGTH_SHORT).show();
 
 
-        }else if (itemId == R.id.nav_report) {
+        } else if (itemId == R.id.nav_sinc) {
+            String thisUser = session.getKeyUserId();
+
+           // poe o condigo aqui com progress bar para a pesso saber que esta a sincronizar e uma mensagem no fim a dizer termino o sincronismo.
+
+        }
+        else if (itemId == R.id.nav_report) {
 
 
             RelatoriosFragment aboutfragment = new RelatoriosFragment();
