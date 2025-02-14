@@ -40,6 +40,7 @@
 
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/btnAct"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/imageview"
@@ -69,7 +70,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Baixar Transacoe Act"
+            android:text="Baixar Actividades"
             android:textAlignment="center"
             android:textStyle="bold"/>
         </LinearLayout>
@@ -77,6 +78,7 @@
 
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/btnTra"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/imageview"
@@ -326,7 +328,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Baixar Actividades"
+                android:text="Baixar Transações"
                 android:textAlignment="center"
                 android:textStyle="bold"/>
         </LinearLayout>

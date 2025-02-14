@@ -389,6 +389,84 @@ public class ExportDialogFragment extends DialogFragment {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
+    private void fazerDownloadAtividadesExcel() {
+        try {
+            ApiService service = ApiClient.getClient().create(ApiService.class);
+
+            // Referência fraca ao Fragment
+            final WeakReference<ExportDialogFragment> fragmentRef = new WeakReference<>(this);
+
+            service.getAtividadesExcel()
+                    .enqueue(new Callback<ResponseBody>() {
+                        @Override
+                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                            ExportDialogFragment fragment = fragmentRef.get();
+                            if (fragment != null && fragment.isAdded()) {
+                                if (response.isSuccessful() && response.body() != null) {
+                                    Log.d("Download", "Arquivo Excel recebido, tamanho: " + response.body().contentLength());
+                                    fragment.salvarArquivoExcel(response.body(), "actividades");
+                                } else {
+                                    Log.e("Download", "Resposta falhou: " + response.code());
+                                    fragment.mostrarErro("Erro ao gerar relatório");
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<ResponseBody> call, Throwable t) {
+                            ExportDialogFragment fragment = fragmentRef.get();
+                            if (fragment != null && fragment.isAdded()) {
+                                fragment.mostrarErro("Erro de conexão: " + t.getMessage());
+                            }
+                        }
+                    });
+        } catch (Exception e) {
+            if (isAdded()) {
+                mostrarErro("Erro ao processar datas: " + e.getMessage());
+            }
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void fazerDownloadTrabalhadoresExcel() {
+        try {
+            ApiService service = ApiClient.getClient().create(ApiService.class);
+
+            // Referência fraca ao Fragment
+            final WeakReference<ExportDialogFragment> fragmentRef = new WeakReference<>(this);
+
+            service.getTrabalhadoresExcel()
+                    .enqueue(new Callback<ResponseBody>() {
+                        @Override
+                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                            ExportDialogFragment fragment = fragmentRef.get();
+                            if (fragment != null && fragment.isAdded()) {
+                                if (response.isSuccessful() && response.body() != null) {
+                                    Log.d("Download", "Arquivo Excel recebido, tamanho: " + response.body().contentLength());
+                                    fragment.salvarArquivoExcel(response.body(), "trabalhadores");
+                                } else {
+                                    Log.e("Download", "Resposta falhou: " + response.code());
+                                    fragment.mostrarErro("Erro ao gerar relatório");
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<ResponseBody> call, Throwable t) {
+                            ExportDialogFragment fragment = fragmentRef.get();
+                            if (fragment != null && fragment.isAdded()) {
+                                fragment.mostrarErro("Erro de conexão: " + t.getMessage());
+                            }
+                        }
+                    });
+        } catch (Exception e) {
+            if (isAdded()) {
+                mostrarErro("Erro ao processar datas: " + e.getMessage());
+            }
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void fazerDownloadRelatorioPresencassExcel(String startDate, String endDate) {
         try {
             // Formatação das datas

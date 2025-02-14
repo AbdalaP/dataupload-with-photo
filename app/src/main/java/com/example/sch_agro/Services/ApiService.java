@@ -84,6 +84,12 @@ public interface ApiService {
     Call<ResponseBody> gerarRelatorioAtividadesExcel(@Body IntervaloDTO intervaloDTO);
     @POST("relatorio/atividades/motoristas/excel")
     Call<ResponseBody> gerarRelatorioMotoristasExcel(@Body IntervaloDTO intervaloDTO);
+
+    @GET("atividades/export/excel")
+    Call<ResponseBody> getAtividadesExcel();
+
+    @GET("trabalhadores/export/excel")
+    Call<ResponseBody> getTrabalhadoresExcel();
 }
 
 

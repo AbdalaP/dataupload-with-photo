@@ -47,6 +47,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -54,6 +55,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -64,9 +66,19 @@ public class DataSyncManager {
     private final TaskGebaDAO taskGebaDao;
     private final ControleActividadeDAO controleActividadeDAO;
     private final ApiService apiService;
-    private Context context;
+    private final Context context;
+    private final ExecutorService executorService;
+    private final Set<String> pendingOperations = Collections.synchronizedSet(new HashSet<>());
+    private SyncCompletionCallback completionCallback;
 
-    public DataSyncManager(UserDAO usersDao, ActivityDAO activityDao, TrabalhadoresDAO trabalhadoresDao, TaskGebaDAO taskGebaDao, ControleActividadeDAO controleActividadeDAO, ApiService apiService, Context context) {
+    public interface SyncCompletionCallback {
+        void onSyncCompleted();
+        void onSyncError(String error);
+    }
+
+    public DataSyncManager(UserDAO usersDao, ActivityDAO activityDao, TrabalhadoresDAO trabalhadoresDao,
+                           TaskGebaDAO taskGebaDao, ControleActividadeDAO controleActividadeDAO,
+                           ApiService apiService, Context context) {
         this.usersDao = usersDao;
         this.activityDao = activityDao;
         this.trabalhadoresDao = trabalhadoresDao;
@@ -74,23 +86,23 @@ public class DataSyncManager {
         this.controleActividadeDAO = controleActividadeDAO;
         this.apiService = apiService;
         this.context = context;
+        this.executorService = Executors.newSingleThreadExecutor();
     }
-
-    private ExecutorService executorService1 = Executors.newFixedThreadPool(4);
-
-    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
-
-    public void shutdown() {
-        if (executorService1 != null && !executorService1.isShutdown()) {
-            executorService1.shutdown();
-            Log.d("DATABASE", "DataSyncManager foi desligado corretamente.");
-        }
-    }
-
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public void syncData() {
-//        login();
+    public void syncData(SyncCompletionCallback callback) {
+        this.completionCallback = callback;
+        pendingOperations.clear();
+
+        // Registrar todas as operações de sincronização
+        pendingOperations.add("users");
+        pendingOperations.add("activities");
+        pendingOperations.add("trabalhadores");
+        pendingOperations.add("controleActividades");
+        pendingOperations.add("fetchActivities");
+        pendingOperations.add("fetchTrabalhadores");
+
+        // Iniciar todas as operações de sincronização
         syncUsers();
         syncActivities();
         syncTrabalhadores();
@@ -99,196 +111,164 @@ public class DataSyncManager {
         fetchTrabalhadores();
     }
 
-    private void login() {
-        LoginDTO login = new LoginDTO("cmoda@jfs.san.co.mz", "  dev0");
+    private void onOperationComplete(String operation) {
+        pendingOperations.remove(operation);
+        Log.d("SYNC", "Operação completada: " + operation + ". Restantes: " + pendingOperations.size());
 
-        apiService.login(login).enqueue(new Callback<ApiResponse<LoginResponseDTO>>() {
-            @RequiresApi(api = Build.VERSION_CODES.O)
-            @Override
-            public void onResponse(Call<ApiResponse<LoginResponseDTO>> call, Response<ApiResponse<LoginResponseDTO>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    ApiResponse<LoginResponseDTO> apiResponse = response.body();
-
-                    if (apiResponse.isSuccess()) {
-                        System.out.println("Login bem-sucedido: " + apiResponse.getMessage());
-                        String token = apiResponse.getData().getToken(); // Obtenção do token retornado
-                        System.out.println("Token recebido: " + token);
-
-                        // Configurar o token no ApiClient
-                        ApiClient.setToken(token);
-
-                        // Sincronizações necessárias após o login
-                        syncUsers();
-                        syncActivities();
-                        syncTrabalhadores();
-//                        syncTaskGeba();
-                        syncControleAtividadea();
-                        fetchActivities();
-                        fetchTrabalhadores();
-                    } else {
-                        System.err.println("Erro no login: " + apiResponse.getMessage());
-                    }
-                } else {
-                    System.err.println("Falha no login. Código: " + response.code());
-                    if (response.errorBody() != null) {
-                        try {
-                            String errorMessage = response.errorBody().string();
-                            System.err.println("Mensagem de erro: " + errorMessage);
-                        } catch (IOException e) {
-                            System.err.println("Erro ao processar o corpo de erro: " + e.getMessage());
-                        }
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ApiResponse<LoginResponseDTO>> call, Throwable t) {
-                System.err.println("Falha ao tentar realizar o login.");
-                System.err.println("Detalhes do erro: " + t.getMessage());
-            }
-        });
-    }
-
-    private <T> void syncData(List<T> unsyncedData, Function<T, Call<Void>> sendFunction, Consumer<T> updateFunction) {
-        if (unsyncedData.isEmpty()) {
-            return;
+        if (pendingOperations.isEmpty()) {
+            completionCallback.onSyncCompleted();
         }
-
-        // Inicia a sincronização com o primeiro item
-        syncNext(new ArrayList<>(unsyncedData), 0, sendFunction, updateFunction);
     }
-
-    private <T> void syncNext(List<T> unsyncedData, int currentIndex,
-                              Function<T, Call<Void>> sendFunction,
-                              Consumer<T> updateFunction) {
-        // Verifica se todos os itens foram processados
-        if (currentIndex >= unsyncedData.size()) {
-            return;
-        }
-
-        T currentItem = unsyncedData.get(currentIndex);
-        sendFunction.apply(currentItem).enqueue(new Callback<Void>() {
-            @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
-                if (response.isSuccessful()) {
-                    updateFunction.accept(currentItem);
-                    // Processa o próximo item apenas após o sucesso do atual
-                    syncNext(unsyncedData, currentIndex + 1, sendFunction, updateFunction);
-                } else {
-                    System.err.println("Erro ao sincronizar: " + response.message());
-                    // Em caso de erro, pode-se decidir continuar ou não com o próximo item
-                    syncNext(unsyncedData, currentIndex + 1, sendFunction, updateFunction);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Void> call, Throwable t) {
-                System.err.println("Erro na requisição: " + t.getMessage());
-                // Em caso de falha, pode-se decidir continuar ou não com o próximo item
-                syncNext(unsyncedData, currentIndex + 1, sendFunction, updateFunction);
-            }
-        });
-    }
-
 
     private void syncUsers() {
         List<User> unsyncedUsers = usersDao.getUnsyncedUsers();
-        syncData(unsyncedUsers,
-                apiService::sendUser,
-                user -> {
-                    user.setSynced(true);
-                    usersDao.update(user);
-                });
+        if (unsyncedUsers.isEmpty()) {
+            onOperationComplete("users");
+            return;
+        }
+
+        AtomicInteger completedCount = new AtomicInteger(0);
+
+        for (User user : unsyncedUsers) {
+            apiService.sendUser(user).enqueue(new Callback<Void>() {
+                @Override
+                public void onResponse(Call<Void> call, Response<Void> response) {
+                    if (response.isSuccessful()) {
+                        user.setSynced(true);
+                        usersDao.update(user);
+                    }
+                    if (completedCount.incrementAndGet() == unsyncedUsers.size()) {
+                        onOperationComplete("users");
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Void> call, Throwable t) {
+                    Log.e("SYNC", "Erro ao sincronizar usuário: " + t.getMessage());
+                    if (completedCount.incrementAndGet() == unsyncedUsers.size()) {
+                        onOperationComplete("users");
+                    }
+                }
+            });
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void syncActivities() {
         List<Activity> unsyncedActivities = activityDao.getUnsyncedActivities();
-        syncData(unsyncedActivities,
-                apiService::sendActivity,
-                activity -> {
-                    activity.setSynced(true);
-                    activityDao.update(activity);
-                });
+        if (unsyncedActivities.isEmpty()) {
+            onOperationComplete("activities");
+            return;
+        }
+
+        AtomicInteger completedCount = new AtomicInteger(0);
+
+        for (Activity activity : unsyncedActivities) {
+            apiService.sendActivity(activity).enqueue(new Callback<Void>() {
+                @Override
+                public void onResponse(Call<Void> call, Response<Void> response) {
+                    if (response.isSuccessful()) {
+                        activity.setSynced(true);
+                        activityDao.update(activity);
+                    }
+                    if (completedCount.incrementAndGet() == unsyncedActivities.size()) {
+                        onOperationComplete("activities");
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Void> call, Throwable t) {
+                    Log.e("SYNC", "Erro ao sincronizar atividade: " + t.getMessage());
+                    if (completedCount.incrementAndGet() == unsyncedActivities.size()) {
+                        onOperationComplete("activities");
+                    }
+                }
+            });
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void syncTrabalhadores() {
         List<Trabalhadores> unsyncedTrabalhadores = trabalhadoresDao.getUnsyncedTrabalhadores();
         if (unsyncedTrabalhadores.isEmpty()) {
+            onOperationComplete("trabalhadores");
             return;
         }
 
-        syncNext(new ArrayList<>(unsyncedTrabalhadores), 0);
-    }
+        AtomicInteger completedCount = new AtomicInteger(0);
 
-    private void syncNext(List<Trabalhadores> unsyncedTrabalhadores, int currentIndex) {
-        if (currentIndex >= unsyncedTrabalhadores.size()) {
-            return;
-        }
-
-        Trabalhadores trabalhador = unsyncedTrabalhadores.get(currentIndex);
-
-        // Converter trabalhador para JSON
-        String trabalhadorJson = new Gson().toJson(trabalhador);
-        RequestBody requestBody = RequestBody.create(
-                MediaType.parse("application/json"),
-                trabalhadorJson
-        );
-
-        // Criar MultipartBody.Part para a imagem se existir
-        MultipartBody.Part imagePart = null;
-        byte[] imageBytes = trabalhador.getImage();
-        if (imageBytes != null && imageBytes.length > 0) {
-            RequestBody imageRequestBody = RequestBody.create(
-                    MediaType.parse("image/*"),
-                    imageBytes
+        for (Trabalhadores trabalhador : unsyncedTrabalhadores) {
+            String trabalhadorJson = new Gson().toJson(trabalhador);
+            RequestBody dataRequestBody = RequestBody.create(
+                    MediaType.parse("application/json"),
+                    trabalhadorJson
             );
-            imagePart = MultipartBody.Part.createFormData("image",
-                    "image.jpg",  // Nome padrão para o arquivo
-                    imageRequestBody
-            );
-        }
 
-        // Criar RequestBody para o campo data
-        RequestBody dataRequestBody = RequestBody.create(
-                MediaType.parse("application/json"),
-                trabalhadorJson
-        );
+            MultipartBody.Part imagePart = null;
+            byte[] imageBytes = trabalhador.getImage();
+            if (imageBytes != null && imageBytes.length > 0) {
+                RequestBody imageRequestBody = RequestBody.create(
+                        MediaType.parse("image/*"),
+                        imageBytes
+                );
+                imagePart = MultipartBody.Part.createFormData("image", "image.jpg", imageRequestBody);
+            }
 
-        apiService.sendTrabalhador(dataRequestBody, imagePart).enqueue(new Callback<Void>() {
-            @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
-                if (response.isSuccessful()) {
-                    trabalhador.setSynced(true);
-                    trabalhadoresDao.update(trabalhador);
-                    // Processa o próximo item após sucesso
-                    syncNext(unsyncedTrabalhadores, currentIndex + 1);
-                } else {
-                    System.err.println("Erro ao sincronizar: " + response.message());
-                    // Decide se continua com o próximo em caso de erro
-                    syncNext(unsyncedTrabalhadores, currentIndex + 1);
+            apiService.sendTrabalhador(dataRequestBody, imagePart).enqueue(new Callback<Void>() {
+                @Override
+                public void onResponse(Call<Void> call, Response<Void> response) {
+                    if (response.isSuccessful()) {
+                        trabalhador.setSynced(true);
+                        trabalhadoresDao.update(trabalhador);
+                    }
+                    if (completedCount.incrementAndGet() == unsyncedTrabalhadores.size()) {
+                        onOperationComplete("trabalhadores");
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<Void> call, Throwable t) {
-                System.err.println("Erro na requisição: " + t.getMessage());
-                // Decide se continua com o próximo em caso de falha
-                syncNext(unsyncedTrabalhadores, currentIndex + 1);
-            }
-        });
+                @Override
+                public void onFailure(Call<Void> call, Throwable t) {
+                    Log.e("SYNC", "Erro ao sincronizar trabalhador: " + t.getMessage());
+                    if (completedCount.incrementAndGet() == unsyncedTrabalhadores.size()) {
+                        onOperationComplete("trabalhadores");
+                    }
+                }
+            });
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void syncControleAtividadea() {
-        List<ControleActividade> unsyncedControleActividade = controleActividadeDAO.getUnsyncedTasks();
-        syncData(unsyncedControleActividade,
-                apiService::sendControleAtividade,
-                task -> {
-                    task.setSynced(true);
-                    controleActividadeDAO.update(task);
-                });
+        List<ControleActividade> unsyncedControls = controleActividadeDAO.getUnsyncedTasks();
+        if (unsyncedControls.isEmpty()) {
+            onOperationComplete("controleActividades");
+            return;
+        }
+
+        AtomicInteger completedCount = new AtomicInteger(0);
+
+        for (ControleActividade control : unsyncedControls) {
+            apiService.sendControleAtividade(control).enqueue(new Callback<Void>() {
+                @Override
+                public void onResponse(Call<Void> call, Response<Void> response) {
+                    if (response.isSuccessful()) {
+                        control.setSynced(true);
+                        controleActividadeDAO.update(control);
+                    }
+                    if (completedCount.incrementAndGet() == unsyncedControls.size()) {
+                        onOperationComplete("controleActividades");
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Void> call, Throwable t) {
+                    Log.e("SYNC", "Erro ao sincronizar controle de atividade: " + t.getMessage());
+                    if (completedCount.incrementAndGet() == unsyncedControls.size()) {
+                        onOperationComplete("controleActividades");
+                    }
+                }
+            });
+        }
     }
 
     private void fetchActivities() {
@@ -297,10 +277,9 @@ public class DataSyncManager {
             public void onResponse(Call<List<ActivityResponseDTO>> call, Response<List<ActivityResponseDTO>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     List<ActivityResponseDTO> activities = response.body();
-
                     for (ActivityResponseDTO activity : activities) {
                         if (!activityExists(activity.getDesignacao(), activity.getEmpresa())) {
-                            boolean inserted = activityDao.insertActivity(
+                            activityDao.insertActivity(
                                     activity.getEmpresa(),
                                     activity.getDesignacao(),
                                     activity.getResponsavel(),
@@ -308,26 +287,16 @@ public class DataSyncManager {
                                     activity.getTipo(),
                                     "admin"
                             );
-
-                            if (inserted) {
-                                System.out.println("Atividade inserida: " + activity.getDesignacao());
-                            } else {
-                                System.out.println("Falha ao inserir a atividade: " + activity.getDesignacao());
-                            }
-                        } else {
-                            System.out.println("Atividade já existe: " + activity.getDesignacao());
                         }
                     }
-                } else {
-                    System.err.println("Falha ao buscar atividades. Código: " + response.code());
-                    logError(response);
                 }
+                onOperationComplete("fetchActivities");
             }
 
             @Override
             public void onFailure(Call<List<ActivityResponseDTO>> call, Throwable t) {
-                System.err.println("Falha ao tentar buscar atividades.");
-                System.err.println("Detalhes do erro: " + t.getMessage());
+                Log.e("SYNC", "Erro ao buscar atividades: " + t.getMessage());
+                onOperationComplete("fetchActivities");
             }
         });
     }
@@ -338,13 +307,11 @@ public class DataSyncManager {
             public void onResponse(Call<List<TrabalhadorResponseDTO>> call, Response<List<TrabalhadorResponseDTO>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     List<TrabalhadorResponseDTO> trabalhadores = response.body();
-
                     for (TrabalhadorResponseDTO trabalhador : trabalhadores) {
                         if (!trabalhadorExists(trabalhador.getDocumentoIdentificacao(), trabalhador.getEmpresaNome())) {
-
                             String url = substituirString(trabalhador.getImagem(), "localhost:8081", "192.168.8.101:8081");
                             byte[] imageBytes = downloadImage(url);
-                            boolean inserted = trabalhadoresDao.insertTrabalhador(
+                            trabalhadoresDao.insertTrabalhador(
                                     trabalhador.getEmpresaNome(),
                                     trabalhador.getNome(),
                                     trabalhador.getDocumentoIdentificacao(),
@@ -355,51 +322,37 @@ public class DataSyncManager {
                                     "admin",
                                     imageBytes
                             );
-
-                            if (inserted) {
-                                System.out.println("Trabalhador inserido: " + trabalhador.getNome());
-                            } else {
-                                System.out.println("Falha ao inserir o trabalhador: " + trabalhador.getNome());
-                            }
-                        } else {
-                            System.out.println("Trabalhador já existe: " + trabalhador.getNome());
                         }
                     }
-                } else {
-                    System.err.println("Falha ao buscar trabalhadores. Código: " + response.code());
-                    logError(response);
                 }
+                onOperationComplete("fetchTrabalhadores");
             }
 
             @Override
             public void onFailure(Call<List<TrabalhadorResponseDTO>> call, Throwable t) {
-                System.err.println("Falha ao tentar buscar trabalhadores.");
-                System.err.println("Detalhes do erro: " + t.getMessage());
+                Log.e("SYNC", "Erro ao buscar trabalhadores: " + t.getMessage());
+                onOperationComplete("fetchTrabalhadores");
             }
         });
     }
+
+    // Helper methods remain the same
     public static String substituirString(String original, String alvo, String substituto) {
         if (original == null || alvo == null || substituto == null) {
             return original;
         }
         return original.replace(alvo, substituto);
     }
+
     public byte[] downloadImage(String imageUrl) {
         if (imageUrl == null || imageUrl.isEmpty()) {
             return getDefaultImage(context);
         }
 
-        Future<byte[]> future = executorService.submit(new Callable<byte[]>() {
-            @Override
-            public byte[] call() {
-                return fetchImage(imageUrl);
-            }
-        });
-
         try {
-            return future.get(); // Espera a resposta da thread
+            return executorService.submit(() -> fetchImage(imageUrl)).get();
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("SYNC", "Erro ao baixar imagem: " + e.getMessage());
             return getDefaultImage(context);
         }
     }
@@ -438,7 +391,6 @@ public class DataSyncManager {
             }
         }
     }
-
     public byte[] getDefaultImage(Context context) {
         try {
             Drawable drawable = context.getResources().getDrawable(R.drawable.user, null);
@@ -452,6 +404,7 @@ public class DataSyncManager {
             return null; // Caso não consiga carregar a imagem
         }
     }
+
 
     private boolean userExists(String email, String username) {
         return usersDao.userExists(email, username);
@@ -474,45 +427,12 @@ public class DataSyncManager {
         }
     }
 
-    private void fetchUsers() {
-        apiService.getAllUsers().enqueue(new Callback<List<UserDTO>>() {
-            @Override
-            public void onResponse(Call<List<UserDTO>> call, Response<List<UserDTO>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    List<UserDTO> users = response.body();
+    // Remaining helper methods stay the same...
 
-                    for (UserDTO user : users) {
-                        if (!userExists(user.getEmail(), user.getUsername())) {
-
-                            boolean inserted = usersDao.insertUser(
-                                    user.getNomeCompleto(),
-                                    user.getEmail(),
-                                    user.getUsername(),
-                                    user.getPassword(),
-                                    user.getRoles()
-                            );
-
-                            if (inserted) {
-                                System.out.println("User inserido: " + user.getNomeCompleto());
-                            } else {
-                                System.out.println("Falha ao inserir o user: " + user.getNomeCompleto());
-                            }
-                        } else {
-                            System.out.println("User já existe: " + user.getNomeCompleto());
-                        }
-                    }
-                } else {
-                    System.err.println("Falha ao buscar users. Código: " + response.code());
-                    logError(response);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<UserDTO>> call, Throwable t) {
-                System.err.println("Falha ao tentar buscar users.");
-                System.err.println("Detalhes do erro: " + t.getMessage());
-            }
-        });
+    public void shutdown() {
+        if (executorService != null && !executorService.isShutdown()) {
+            executorService.shutdown();
+            Log.d("SYNC", "DataSyncManager foi desligado corretamente.");
+        }
     }
-
 }

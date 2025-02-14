@@ -1,9 +1,12 @@
 package com.example.sch_agro.ui.activity;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -16,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.sch_agro.Configuration.ApiClient;
@@ -47,6 +51,36 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private DataSyncManager syncManager;
     private NetworkMonitor networkMonitor;
     private static final long SYNC_INTERVAL = 3 * 60 * 1000; // 3 minutos em milissegundos
+
+    private void refreshCurrentFragment() {
+        // Get the current fragment
+        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+
+        if (currentFragment != null) {
+            // Create a new instance of the same fragment type
+            Fragment newFragment = null;
+
+            if (currentFragment instanceof DashboardFragment) {
+                newFragment = new DashboardFragment();
+            } else if (currentFragment instanceof ViewFarmerFragment) {
+                newFragment = new ViewFarmerFragment();
+            } else if (currentFragment instanceof AddActFragment) {
+                newFragment = new AddActFragment();
+            } else if (currentFragment instanceof AddUserFragment) {
+                newFragment = new AddUserFragment();
+            } else if (currentFragment instanceof RelatoriosFragment) {
+                newFragment = new RelatoriosFragment();
+            }
+
+            // Replace the current fragment with the new instance
+            if (newFragment != null) {
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragment_container, newFragment)
+                        .commit();
+            }
+        }
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -114,42 +148,43 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     .commit();
             navigationView.setCheckedItem(R.id.nav_dashboard);
         }
-
-        // Inicialização do monitor de rede
-//        NetworkMonitor
-        networkMonitor = new NetworkMonitor(this);
-
-        // Instância dos DAOs
-        UserDAO userDao = DatabaseInstance.getInstance(this).userDao();
-        ActivityDAO activityDao = DatabaseInstance.getInstance(this).activityDao();
-        TrabalhadoresDAO trabalhadorDao = DatabaseInstance.getInstance(this).trabalhadorDao();
-        TaskGebaDAO taskGebaDao = DatabaseInstance.getInstance(this).taskGebaDao();
-        ControleActividadeDAO controleActividadeDAO = DatabaseInstance.getInstance(this).taskSanDao();
-
-        // Instância da ApiService
-        ApiService apiService = ApiClient.getClient().create(ApiService.class);
-
-        // Instância do DataSyncManager com os DAOs e ApiService
-//       DataSyncManager
-        syncManager = new DataSyncManager(userDao, activityDao, trabalhadorDao, taskGebaDao, controleActividadeDAO, apiService, this);
-
-        // Iniciar o monitoramento da rede e executar sincronização quando conectado
-//       networkMonitor.startMonitoring(syncManager::syncData);
-
-        // Agendar a sincronização a cada 15 minutos
-        syncRunnable = new Runnable() {
-            @RequiresApi(api = Build.VERSION_CODES.O)
-            @Override
-            public void run() {
-                networkMonitor.startMonitoring(syncManager::syncData);
-                handler.postDelayed(this, SYNC_INTERVAL);
-            }
-        };
-
-        // Iniciar a primeira sincronização
-        handler.post(syncRunnable);
+//
+//        // Inicialização do monitor de rede
+////        NetworkMonitor
+//        networkMonitor = new NetworkMonitor(this);
+//
+//        // Instância dos DAOs
+//        UserDAO userDao = DatabaseInstance.getInstance(this).userDao();
+//        ActivityDAO activityDao = DatabaseInstance.getInstance(this).activityDao();
+//        TrabalhadoresDAO trabalhadorDao = DatabaseInstance.getInstance(this).trabalhadorDao();
+//        TaskGebaDAO taskGebaDao = DatabaseInstance.getInstance(this).taskGebaDao();
+//        ControleActividadeDAO controleActividadeDAO = DatabaseInstance.getInstance(this).taskSanDao();
+//
+//        // Instância da ApiService
+//        ApiService apiService = ApiClient.getClient().create(ApiService.class);
+//
+//        // Instância do DataSyncManager com os DAOs e ApiService
+////       DataSyncManager
+//        syncManager = new DataSyncManager(userDao, activityDao, trabalhadorDao, taskGebaDao, controleActividadeDAO, apiService, this);
+//
+//        // Iniciar o monitoramento da rede e executar sincronização quando conectado
+////       networkMonitor.startMonitoring(syncManager::syncData);
+//
+//        // Agendar a sincronização a cada 15 minutos
+//        syncRunnable = new Runnable() {
+//            @RequiresApi(api = Build.VERSION_CODES.O)
+//            @Override
+//            public void run() {
+//                networkMonitor.startMonitoring(syncManager::syncData);
+//                handler.postDelayed(this, SYNC_INTERVAL);
+//            }
+//        };
+//
+//        // Iniciar a primeira sincronização
+//        handler.post(syncRunnable);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         Session session = new Session(this); //calling session class that keeps de userid after user logsin
@@ -224,6 +259,57 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             String thisUser = session.getKeyUserId();
 
            // poe o condigo aqui com progress bar para a pesso saber que esta a sincronizar e uma mensagem no fim a dizer termino o sincronismo.
+
+            // Criar um Dialog para o loader
+            AlertDialog progressDialog = new AlertDialog.Builder(this)
+                    .setView(R.layout.dialog_progress) // Layout personalizado com ProgressBar girando
+                    .setCancelable(false) // Impede que o usuário feche manualmente
+                    .create();
+
+            progressDialog.show(); // Exibe o loader
+
+            // Inicialização do monitor de rede
+            networkMonitor = new NetworkMonitor(this);
+
+            // Instância dos DAOs
+            UserDAO userDao = DatabaseInstance.getInstance(this).userDao();
+            ActivityDAO activityDao = DatabaseInstance.getInstance(this).activityDao();
+            TrabalhadoresDAO trabalhadorDao = DatabaseInstance.getInstance(this).trabalhadorDao();
+            TaskGebaDAO taskGebaDao = DatabaseInstance.getInstance(this).taskGebaDao();
+            ControleActividadeDAO controleActividadeDAO = DatabaseInstance.getInstance(this).taskSanDao();
+
+            // Instância da ApiService
+            ApiService apiService = ApiClient.getClient().create(ApiService.class);
+
+            // Instância do DataSyncManager
+            syncManager = new DataSyncManager(userDao, activityDao, trabalhadorDao, taskGebaDao, controleActividadeDAO, apiService, this);
+
+            // Iniciar o monitoramento da rede e executar sincronização quando conectado
+            networkMonitor.startMonitoring(() -> {
+                Log.d("SYNC", "Rede conectada! Iniciando syncData...");
+                new Thread(() -> {
+                    syncManager.syncData(new DataSyncManager.SyncCompletionCallback() {
+                        @Override
+                        public void onSyncCompleted() {
+                            runOnUiThread(() -> {
+                                progressDialog.dismiss();
+                                Toast.makeText(MainActivity.this, "Sincronização concluída!", Toast.LENGTH_SHORT).show();
+                                Log.d("SYNC", "Sincronização concluída com sucesso!");
+                                refreshCurrentFragment();
+                            });
+                        }
+
+                        @Override
+                        public void onSyncError(String error) {
+                            runOnUiThread(() -> {
+                                progressDialog.dismiss();
+                                Toast.makeText(MainActivity.this, "Erro na sincronização: " + error, Toast.LENGTH_LONG).show();
+                                Log.e("SYNC", "Erro na sincronização: " + error);
+                            });
+                        }
+                    });
+                }).start();
+            });
 
         }
         else if (itemId == R.id.nav_report) {
