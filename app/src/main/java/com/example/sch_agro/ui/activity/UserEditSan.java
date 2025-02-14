@@ -155,7 +155,7 @@ if (act.equals("Motorista")||act.equals("Ajudante")){
 
                 if (target.length()==0) {
                     Toast.makeText(UserEditSan.this, "Insira o Numero da meta diaria", Toast.LENGTH_SHORT).show();
-                }
+                }else {
                     long recedit = sqLiteDatabase.insert(controle_actividade, null, cv);
                     if (recedit != -1) {
                         Toast.makeText(UserEditSan.this, "Data Inserted successfully", Toast.LENGTH_SHORT).show();
@@ -168,6 +168,7 @@ if (act.equals("Motorista")||act.equals("Ajudante")){
                     } else {
                         Toast.makeText(UserEditSan.this, "Something is wrong", Toast.LENGTH_SHORT).show();
                     }
+                }
 
             }
         });
