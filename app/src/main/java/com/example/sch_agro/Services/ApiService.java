@@ -24,7 +24,9 @@ import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Part;
+import retrofit2.http.Path;
 
 public interface ApiService {
 
@@ -44,6 +46,16 @@ public interface ApiService {
     @Multipart
     @POST("trabalhadores/sync")
     Call<Void> sendTrabalhador(
+            @Part("data") RequestBody data,
+            @Part MultipartBody.Part image
+    );
+
+
+    // Endpoint para atualizar dados de trabalhadores
+    @Multipart
+    @PUT("trabalhadores/{id}")
+    Call<Void> updateTrabalhador(
+            @Path("id") Long id,
             @Part("data") RequestBody data,
             @Part MultipartBody.Part image
     );

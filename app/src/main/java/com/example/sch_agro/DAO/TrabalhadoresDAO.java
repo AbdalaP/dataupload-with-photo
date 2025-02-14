@@ -11,7 +11,6 @@ import androidx.annotation.RequiresApi;
 import com.example.sch_agro.Model.Trabalhadores;
 import com.example.sch_agro.util.DatabaseHelper;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -114,6 +113,36 @@ public class TrabalhadoresDAO {
 
         cursor.close();
         return trabalhadoresList;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public Trabalhadores getTrabalhadorById(String id) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        // Consulta o trabalhador pelo ID
+        Cursor cursor = db.rawQuery("SELECT * FROM trabalhadores WHERE id = ?", new String[]{String.valueOf(id)});
+
+        Trabalhadores trabalhador = null;
+
+        if (cursor.moveToFirst()) {
+            trabalhador = new Trabalhadores();
+
+            // Preenchendo os campos da classe Trabalhadores
+            trabalhador.setId(cursor.getInt(cursor.getColumnIndexOrThrow("id")));
+            trabalhador.setEmpresa(cursor.getString(cursor.getColumnIndexOrThrow("empresa")));
+            trabalhador.setNome(cursor.getString(cursor.getColumnIndexOrThrow("nome")));
+            trabalhador.setDocumentoIdentificacao(cursor.getString(cursor.getColumnIndexOrThrow("docid")));
+            trabalhador.setDataNascimento(cursor.getString(cursor.getColumnIndexOrThrow("data_nascimento")));
+            trabalhador.setGenero(cursor.getString(cursor.getColumnIndexOrThrow("genero")));
+            trabalhador.setTelefone(cursor.getString(cursor.getColumnIndexOrThrow("telefone")));
+            trabalhador.setImage(cursor.getBlob(cursor.getColumnIndexOrThrow("image")));
+            trabalhador.setAtividade(cursor.getString(cursor.getColumnIndexOrThrow("activity_id")));
+            trabalhador.setRegistrationDate(new Date(cursor.getLong(cursor.getColumnIndexOrThrow("registration_date")))); // Convertendo timestamp para Date
+            trabalhador.setSynced(cursor.getInt(cursor.getColumnIndexOrThrow("isSynced")) == 1); // Convertendo de int para boolean
+        }
+
+        cursor.close();
+        return trabalhador;
     }
 
     public void update(Trabalhadores trabalhador) {

@@ -7,6 +7,7 @@ import androidx.annotation.RequiresApi;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Date;
 
 public class Trabalhadores {
@@ -20,6 +21,8 @@ public class Trabalhadores {
     private byte[] image;
     private String atividade;
     private String registrationDate;
+
+    private String estado;
 
     private String user;
     private boolean isSynced;
@@ -62,14 +65,20 @@ public class Trabalhadores {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void setDataNascimento(String dataNascimento) {
+        if (dataNascimento.matches("\\d{4}-\\d{2}-\\d{2}")) {
+            // Se já estiver no formato yyyy-MM-dd, não há necessidade de conversão
+            this.dataNascimento = dataNascimento;
+        } else {
+            try {
+                DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("d-M-yyyy");
+                DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-        DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("d-M-yyyy");
-        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
-        LocalDate data = LocalDate.parse(dataNascimento, inputFormatter);
-
-        String dataInicioFormatada = data.format(outputFormatter);
-        this.dataNascimento = dataInicioFormatada ;
+                LocalDate data = LocalDate.parse(dataNascimento, inputFormatter);
+                this.dataNascimento = data.format(outputFormatter);
+            } catch (DateTimeParseException e) {
+                throw new IllegalArgumentException("Formato de data inválido: " + dataNascimento);
+            }
+        }
     }
 
     public String getGenero() {
@@ -140,5 +149,13 @@ public class Trabalhadores {
 
     public void setSynced(boolean synced) {
         isSynced = synced;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
     }
 }
