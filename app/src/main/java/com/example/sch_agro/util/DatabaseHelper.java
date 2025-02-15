@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -292,14 +291,14 @@ public List<String> getAllLabels(){
 
 
 
-    public void checkcategory(String username) {
+    public boolean checkStatus() {
         SQLiteDatabase MyDatabase = this.getWritableDatabase();
-        Cursor cursor = MyDatabase.rawQuery("Select nome from users where username = ?", new String[]{username});
+        Cursor cursor = MyDatabase.rawQuery("Select status from trabalhadores where status = 'Ativo'", null);
         if (cursor.getCount() > 0) {
            // return Boolean.valueOf(username);
-            checkcategory(username);
+            return true;
         } else {
-
+            return false;
         }
     }
 

@@ -108,33 +108,41 @@ public class UserEditSan extends AppCompatActivity implements AdapterView.OnItem
     }
 
     private void insertData() {
+        sqLiteDatabase = databaseHelper.getWritableDatabase();
+        Boolean checkstatus = databaseHelper.checkStatus();
+        if (!checkstatus) {
+            Toast.makeText(UserEditSan.this, "Este Trabalhador Esta Desativado Consulta RH", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(intent);
+        }//else{
+
+
         Session session = new Session(this);
         String act = activity_id.getText().toString();
-      //  databaseHelper.checkcategory(act); // por a funcionar depois para levar funcao no activity
-       // if (act!="Presença")
-if (act.equals("Motorista")||act.equals("Ajudante")){
-    View b = findViewById(R.id.btn_edit);
-    b.setVisibility(View.GONE);
-    View c = findViewById(R.id.target);
-    c.setVisibility(View.GONE);
+        //  databaseHelper.checkcategory(act); // por a funcionar depois para levar funcao no activity
+        // if (act!="Presença")
+        if (act.equals("Motorista") || act.equals("Ajudante")) {
+            View b = findViewById(R.id.btn_edit);
+            b.setVisibility(View.GONE);
+            View c = findViewById(R.id.target);
+            c.setVisibility(View.GONE);
 
-    View d = findViewById(R.id.btn_falta);
-    d.setVisibility(View.VISIBLE);
-   // insertDataMotorista(); //falta button
+            View d = findViewById(R.id.btn_falta);
+            d.setVisibility(View.VISIBLE);
+            // insertDataMotorista(); //falta button
 
-}else {
-    View b = findViewById(R.id.btn_edit);
-    b.setVisibility(View.VISIBLE);
-    View c = findViewById(R.id.target);
-    c.setVisibility(View.VISIBLE);
+        } else {
+            View b = findViewById(R.id.btn_edit);
+            b.setVisibility(View.VISIBLE);
+            View c = findViewById(R.id.target);
+            c.setVisibility(View.VISIBLE);
 
-    View d = findViewById(R.id.btn_falta);
-    d.setVisibility(View.GONE);
+            View d = findViewById(R.id.btn_falta);
+            d.setVisibility(View.GONE);
 
 
-
-}
-       // Session session = new Session(this); //calling session class that keeps de userid after user logsin
+        }
+        // Session session = new Session(this); //calling session class that keeps de userid after user logsin
         //////////button edit or inserting new data tasksan
         btn_edit.setOnClickListener(new View.OnClickListener() {
 
@@ -144,18 +152,18 @@ if (act.equals("Motorista")||act.equals("Ajudante")){
 
                 // sqLiteDatabase=databaseHelper.getReadableDatabase();
                 String thisUser = session.getKeyUserId();
-                ContentValues cv =new ContentValues();
-                cv.put("activity_id",activity_id.getText().toString());
-               // cv.put("act",spinner.getItemAtPosition(spinner.getSelectedItemPosition()).toString());
-                cv.put("trabalhador_id",trabalhador_id.getText().toString());
-                cv.put("target",target.getText().toString());
-                cv.put("userlog",thisUser);
+                ContentValues cv = new ContentValues();
+                cv.put("activity_id", activity_id.getText().toString());
+                // cv.put("act",spinner.getItemAtPosition(spinner.getSelectedItemPosition()).toString());
+                cv.put("trabalhador_id", trabalhador_id.getText().toString());
+                cv.put("target", target.getText().toString());
+                cv.put("userlog", thisUser);
 
-                sqLiteDatabase=databaseHelper.getWritableDatabase();
+                sqLiteDatabase = databaseHelper.getWritableDatabase();
 
-                if (target.length()==0) {
+                if (target.length() == 0) {
                     Toast.makeText(UserEditSan.this, "Insira o Numero da meta diaria", Toast.LENGTH_SHORT).show();
-                }else {
+                } else {
                     long recedit = sqLiteDatabase.insert(controle_actividade, null, cv);
                     if (recedit != -1) {
                         Toast.makeText(UserEditSan.this, "Data Inserted successfully", Toast.LENGTH_SHORT).show();
@@ -177,16 +185,16 @@ if (act.equals("Motorista")||act.equals("Ajudante")){
             @Override
             public void onClick(View v) {
 
-                ContentValues cv =new ContentValues();
+                ContentValues cv = new ContentValues();
                 String thisUser = session.getKeyUserId();
-                cv.put("activity_id",activity_id.getText().toString());
+                cv.put("activity_id", activity_id.getText().toString());
                 // cv.put("act",spinner.getItemAtPosition(spinner.getSelectedItemPosition()).toString());
-                cv.put("trabalhador_id",trabalhador_id.getText().toString());
-                cv.put("target",target.getText().toString());
-                cv.put("faltas","True");
-                cv.put("userlog",thisUser);
+                cv.put("trabalhador_id", trabalhador_id.getText().toString());
+                cv.put("target", target.getText().toString());
+                cv.put("faltas", "True");
+                cv.put("userlog", thisUser);
 
-                sqLiteDatabase=databaseHelper.getWritableDatabase();
+                sqLiteDatabase = databaseHelper.getWritableDatabase();
 
 
                 long recedit = sqLiteDatabase.insert(controle_actividade, null, cv);
@@ -204,6 +212,7 @@ if (act.equals("Motorista")||act.equals("Ajudante")){
 
             }
         });
+   // }
     }
    // Session session = new Session(this); //calling session class that keeps de userid after user logsin
 

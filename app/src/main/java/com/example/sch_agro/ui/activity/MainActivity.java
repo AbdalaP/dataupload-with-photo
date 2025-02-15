@@ -1,7 +1,6 @@
 package com.example.sch_agro.ui.activity;
 
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -258,7 +257,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (itemId == R.id.nav_sinc) {
             String thisUser = session.getKeyUserId();
 
-           // poe o condigo aqui com progress bar para a pesso saber que esta a sincronizar e uma mensagem no fim a dizer termino o sincronismo.
+           // poe o condigo aqui com progress bar para a pessoa saber que esta a sincronizar e uma mensagem no fim a dizer termino o sincronismo.
 
             // Criar um Dialog para o loader
             AlertDialog progressDialog = new AlertDialog.Builder(this)
