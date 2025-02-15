@@ -1,12 +1,10 @@
 package com.example.sch_agro.ui.fragment;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.pm.PackageManager;
-import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,7 +17,6 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -35,33 +32,28 @@ import com.example.sch_agro.R;
 import com.example.sch_agro.Services.ApiService;
 import com.google.android.material.textfield.TextInputEditText;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.ref.WeakReference;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
-public class ExportDialogFragment extends DialogFragment {
+public class DataDialogFragment extends DialogFragment {
     private static final int STORAGE_PERMISSION_CODE = 1001;
 
     private TextInputEditText txtStartDate, txtEndDate;
-    private RadioGroup radioGroupCategorias, radioGroupTipo;
-    private RadioButton radioMetas, radioPresencas, radioResumo, radioDetalhado;
     private Button btnBaixar;
+    private Boolean actividade;
+    public DataDialogFragment(Boolean actividade) {
+        this.actividade = actividade;
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @NonNull
@@ -69,7 +61,7 @@ public class ExportDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         Dialog dialog = new Dialog(getContext() != null ? getContext() : requireActivity());  // Substituído requireContext() por getContext() com verificação
 
-        dialog.setContentView(R.layout.dialog_export);
+        dialog.setContentView(R.layout.dialog_export_act);
 
         // Inicializando componentes
         initViews(dialog);
@@ -98,14 +90,6 @@ public class ExportDialogFragment extends DialogFragment {
         txtStartDate = dialog.findViewById(R.id.txtStartDate);
         txtEndDate = dialog.findViewById(R.id.txtEndDate);
 
-        radioGroupCategorias = dialog.findViewById(R.id.radioGroupCategorias);
-        radioGroupTipo = dialog.findViewById(R.id.radioGroupTipo);
-
-        radioMetas = dialog.findViewById(R.id.radioMetas);
-        radioPresencas = dialog.findViewById(R.id.radioPresencas);
-        radioResumo = dialog.findViewById(R.id.radioResumo);
-        radioDetalhado = dialog.findViewById(R.id.radioDetalhado);
-
         btnBaixar = dialog.findViewById(R.id.btnBaixar);
     }
 
@@ -121,13 +105,11 @@ public class ExportDialogFragment extends DialogFragment {
         btnBaixar.setOnClickListener(v -> {
             String startDate = txtStartDate.getText().toString();
             String endDate = txtEndDate.getText().toString();
-            String categoriaSelecionada = getSelectedCategoria();
-            String tipoSelecionado = getSelectedTipo();
 
             // Verifica permissões antes de processar os dados
             if (checkStoragePermission()) {
                 // Captura os dados para processamento
-                processarDados(startDate, endDate, categoriaSelecionada, tipoSelecionado);
+                processarDados(startDate, endDate);
             } else {
                 requestStoragePermission();
             }
@@ -154,18 +136,6 @@ public class ExportDialogFragment extends DialogFragment {
         }
     }
 
-    private String getSelectedCategoria() {
-        int selectedId = radioGroupCategorias.getCheckedRadioButtonId();
-        RadioButton selectedRadioButton = getDialog().findViewById(selectedId);
-        return selectedRadioButton != null ? selectedRadioButton.getText().toString() : "";
-    }
-
-    private String getSelectedTipo() {
-        int selectedId = radioGroupTipo.getCheckedRadioButtonId();
-        RadioButton selectedRadioButton = getDialog().findViewById(selectedId);
-        return selectedRadioButton != null ? selectedRadioButton.getText().toString() : "";
-    }
-
     private void showDatePickerDialog(TextInputEditText textView) {
         Calendar calendar = Calendar.getInstance();
         DatePickerDialog datePickerDialog = new DatePickerDialog(
@@ -183,126 +153,15 @@ public class ExportDialogFragment extends DialogFragment {
 
     // Processamento dos dados selecionados
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void processarDados(String startDate, String endDate, String categoria, String tipo) {
-
-        if(categoria.equals("Metas")) {
-            if(tipo.equals("Resumo PDF")) {
-                fazerDownloadRelatorio(startDate, endDate);
-            }else{
-                fazerDownloadRelatorioAtividadesExcel(startDate, endDate);
-            }
+    private void processarDados(String startDate, String endDate) {
+        if(actividade){
+            fazerDownloadAtividadesExcel(startDate, endDate);
         }else{
-            if(tipo.equals("Resumo PDF")) {
-                fazerDownloadRelatorioPresencas(startDate, endDate);
-            }else{
-                fazerDownloadRelatorioPresencassExcel(startDate, endDate);
-            }
+            fazerDownloadTrabalhadoresExcel(startDate, endDate);
         }
     }
 
-    final WeakReference<ExportDialogFragment> fragmentRef = new WeakReference<>(this);
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private void fazerDownloadRelatorio(String startDate, String endDate) {
-        try {
-            // Converte as strings de data para o formato adequado (yyyy-MM-dd)
-            DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("d/M/yyyy");
-            DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
-            LocalDate dataInicio = LocalDate.parse(startDate, inputFormatter);
-            LocalDate dataFim = LocalDate.parse(endDate, inputFormatter);
-
-            String dataInicioFormatada = dataInicio.format(outputFormatter);
-            String dataFimFormatada = dataFim.format(outputFormatter);
-
-            IntervaloDTO intervaloDTO = new IntervaloDTO(dataInicioFormatada, dataFimFormatada);
-
-            ApiService service = ApiClient.getClient().create(ApiService.class);
-
-            service.gerarRelatorioAtividadesPdf(intervaloDTO)
-                    .enqueue(new Callback<ResponseBody>() {
-                        @Override
-                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                            ExportDialogFragment fragment = fragmentRef.get();
-                            if (fragment != null && fragment.isResumed()) {
-                                // Garantindo que o fragmento está no estado de execução adequado
-                                if (response.isSuccessful() && response.body() != null) {
-                                    Log.d("Download", "Arquivo recebido, tamanho: " + response.body().contentLength());
-                                    fragment.salvarArquivoPDF(response.body(), "relatorio_metas_" + dataInicioFormatada + "_" + dataFimFormatada);
-                                } else {
-                                    Log.e("Download", "Resposta falhou: " + response.code());
-                                    fragment.mostrarErro("Erro ao gerar relatório");
-                                }
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<ResponseBody> call, Throwable t) {
-                            ExportDialogFragment fragment = fragmentRef.get();
-                            if (fragment != null && fragment.isResumed()) {
-                                fragment.mostrarErro("Erro de conexão: " + t.getMessage());
-                            }
-                        }
-                    });
-        } catch (Exception e) {
-            ExportDialogFragment fragment = fragmentRef.get();
-            if (fragment != null && fragment.isResumed()) {
-                fragment.mostrarErro("Erro ao processar as datas");
-            }
-            Log.e("Error", e.getMessage(), e);
-        }
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private void fazerDownloadRelatorioPresencas(String startDate, String endDate) {
-        try {
-            // Converte as strings de data para o formato adequado (yyyy-MM-dd)
-            DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("d/M/yyyy");
-            DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
-            LocalDate dataInicio = LocalDate.parse(startDate, inputFormatter);
-            LocalDate dataFim = LocalDate.parse(endDate, inputFormatter);
-
-            String dataInicioFormatada = dataInicio.format(outputFormatter);
-            String dataFimFormatada = dataFim.format(outputFormatter);
-
-            IntervaloDTO intervaloDTO = new IntervaloDTO(dataInicioFormatada, dataFimFormatada);
-
-            ApiService service = ApiClient.getClient().create(ApiService.class);
-
-            // Mantemos uma referência fraca ao Fragment
-            final WeakReference<ExportDialogFragment> fragmentRef = new WeakReference<>(this);
-
-            service.gerarRelatorioMotoristasPdf(intervaloDTO)
-                    .enqueue(new Callback<ResponseBody>() {
-                        @Override
-                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                            ExportDialogFragment fragment = fragmentRef.get();
-                            if (fragment != null && fragment.isAdded()) {
-                                if (response.isSuccessful() && response.body() != null) {
-                                    Log.d("Download", "Arquivo recebido, tamanho: " + response.body().contentLength());
-                                    fragment.salvarArquivoPDF(response.body(), "relatorio_presencas_" + dataInicioFormatada + "_" + dataFimFormatada);
-                                } else {
-                                    Log.e("Download", "Resposta falhou: " + response.code());
-                                    fragment.mostrarErro("Erro ao gerar relatório");
-                                }
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<ResponseBody> call, Throwable t) {
-                            ExportDialogFragment fragment = fragmentRef.get();
-                            if (fragment != null && fragment.isAdded()) {
-                                fragment.mostrarErro("Erro de conexão: " + t.getMessage());
-                            }
-                        }
-                    });
-        } catch (Exception e) {
-            if (isAdded()) {
-                mostrarErro("Erro ao processar datas: " + e.getMessage());
-            }
-        }
-    }
+    final WeakReference<DataDialogFragment> fragmentRef = new WeakReference<>(this);
 
     private void salvarArquivoPDF(ResponseBody responseBody, String nome) {
         try {
@@ -338,7 +197,7 @@ public class ExportDialogFragment extends DialogFragment {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void fazerDownloadRelatorioAtividadesExcel(String startDate, String endDate) {
+    private void fazerDownloadAtividadesExcel(String startDate, String endDate) {
         try {
             // Formatação das datas
             DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("d/M/yyyy");
@@ -351,21 +210,20 @@ public class ExportDialogFragment extends DialogFragment {
             String dataFimFormatada = dataFim.format(outputFormatter);
 
             IntervaloDTO intervaloDTO = new IntervaloDTO(dataInicioFormatada, dataFimFormatada);
-
             ApiService service = ApiClient.getClient().create(ApiService.class);
 
             // Referência fraca ao Fragment
-            final WeakReference<ExportDialogFragment> fragmentRef = new WeakReference<>(this);
+            final WeakReference<DataDialogFragment> fragmentRef = new WeakReference<>(this);
 
-            service.gerarRelatorioAtividadesExcel(intervaloDTO)
+            service.getAtividadesExcel(intervaloDTO)
                     .enqueue(new Callback<ResponseBody>() {
                         @Override
                         public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                            ExportDialogFragment fragment = fragmentRef.get();
+                            DataDialogFragment fragment = fragmentRef.get();
                             if (fragment != null && fragment.isAdded()) {
                                 if (response.isSuccessful() && response.body() != null) {
                                     Log.d("Download", "Arquivo Excel recebido, tamanho: " + response.body().contentLength());
-                                    fragment.salvarArquivoExcel(response.body(), "relatorio_metas_" + dataInicioFormatada + "_" + dataFimFormatada);
+                                    fragment.salvarArquivoExcel(response.body(), "actividades");
                                 } else {
                                     Log.e("Download", "Resposta falhou: " + response.code());
                                     fragment.mostrarErro("Erro ao gerar relatório");
@@ -375,58 +233,7 @@ public class ExportDialogFragment extends DialogFragment {
 
                         @Override
                         public void onFailure(Call<ResponseBody> call, Throwable t) {
-                            ExportDialogFragment fragment = fragmentRef.get();
-                            if (fragment != null && fragment.isAdded()) {
-                                fragment.mostrarErro("Erro de conexão: " + t.getMessage());
-                            }
-                        }
-                    });
-        } catch (Exception e) {
-            if (isAdded()) {
-                mostrarErro("Erro ao processar datas: " + e.getMessage());
-            }
-        }
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private void fazerDownloadRelatorioPresencassExcel(String startDate, String endDate) {
-        try {
-            // Formatação das datas
-            DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("d/M/yyyy");
-            DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
-            LocalDate dataInicio = LocalDate.parse(startDate, inputFormatter);
-            LocalDate dataFim = LocalDate.parse(endDate, inputFormatter);
-
-            String dataInicioFormatada = dataInicio.format(outputFormatter);
-            String dataFimFormatada = dataFim.format(outputFormatter);
-
-            IntervaloDTO intervaloDTO = new IntervaloDTO(dataInicioFormatada, dataFimFormatada);
-
-            ApiService service = ApiClient.getClient().create(ApiService.class);
-
-            // Referência fraca ao Fragment
-            final WeakReference<ExportDialogFragment> fragmentRef = new WeakReference<>(this);
-
-            service.gerarRelatorioMotoristasExcel(intervaloDTO)
-                    .enqueue(new Callback<ResponseBody>() {
-                        @Override
-                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                            ExportDialogFragment fragment = fragmentRef.get();
-                            if (fragment != null && fragment.isAdded()) {
-                                if (response.isSuccessful() && response.body() != null) {
-                                    Log.d("Download", "Arquivo Excel recebido, tamanho: " + response.body().contentLength());
-                                    fragment.salvarArquivoExcel(response.body(), "relatorio_presencas_" + dataInicioFormatada + "_" + dataFimFormatada);
-                                } else {
-                                    Log.e("Download", "Resposta falhou: " + response.code());
-                                    fragment.mostrarErro("Erro ao gerar relatório");
-                                }
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<ResponseBody> call, Throwable t) {
-                            ExportDialogFragment fragment = fragmentRef.get();
+                            DataDialogFragment fragment = fragmentRef.get();
                             if (fragment != null && fragment.isAdded()) {
                                 fragment.mostrarErro("Erro de conexão: " + t.getMessage());
                             }
@@ -439,6 +246,58 @@ public class ExportDialogFragment extends DialogFragment {
             }
         }
     }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void fazerDownloadTrabalhadoresExcel(String startDate, String endDate) {
+        try {
+            // Formatação das datas
+            DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("d/M/yyyy");
+            DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+            LocalDate dataInicio = LocalDate.parse(startDate, inputFormatter);
+            LocalDate dataFim = LocalDate.parse(endDate, inputFormatter);
+
+            String dataInicioFormatada = dataInicio.format(outputFormatter);
+            String dataFimFormatada = dataFim.format(outputFormatter);
+
+            IntervaloDTO intervaloDTO = new IntervaloDTO(dataInicioFormatada, dataFimFormatada);
+            ApiService service = ApiClient.getClient().create(ApiService.class);
+
+            // Referência fraca ao Fragment
+            final WeakReference<DataDialogFragment> fragmentRef = new WeakReference<>(this);
+
+            service.getTrabalhadoresExcel(intervaloDTO)
+                    .enqueue(new Callback<ResponseBody>() {
+                        @Override
+                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                            DataDialogFragment fragment = fragmentRef.get();
+                            if (fragment != null && fragment.isAdded()) {
+                                if (response.isSuccessful() && response.body() != null) {
+                                    Log.d("Download", "Arquivo Excel recebido, tamanho: " + response.body().contentLength());
+                                    fragment.salvarArquivoExcel(response.body(), "trabalhadores");
+                                } else {
+                                    Log.e("Download", "Resposta falhou: " + response.code());
+                                    fragment.mostrarErro("Erro ao gerar relatório");
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<ResponseBody> call, Throwable t) {
+                            DataDialogFragment fragment = fragmentRef.get();
+                            if (fragment != null && fragment.isAdded()) {
+                                fragment.mostrarErro("Erro de conexão: " + t.getMessage());
+                            }
+                        }
+                    });
+        } catch (Exception e) {
+            if (isAdded()) {
+                System.out.println("Erro ao processar datas: " + e.getMessage());
+                mostrarErro("Erro ao processar datas: " + e.getMessage());
+            }
+        }
+    }
+
     private void salvarArquivoExcel(ResponseBody responseBody, String nome) {
         try {
             ContentValues contentValues = new ContentValues();
@@ -466,6 +325,7 @@ public class ExportDialogFragment extends DialogFragment {
                 Log.e("Download", "Erro ao criar URI para o arquivo");
             }
         } catch (Exception e) {
+            System.out.println("Erro ao salvar o arquivo: " + e.getMessage());
             mostrarErro("Erro ao salvar o arquivo: " + e.getMessage());
         }
     }

@@ -98,22 +98,26 @@ public class RelatoriosFragment extends Fragment {
             dialogFragment.show(getParentFragmentManager(), "exportDialog");
         });
 
-        binding.btnAct.setOnClickListener(new View.OnClickListener() {
+        binding.btnAct.setOnClickListener(v -> {
+            DataDialogFragment dataDialogFragment = new DataDialogFragment(true);
+            dataDialogFragment.show(getParentFragmentManager(), "exportDialog");
 
-            @RequiresApi(api = Build.VERSION_CODES.O)
-            @Override
-            public void onClick(View v) {
-                fazerDownloadAtividadesExcel();
-            }
+//            @RequiresApi(api = Build.VERSION_CODES.O)
+//            @Override
+//            public void onClick(View v) {
+//                fazerDownloadAtividadesExcel();
+//            }
         });
 
-        binding.btnTra.setOnClickListener(new View.OnClickListener() {
+        binding.btnTra.setOnClickListener(v -> {
+            DataDialogFragment dataDialogFragment = new DataDialogFragment(false);
+            dataDialogFragment.show(getParentFragmentManager(), "exportDialog");
 
-            @RequiresApi(api = Build.VERSION_CODES.O)
-            @Override
-            public void onClick(View v) {
-                fazerDownloadTrabalhadoresExcel();
-            }
+//            @RequiresApi(api = Build.VERSION_CODES.O)
+//            @Override
+//            public void onClick(View v) {
+//                fazerDownloadTrabalhadoresExcel();
+//            }
         });
 
         return binding.getRoot();
@@ -229,116 +233,6 @@ public class RelatoriosFragment extends Fragment {
             Log.e("Registo", sqlEx.getMessage(), sqlEx);
         }
 
-    }
-
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private void fazerDownloadAtividadesExcel() {
-        try {
-            ApiService service = ApiClient.getClient().create(ApiService.class);
-
-            // Referência fraca ao Fragment
-            final WeakReference<RelatoriosFragment> fragmentRef = new WeakReference<>(this);
-
-            service.getAtividadesExcel()
-                    .enqueue(new Callback<ResponseBody>() {
-                        @Override
-                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                            RelatoriosFragment fragment = fragmentRef.get();
-                            if (fragment != null && fragment.isAdded()) {
-                                if (response.isSuccessful() && response.body() != null) {
-                                    Log.d("Download", "Arquivo Excel recebido, tamanho: " + response.body().contentLength());
-                                    fragment.salvarArquivoExcel(response.body(), "actividades");
-                                } else {
-                                    Log.e("Download", "Resposta falhou: " + response.code());
-                                    fragment.mostrarErro("Erro ao gerar relatório");
-                                }
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<ResponseBody> call, Throwable t) {
-                            RelatoriosFragment fragment = fragmentRef.get();
-                            if (fragment != null && fragment.isAdded()) {
-                                fragment.mostrarErro("Erro de conexão: " + t.getMessage());
-                            }
-                        }
-                    });
-        } catch (Exception e) {
-            if (isAdded()) {
-                mostrarErro("Erro ao processar datas: " + e.getMessage());
-            }
-        }
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private void fazerDownloadTrabalhadoresExcel() {
-        try {
-            ApiService service = ApiClient.getClient().create(ApiService.class);
-
-            // Referência fraca ao Fragment
-            final WeakReference<RelatoriosFragment> fragmentRef = new WeakReference<>(this);
-
-            service.getTrabalhadoresExcel()
-                    .enqueue(new Callback<ResponseBody>() {
-                        @Override
-                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                            RelatoriosFragment fragment = fragmentRef.get();
-                            if (fragment != null && fragment.isAdded()) {
-                                if (response.isSuccessful() && response.body() != null) {
-                                    Log.d("Download", "Arquivo Excel recebido, tamanho: " + response.body().contentLength());
-                                    fragment.salvarArquivoExcel(response.body(), "trabalhadores");
-                                } else {
-                                    Log.e("Download", "Resposta falhou: " + response.code());
-                                    fragment.mostrarErro("Erro ao gerar relatório");
-                                }
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<ResponseBody> call, Throwable t) {
-                            RelatoriosFragment fragment = fragmentRef.get();
-                            if (fragment != null && fragment.isAdded()) {
-                                fragment.mostrarErro("Erro de conexão: " + t.getMessage());
-                            }
-                        }
-                    });
-        } catch (Exception e) {
-            if (isAdded()) {
-                mostrarErro("Erro ao processar datas: " + e.getMessage());
-            }
-        }
-    }
-
-    private void salvarArquivoExcel(ResponseBody responseBody, String nome) {
-        try {
-            ContentValues contentValues = new ContentValues();
-            contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, nome + ".xlsx");
-            contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-            contentValues.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS);
-
-            Uri uri = requireContext().getContentResolver().insert(MediaStore.Files.getContentUri("external"), contentValues);
-
-            if (uri != null) {
-                try (OutputStream outputStream = requireContext().getContentResolver().openOutputStream(uri)) {
-                    InputStream inputStream = responseBody.byteStream();
-                    byte[] buffer = new byte[4096];
-                    int bytesRead;
-                    while ((bytesRead = inputStream.read(buffer)) != -1) {
-                        outputStream.write(buffer, 0, bytesRead);
-                    }
-                    Toast.makeText(getContext(), "Relatório Excel baixado com sucesso!", Toast.LENGTH_SHORT).show();
-                    inputStream.close();
-                } catch (IOException e) {
-                    Log.e("Download", "Erro ao salvar o arquivo", e);
-                    mostrarErro("Erro ao salvar o arquivo: " + e.getMessage());
-                }
-            } else {
-                Log.e("Download", "Erro ao criar URI para o arquivo");
-            }
-        } catch (Exception e) {
-            mostrarErro("Erro ao salvar o arquivo: " + e.getMessage());
-        }
     }
 
     private void mostrarErro(String mensagem) {
