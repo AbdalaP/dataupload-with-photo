@@ -320,7 +320,8 @@ public class DataSyncManager {
                                     trabalhador.getTelefone(),
                                     trabalhador.getAtividade(),
                                     "admin",
-                                    imageBytes
+                                    imageBytes,
+                                    trabalhador.getEstado()
                             );
                         }
                     }

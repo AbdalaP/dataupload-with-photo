@@ -15,6 +15,16 @@ public class TrabalhadorResponseDTO {
     private String empresaNome;
     private String atividade;
 
+    private String estado;
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
     public TrabalhadorResponseDTO() {
     }
 
