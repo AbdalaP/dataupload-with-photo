@@ -108,20 +108,9 @@ public class UserEditSan extends AppCompatActivity implements AdapterView.OnItem
     }
 
     private void insertData() {
-        sqLiteDatabase = databaseHelper.getWritableDatabase();
-        Boolean checkstatus = databaseHelper.checkStatus();
-        if (!checkstatus) {
-            Toast.makeText(UserEditSan.this, "Este Trabalhador Esta Desativado Consulta RH", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-            startActivity(intent);
-        }//else{
-
-
         Session session = new Session(this);
         String act = activity_id.getText().toString();
-        //  databaseHelper.checkcategory(act); // por a funcionar depois para levar funcao no activity
-        // if (act!="Presença")
-        if (act.equals("Motorista") || act.equals("Ajudante")) {
+       if (act.equals("Motorista") || act.equals("Ajudante")) {
             View b = findViewById(R.id.btn_edit);
             b.setVisibility(View.GONE);
             View c = findViewById(R.id.target);
