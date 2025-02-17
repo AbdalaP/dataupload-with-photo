@@ -23,7 +23,7 @@ public class TrabalhadoresDAO {
     }
 
     public boolean insertTrabalhador(String empresa, String nome, String docid, String data_nascimento,
-                                     String genero, String telefone, String atividade, String userlogged, byte[] imageBytes) {
+                                     String genero, String telefone, String atividade, String userlogged, byte[] imageBytes, String status) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         // Verifica se o trabalhador já existe com base no docid
@@ -51,6 +51,7 @@ public class TrabalhadoresDAO {
             values.put("userlog", userlogged);
             values.put("isSynced", 1);
             values.put("image", imageBytes); // Armazena a imagem em formato BLOB
+            values.put("status", status);
 
             long result = db.insert("trabalhadores", null, values);
             db.close();
