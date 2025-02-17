@@ -86,7 +86,7 @@ public class Trabalhadores {
     }
 
     public void setGenero(String genero) {
-        if(genero == "male"){
+        if(genero.equals("male")){
             this.genero = "MASCULINO";
         }
         else {
