@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
@@ -57,6 +58,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ExportDialogFragment extends DialogFragment {
     private static final int STORAGE_PERMISSION_CODE = 1001;
+    private static final int REQUEST_CODE_PICK_DIRECTORY = 1001;
 
     private TextInputEditText txtStartDate, txtEndDate;
     private RadioGroup radioGroupCategorias, radioGroupTipo;
@@ -136,21 +138,46 @@ public class ExportDialogFragment extends DialogFragment {
         });
     }
 
+//    private boolean checkStoragePermission() {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//                // Exibe a mensagem pedindo permissão caso não tenha
+//                Toast.makeText(getContext(), "Por favor, conceda permissões de armazenamento para continuar.", Toast.LENGTH_SHORT).show();
+//                return false;
+//            }
+//        }
+//        return true;
+//    }
+//
+//    private void requestStoragePermission() {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            // Solicita permissões de armazenamento
+//            ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
+//        }
+//    }
+
+    // Verifica permissões de armazenamento
     private boolean checkStoragePermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                // Exibe a mensagem pedindo permissão caso não tenha
-                Toast.makeText(getContext(), "Por favor, conceda permissões de armazenamento para continuar.", Toast.LENGTH_SHORT).show();
-                return false;
-            }
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            // Para Android 9 ou inferior, verifica WRITE_EXTERNAL_STORAGE
+            return ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
         }
+        // Para Android 10+, não precisa verificar WRITE_EXTERNAL_STORAGE, pois o SAF é usado
         return true;
     }
 
+    // Solicita permissões de armazenamento se necessário
     private void requestStoragePermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            // Solicita permissões de armazenamento
+        System.out.println("|||||||||||||||||||||||||||||||||||||");
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            System.out.println(":::::::::::::::::::::::::|||||||||||||");
             ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
+        } else {
+            System.out.println("::::::::::::::::::::::::::");
+            // Em Android 10+, redireciona o usuário para escolher um diretório para salvar o arquivo
+            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+            intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            startActivityForResult(intent, REQUEST_CODE_PICK_DIRECTORY);
         }
     }
 
