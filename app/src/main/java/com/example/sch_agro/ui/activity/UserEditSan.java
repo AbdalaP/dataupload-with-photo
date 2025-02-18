@@ -108,29 +108,45 @@ public class UserEditSan extends AppCompatActivity implements AdapterView.OnItem
     }
 
     private void insertData() {
-        Session session = new Session(this);
-        String act = activity_id.getText().toString();
-       if (act.equals("Motorista") || act.equals("Ajudante")) {
-            View b = findViewById(R.id.btn_edit);
-            b.setVisibility(View.GONE);
-            View c = findViewById(R.id.target);
-            c.setVisibility(View.GONE);
+/*
+        sqLiteDatabase = databaseHelper.getWritableDatabase();
+        Boolean CheckStatus = databaseHelper.checkStatus();
+        if (!CheckStatus) {
 
-            View d = findViewById(R.id.btn_falta);
-            d.setVisibility(View.VISIBLE);
-            // insertDataMotorista(); //falta button
-
-        } else {
-            View b = findViewById(R.id.btn_edit);
-            b.setVisibility(View.VISIBLE);
-            View c = findViewById(R.id.target);
-            c.setVisibility(View.VISIBLE);
-
-            View d = findViewById(R.id.btn_falta);
-            d.setVisibility(View.GONE);
-
-
+            Toast.makeText(this, "wronnnnnnnggggggggggg", Toast.LENGTH_SHORT).show();
+           Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+            startActivity(intent);
         }
+
+ */
+
+
+            Session session = new Session(this);
+            String act = activity_id.getText().toString();
+
+            if (act.equals("Motorista") || act.equals("Ajudante")) {
+                View b = findViewById(R.id.btn_edit);
+                b.setVisibility(View.GONE);
+                View c = findViewById(R.id.target);
+                c.setVisibility(View.GONE);
+
+                View d = findViewById(R.id.btn_falta);
+                d.setVisibility(View.VISIBLE);
+                // insertDataMotorista(); //falta button
+
+            } else {
+                View b = findViewById(R.id.btn_edit);
+                b.setVisibility(View.VISIBLE);
+                View c = findViewById(R.id.target);
+                c.setVisibility(View.VISIBLE);
+
+                View d = findViewById(R.id.btn_falta);
+                d.setVisibility(View.GONE);
+
+
+            }
+
+
         // Session session = new Session(this); //calling session class that keeps de userid after user logsin
         //////////button edit or inserting new data tasksan
         btn_edit.setOnClickListener(new View.OnClickListener() {
@@ -201,7 +217,8 @@ public class UserEditSan extends AppCompatActivity implements AdapterView.OnItem
 
             }
         });
-   // }
+        // }
+
     }
    // Session session = new Session(this); //calling session class that keeps de userid after user logsin
 

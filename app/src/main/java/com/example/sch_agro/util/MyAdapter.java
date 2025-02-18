@@ -81,8 +81,6 @@ SQLiteDatabase sqLiteDatabase;
                             intent.putExtra("userdata",bundle);
                             context.startActivity(intent);
 
-
-
                         } else if (itemId==R.id.Edit_menuSan) {
                             Bundle bundle=new Bundle();
                             bundle.putByteArray("image",model.getProavatar());
@@ -92,7 +90,6 @@ SQLiteDatabase sqLiteDatabase;
                             Intent intent=new Intent(context, UserEditSan.class);
                             intent.putExtra("userdata",bundle);
                             context.startActivity(intent);
-
 
 
                         }else {
