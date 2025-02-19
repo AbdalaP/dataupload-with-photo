@@ -17,6 +17,8 @@ public class Activity {
     private String tipoValidacao;
     private String registrationDate;
 
+    private Integer metaDiaria;
+
     private String user;
     private boolean isSynced;
 
@@ -99,5 +101,13 @@ public class Activity {
 
     public void setSynced(boolean synced) {
         isSynced = synced;
+    }
+
+    public Integer getMetaDiaria() {
+        return metaDiaria;
+    }
+
+    public void setMetaDiaria(Integer metaDiaria) {
+        this.metaDiaria = metaDiaria;
     }
 }

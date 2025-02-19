@@ -103,6 +103,7 @@ public class TrabalhadoresDAO {
                 trabalhador.setDataNascimento(cursor.getString(cursor.getColumnIndexOrThrow("data_nascimento")));
                 trabalhador.setGenero(cursor.getString(cursor.getColumnIndexOrThrow("genero")));
                 trabalhador.setTelefone(cursor.getString(cursor.getColumnIndexOrThrow("telefone")));
+                trabalhador.setEstado(cursor.getString(cursor.getColumnIndexOrThrow("status")));
                 trabalhador.setImage(cursor.getBlob(cursor.getColumnIndexOrThrow("image")));
                 trabalhador.setAtividade(cursor.getString(cursor.getColumnIndexOrThrow("activity_id")));
                 trabalhador.setRegistrationDate(new Date(cursor.getLong(cursor.getColumnIndexOrThrow("registration_date")))); // Convertendo timestamp para Date
