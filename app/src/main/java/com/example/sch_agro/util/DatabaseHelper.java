@@ -49,7 +49,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "activity_name TEXT NOT NULL UNIQUE, " +
                 "person TEXT NOT NULL, " +
                 "category_act TEXT NOT NULL, " +
-                "valor TEXT NOT NULL, " +
+                "meta INTEGER, " +
+                "valor INTEGER NOT NULL, " +
                 "userlog TEXT, " +
                 "act_date TEXT DEFAULT CURRENT_TIMESTAMP, " +
                 "isSynced BOOLEAN DEFAULT 0)");
@@ -92,7 +93,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "ctrID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
                 "activity_id TEXT NOT NULL, " +
                 "trabalhador_id TEXT NOT NULL, " +
-                "target TEXT, " +
+                "target INTEGER, " +
                 "faltas TEXT, " +
                 "userlog TEXT, " +
                 "task_date TEXT DEFAULT CURRENT_TIMESTAMP, " +
@@ -107,6 +108,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         MyDB.execSQL("drop Table if exists testimage");
         MyDB.execSQL("drop Table if exists taskgeba");
         MyDB.execSQL("drop Table controle_actividade");
+
     }
 
 
@@ -237,14 +239,15 @@ public List<String> getAllLabels(){
         return false;
     }
 
-    public Boolean insertactivity(String nome, String spinner,String spinner2,String person,String target,String userlogged) {
+    public Boolean insertactivity(String nome, String spinner, String spinner2, String person, String valor, String meta, String userlogged) {
         SQLiteDatabase MyDatabase = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("empresa", spinner);
         contentValues.put("category_act", spinner2);
         contentValues.put("activity_name", nome);
         contentValues.put("person", person);
-        contentValues.put("valor", target);
+        contentValues.put("meta", meta);
+        contentValues.put("valor", valor);
         contentValues.put("userlog", userlogged);
         long result = MyDatabase.insert("activity", null, contentValues);
         if (result == -1) {

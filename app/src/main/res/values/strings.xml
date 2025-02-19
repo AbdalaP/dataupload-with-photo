@@ -11,18 +11,15 @@
         <item>SAN</item>
         <item>GEBA</item>
     </string-array>
+    <string-array name="categoria">
+        <item>[Escolhe Categoria…]</item>
+        <item>META</item>
+        <item>PRESENÇA</item>
+    </string-array>
     <string-array name="status">
         <item>[Escolhe Status…]</item>
         <item>Ativo</item>
         <item>Inativo</item>
-    </string-array>
-
-    <string-array name="categoria">
-        <item>[Escolhe Categoria…]</item>
-        <item></item>
-        <item>META</item>
-        <item></item>
-        <item>PRESENÇA</item>
     </string-array>
 
     <string-array name="Role">

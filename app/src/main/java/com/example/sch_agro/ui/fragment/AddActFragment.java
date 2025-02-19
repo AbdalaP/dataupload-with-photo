@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -26,7 +27,7 @@ import com.example.sch_agro.util.DatabaseHelper;
 public class AddActFragment extends Fragment implements AdapterView.OnItemSelectedListener {
 
     FragmentAddActBinding binding;
-    //EditText pessoa;
+    EditText meta;
     ApiService apiService;
 
     DatabaseHelper databaseHelper;
@@ -47,27 +48,35 @@ public class AddActFragment extends Fragment implements AdapterView.OnItemSelect
 
             @Override
             public void onClick(View v) {
+
                 String thisUser = session.getKeyUserId();
-                String spinner= spinner1.getItemAtPosition(spinner1.getSelectedItemPosition()).toString();
-                String spinner2= spinner_tipo.getItemAtPosition(spinner_tipo.getSelectedItemPosition()).toString();
+                String spinner = spinner1.getItemAtPosition(spinner1.getSelectedItemPosition()).toString();
+                String spinner2 = spinner_tipo.getItemAtPosition(spinner_tipo.getSelectedItemPosition()).toString();
                 String nome = binding.name.getText().toString();
                 String pessoa = binding.pessoaResponsavel.getText().toString();
-                String target = binding.target.getText().toString();
+                String meta = binding.meta.getText().toString();
+                String valor = binding.valor.getText().toString();
+                  if (spinner_tipo.getItemAtPosition(spinner_tipo.getSelectedItemPosition()).toString().equals("PRESENÇA")) {
+                    View c = getView().findViewById(R.id.meta);
+                    c.setVisibility(View.GONE);
+                }
                 //System.out.println(spinner);
-                if (nome.equals("") || pessoa.equals("")||target.equals("")) {
+                if (nome.equals("") || pessoa.equals("") || valor.equals("")) {
                     Toast.makeText(AddActFragment.super.getContext(), "All fields are mandatory", Toast.LENGTH_SHORT).show();
-                }else if(spinner1.getItemAtPosition(spinner1.getSelectedItemPosition()).toString().equals("[Escolhe Empresa…]")||spinner_tipo.getItemAtPosition(spinner_tipo.getSelectedItemPosition()).toString().equals("[Escolhe Categoria…]")){
+                } else if (spinner1.getItemAtPosition(spinner1.getSelectedItemPosition()).toString().equals("[Escolhe Empresa…]") || spinner_tipo.getItemAtPosition(spinner_tipo.getSelectedItemPosition()).toString().equals("[Escolhe Categoria…]")) {
                     Toast.makeText(AddActFragment.super.getContext(), "Empresa ou funcao de actividade nao seleciondo!", Toast.LENGTH_SHORT).show();
                 }
-                else {
+                else{
+
                     Boolean checkactivity = databaseHelper.checkactivity(nome);
                     if (!checkactivity) {
-                        Boolean insert = databaseHelper.insertactivity(nome,spinner,spinner2,pessoa,target, thisUser);
+                        Boolean insert = databaseHelper.insertactivity(nome, spinner, spinner2, pessoa, meta, valor, thisUser);
                         if (insert) {
                             spinner1.setSelection(0);
                             spinner_tipo.setSelection(0);
                             nome.equals("");
-                            target.equals("");
+                            valor.equals("");
+                            meta.equals("");
                             pessoa.equals("");
 
                             Toast.makeText(AddActFragment.super.getContext(), "Dados inseridos com Sucesso!", Toast.LENGTH_SHORT).show();
@@ -97,7 +106,6 @@ public class AddActFragment extends Fragment implements AdapterView.OnItemSelect
  */
 
 
-
                         } else {
                             Toast.makeText(AddActFragment.super.getContext(), "Erro ao Inserir!", Toast.LENGTH_SHORT).show();
                         }
@@ -105,6 +113,7 @@ public class AddActFragment extends Fragment implements AdapterView.OnItemSelect
                         Toast.makeText(AddActFragment.super.getContext(), "User already exists! Please login", Toast.LENGTH_SHORT).show();
                     }
                 }
+
             }
         });
 
@@ -128,16 +137,25 @@ public class AddActFragment extends Fragment implements AdapterView.OnItemSelect
         spinner1.setOnItemSelectedListener(this);
 
         ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(requireActivity(), R.array.categoria, android.R.layout.simple_spinner_item);
-        adapter1.setDropDownViewResource(android.R.layout.select_dialog_item);
+        adapter2.setDropDownViewResource(android.R.layout.select_dialog_item);
         spinner_tipo.setAdapter(adapter2);
         spinner_tipo.setOnItemSelectedListener(this);
+
 
     }
 
 
+
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+if(spinner_tipo.getItemAtPosition(spinner_tipo.getSelectedItemPosition()).toString().equals("PRESENÇA")){
+            View c = getView().findViewById(R.id.meta);
+            c.setVisibility(View.GONE);
 
+        }else{
+    View c = getView().findViewById(R.id.meta);
+    c.setVisibility(View.VISIBLE);
+}
     }
 
     @Override
