@@ -2,6 +2,7 @@ package com.example.sch_agro.util;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -34,6 +35,8 @@ int singledata;
 List<Model> modelArrayList;
 List<Model>modelArrayListFull;
 SQLiteDatabase sqLiteDatabase;
+DatabaseHelper databaseHelper;
+
 
 //generate constractor
 
@@ -82,15 +85,22 @@ SQLiteDatabase sqLiteDatabase;
                             context.startActivity(intent);
 
                         } else if (itemId==R.id.Edit_menuSan) {
-                            Bundle bundle=new Bundle();
-                            bundle.putByteArray("image",model.getProavatar());
-                            bundle.putString("name",model.getnome());
-                            bundle.putString("trabalhador_id",model.getTrabalhador_id());
-                            bundle.putString("activity_id",model.getActivity_id());
-                            Intent intent=new Intent(context, UserEditSan.class);
-                            intent.putExtra("userdata",bundle);
-                            context.startActivity(intent);
 
+                            Cursor cursor = sqLiteDatabase.rawQuery("Select status from trabalhadores where id = ?  and status = 'Inativo'", new String[]{model.getTrabalhador_id()});
+                           // System.out.println("::::::::::: " + model.getTrabalhador_id());
+
+                            if (cursor.getCount()>0){
+                                Toast.makeText(context, "Este Trabalhador foi desativado, fala com RH!", Toast.LENGTH_SHORT).show();
+                            }else{
+                                Bundle bundle=new Bundle();
+                                bundle.putByteArray("image",model.getProavatar());
+                                bundle.putString("name",model.getnome());
+                                bundle.putString("trabalhador_id",model.getTrabalhador_id());
+                                bundle.putString("activity_id",model.getActivity_id());
+                                Intent intent=new Intent(context, UserEditSan.class);
+                                intent.putExtra("userdata",bundle);
+                                context.startActivity(intent);
+                            }
 
                         }else {
                             Toast.makeText(context, "Escolha Errada!", Toast.LENGTH_SHORT).show();

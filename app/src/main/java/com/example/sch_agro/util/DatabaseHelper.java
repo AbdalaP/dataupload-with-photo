@@ -294,9 +294,9 @@ public List<String> getAllLabels(){
 
 
 
-    public boolean checkStatus() {
+    public boolean checkStatuss(String id) {
         SQLiteDatabase MyDatabase = this.getWritableDatabase();
-        Cursor cursor = MyDatabase.rawQuery("Select id from trabalhadores where status = 'Inativo'", null);
+        Cursor cursor = MyDatabase.rawQuery("Select status from trabalhadores where id = ?  and status = 'Inativo'", new String[]{id});
         if (cursor.getCount() > 0) {
            // return Boolean.valueOf(username);
             return true;

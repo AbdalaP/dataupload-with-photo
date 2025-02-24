@@ -69,6 +69,7 @@ public class UserEditSan extends AppCompatActivity implements AdapterView.OnItem
         findid();
         editData();
         insertData();
+
 //        spinner = findViewById(R.id.spinner1);
 //        spinner.setOnItemSelectedListener(this);
 //        loadSpinnerData();
@@ -155,7 +156,6 @@ public class UserEditSan extends AppCompatActivity implements AdapterView.OnItem
             public void onClick(View v) {
 
 
-                // sqLiteDatabase=databaseHelper.getReadableDatabase();
                 String thisUser = session.getKeyUserId();
                 ContentValues cv = new ContentValues();
                 cv.put("activity_id", activity_id.getText().toString());

@@ -129,6 +129,35 @@ public class ViewFarmerFragment extends Fragment {
 
     }
 
+
+
+
+
+
+    private void displyData2() {
+        sqLiteDatabase=databaseHelper.getReadableDatabase();
+      //  Cursor cursor=sqLiteDatabase.rawQuery("Select * from trabalhadores where status = 'Ativo'", null);
+
+         Cursor cursor=sqLiteDatabase.rawQuery("select* from "+ trabalhadores,null);
+
+        //Cursor cursor = MyDatabase.rawQuery("Select status from trabalhadores where status = 'Inativo'", null);
+        ArrayList<Model> models=new ArrayList<>();
+        while (cursor.moveToNext()){
+
+
+            String trabalhador_id=cursor.getString(0);
+            String name=cursor.getString(2);
+            String activity_id=cursor.getString(8);
+            byte[]image=cursor.getBlob(7);
+            models.add(new Model(trabalhador_id,name,image,activity_id));
+
+        }
+        cursor.close();
+        myAdapter=new MyAdapter(getContext(), R.layout.singledata,models,sqLiteDatabase);
+
+    }
+
+
     private void findId() {
         recyclerview= recyclerview.findViewById(R.id.rv);
         searchView = searchView.findViewById(R.id.searchView);
