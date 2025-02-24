@@ -168,12 +168,9 @@ public class ExportDialogFragment extends DialogFragment {
 
     // Solicita permissões de armazenamento se necessário
     private void requestStoragePermission() {
-        System.out.println("|||||||||||||||||||||||||||||||||||||");
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-            System.out.println(":::::::::::::::::::::::::|||||||||||||");
             ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
         } else {
-            System.out.println("::::::::::::::::::::::::::");
             // Em Android 10+, redireciona o usuário para escolher um diretório para salvar o arquivo
             Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
             intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
