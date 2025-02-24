@@ -23,11 +23,13 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sch_agro.R;
+import com.example.sch_agro.ui.activity.Session;
 import com.example.sch_agro.ui.activity.UserActivoInativo;
 import com.example.sch_agro.ui.activity.UserEditSan;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> implements Filterable {
 Context context;
@@ -54,6 +56,7 @@ DatabaseHelper databaseHelper;
         LayoutInflater inflater = LayoutInflater.from(context);
         View view=inflater.inflate(R.layout.singledata,null);
         return new ViewHolder(view);
+
     }
 
     @Override
@@ -67,6 +70,7 @@ DatabaseHelper databaseHelper;
 
         //flow menu
         holder.flowmenu.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
                 PopupMenu popupMenu = new PopupMenu(context,holder.flowmenu);
@@ -74,15 +78,28 @@ DatabaseHelper databaseHelper;
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
+                        Session session = new Session(context); //calling session class that keeps de userid after user logsin
                         int itemId=item.getItemId();
                         if (itemId==R.id.activar_desativar){
-                            Bundle bundle=new Bundle();
-                            bundle.putByteArray("image",model.getProavatar());
-                            bundle.putString("name",model.getnome());
-                            bundle.putString("trabalhador_id",model.getTrabalhador_id());
-                            Intent intent=new Intent(context, UserActivoInativo.class);
-                            intent.putExtra("userdata",bundle);
-                            context.startActivity(intent);
+
+                            String thisUser = session.getKeyUserId();
+
+                            if (Objects.equals(thisUser, "admin")||Objects.equals(thisUser, "RH")) {
+                                Bundle bundle=new Bundle();
+                                bundle.putByteArray("image",model.getProavatar());
+                                bundle.putString("name",model.getnome());
+                                bundle.putString("trabalhador_id",model.getTrabalhador_id());
+                                Intent intent=new Intent(context, UserActivoInativo.class);
+                                intent.putExtra("userdata",bundle);
+                                context.startActivity(intent);
+                            }else {
+                                Toast.makeText(context, "Somente Admin e RH pode Ativar ou Desativar Trabalhadores!", Toast.LENGTH_SHORT).show();
+                            }
+
+
+
+
+
 
                         } else if (itemId==R.id.Edit_menuSan) {
 

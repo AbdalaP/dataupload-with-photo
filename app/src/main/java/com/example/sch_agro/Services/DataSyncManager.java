@@ -1,8 +1,5 @@
 package com.example.sch_agro.Services;
 
-import static com.example.sch_agro.R.drawable.user;
-
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -12,25 +9,32 @@ import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
-import com.example.sch_agro.Configuration.ApiClient;
 import com.example.sch_agro.DAO.ActivityDAO;
 import com.example.sch_agro.DAO.ControleActividadeDAO;
 import com.example.sch_agro.DAO.TaskGebaDAO;
 import com.example.sch_agro.DAO.TrabalhadoresDAO;
 import com.example.sch_agro.DAO.UserDAO;
 import com.example.sch_agro.DTO.ActivityResponseDTO;
-import com.example.sch_agro.DTO.LoginDTO;
-import com.example.sch_agro.DTO.LoginResponseDTO;
 import com.example.sch_agro.DTO.TrabalhadorResponseDTO;
-import com.example.sch_agro.DTO.UserDTO;
 import com.example.sch_agro.Model.Activity;
-import com.example.sch_agro.Model.TaskGeba;
 import com.example.sch_agro.Model.ControleActividade;
 import com.example.sch_agro.Model.Trabalhadores;
 import com.example.sch_agro.Model.User;
 import com.example.sch_agro.R;
-import com.example.sch_agro.util.ApiResponse;
 import com.google.gson.Gson;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -38,26 +42,6 @@ import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 public class DataSyncManager {
     private final UserDAO usersDao;
@@ -310,7 +294,7 @@ public class DataSyncManager {
                     List<TrabalhadorResponseDTO> trabalhadores = response.body();
                     for (TrabalhadorResponseDTO trabalhador : trabalhadores) {
                         if (!trabalhadorExists(trabalhador.getDocumentoIdentificacao(), trabalhador.getEmpresaNome())) {
-                            String url = substituirString(trabalhador.getImagem(), "localhost:8081", "192.168.8.102:8081");
+                            String url = substituirString(trabalhador.getImagem(), "localhost:8081", "192.168.8.107:8081");
                             byte[] imageBytes = downloadImage(url);
                             trabalhadoresDao.insertTrabalhador(
                                     trabalhador.getEmpresaNome(),

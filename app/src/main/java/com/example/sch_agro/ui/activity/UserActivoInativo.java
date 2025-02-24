@@ -139,7 +139,7 @@ public class UserActivoInativo extends AppCompatActivity implements AdapterView.
                         @Override
                         public void onFailure(Call<Void> call, Throwable t) {
                             System.err.println("Erro na requisição: " + t.getMessage());
-                            Toast.makeText(UserActivoInativo.this, "Something is wrong", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(UserActivoInativo.this, "Something is wrongkkkkk", Toast.LENGTH_SHORT).show();
                         }
 
                     });
