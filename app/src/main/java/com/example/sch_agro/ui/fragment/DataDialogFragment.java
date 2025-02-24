@@ -3,6 +3,7 @@ package com.example.sch_agro.ui.fragment;
 import android.Manifest;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -25,6 +26,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.sch_agro.Configuration.ApiClient;
@@ -33,6 +35,7 @@ import com.example.sch_agro.R;
 import com.example.sch_agro.Services.ApiService;
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -347,9 +350,9 @@ public class DataDialogFragment extends DialogFragment {
                 }
             } else {
                 Log.e("Download", "Erro ao criar URI para o arquivo");
+                mostrarErro("Não foi possível criar o local para salvar o arquivo");
             }
         } catch (Exception e) {
-            System.out.println("Erro ao salvar o arquivo: " + e.getMessage());
             mostrarErro("Erro ao salvar o arquivo: " + e.getMessage());
         }
     }
