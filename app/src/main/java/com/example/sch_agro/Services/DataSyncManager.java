@@ -310,7 +310,7 @@ public class DataSyncManager {
                     List<TrabalhadorResponseDTO> trabalhadores = response.body();
                     for (TrabalhadorResponseDTO trabalhador : trabalhadores) {
                         if (!trabalhadorExists(trabalhador.getDocumentoIdentificacao(), trabalhador.getEmpresaNome())) {
-                            String url = substituirString(trabalhador.getImagem(), "localhost:8081", "192.168.8.20:8081");
+                            String url = substituirString(trabalhador.getImagem(), "localhost:8081", "192.168.8.102:8081");
                             byte[] imageBytes = downloadImage(url);
                             trabalhadoresDao.insertTrabalhador(
                                     trabalhador.getEmpresaNome(),
