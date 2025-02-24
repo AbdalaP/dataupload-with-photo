@@ -283,7 +283,8 @@ public class DataSyncManager {
                                     activity.getEmpresa(),
                                     activity.getDesignacao(),
                                     activity.getResponsavel(),
-                                    String.valueOf(activity.getValor()),
+                                    activity.getValor(),
+                                    activity.getMetaDiaria(),
                                     activity.getTipo(),
                                     "admin"
                             );

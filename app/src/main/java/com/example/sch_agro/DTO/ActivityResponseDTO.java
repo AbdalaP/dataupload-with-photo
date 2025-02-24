@@ -10,11 +10,12 @@ public class ActivityResponseDTO {
     private Double valor;
     private String tipo;
     private String dataRegistro;
+    private Integer metaDiaria;
 
     public ActivityResponseDTO() {
     }
 
-    public ActivityResponseDTO(Long id, String empresa, String designacao, String responsavel, Double valor, String tipo, String dataRegistro) {
+    public ActivityResponseDTO(Long id, String empresa, String designacao, String responsavel, Double valor, String tipo, String dataRegistro, Integer metaDiaria) {
         this.id = id;
         this.empresa = empresa;
         this.designacao = designacao;
@@ -22,6 +23,7 @@ public class ActivityResponseDTO {
         this.valor = valor;
         this.tipo = tipo;
         this.dataRegistro = dataRegistro;
+        this.metaDiaria = metaDiaria;
     }
 
     public Long getId() {
@@ -78,5 +80,13 @@ public class ActivityResponseDTO {
 
     public void setDataRegistro(String dataRegistro) {
         this.dataRegistro = dataRegistro;
+    }
+
+    public Integer getMetaDiaria() {
+        return metaDiaria;
+    }
+
+    public void setMetaDiaria(Integer metaDiaria) {
+        this.metaDiaria = metaDiaria;
     }
 }

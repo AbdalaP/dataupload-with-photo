@@ -224,20 +224,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         } else if (itemId == R.id.nav_logout) {
             // Finalizar sincronização agendada
-            if (syncRunnable != null) {
-                handler.removeCallbacks(syncRunnable);
-            }
-
-            // Parar o monitoramento da rede
-            networkMonitor.stopMonitoring();
-
-            // Fechar conexões com os DAOs
-            DatabaseInstance.getInstance(this).close();
-
-            // Finalizar DataSyncManager
-            if (syncManager != null) {
-                syncManager.shutdown();
-            }
+//            if (syncRunnable != null) {
+//                handler.removeCallbacks(syncRunnable);
+//            }
+//
+//            // Parar o monitoramento da rede
+//            networkMonitor.stopMonitoring();
+//
+//            // Fechar conexões com os DAOs
+//            DatabaseInstance.getInstance(this).close();
+//
+//            // Finalizar DataSyncManager
+//            if (syncManager != null) {
+//                syncManager.shutdown();
+//            }
             //Session session = new Session(this);
             session.logoutUser();
             Intent intent = new Intent(getApplicationContext(),LoginActivity.class);

@@ -22,12 +22,12 @@ public class ActivityDAO {
         this.dbHelper = dbHelper;
     }
 
-    public boolean insertActivity(String empresa, String activityName, String person, String target, String categoria, String userlogged) {
+    public boolean insertActivity(String empresa, String activityName, String person, Double target, Integer metaDiaria, String categoria, String userlogged) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         // Verifica se já existe um registro com os mesmos dados
         String query = "SELECT COUNT(*) FROM activity WHERE empresa = ? AND category_act = ? AND activity_name = ? AND person = ? AND valor = ? AND userlog = ?";
-        Cursor cursor = db.rawQuery(query, new String[]{empresa, categoria, activityName, person, target, userlogged});
+        Cursor cursor = db.rawQuery(query, new String[]{empresa, categoria, activityName, person, String.valueOf(target), userlogged});
 
         boolean exists = false;
         if (cursor != null) {
@@ -45,6 +45,7 @@ public class ActivityDAO {
             values.put("activity_name", activityName);
             values.put("person", person);
             values.put("valor", target);
+            values.put("meta", metaDiaria);
             values.put("userlog", userlogged);
             values.put("isSynced", 1);
 
@@ -95,6 +96,7 @@ public class ActivityDAO {
                 activity.setTipoValidacao(cursor.getString(cursor.getColumnIndexOrThrow("category_act")));
                 activity.setUser(cursor.getString(cursor.getColumnIndexOrThrow("userlog")));
                 activity.setValor(cursor.getDouble(cursor.getColumnIndexOrThrow("valor")));
+                activity.setMetaDiaria(cursor.getInt(cursor.getColumnIndexOrThrow("meta")));
                 activity.setRegistrationDate(new Date(cursor.getLong(cursor.getColumnIndexOrThrow("act_date")))); // Convertendo timestamp para Date
                 activity.setSynced(cursor.getInt(cursor.getColumnIndexOrThrow("isSynced")) == 1); // Convertendo de int para boolean
 
